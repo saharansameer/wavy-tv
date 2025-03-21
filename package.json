@@ -1,0 +1,20 @@
+{
+  "name": "wavytv",
+  "version": "1.0.0",
+  "description": "A full-stack video streaming platform built with MERN stack, Redux, Cloudinary, JWT, TypeScript and more.",
+  "keywords": [
+    "full stack project",
+    "javascript",
+    "MERN",
+    "mern stack",
+    "wavytv",
+    "typescript",
+    "video streaming"
+  ],
+  "author": "Sameer Saharan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/saharansameer/wavyTV/issues"
+  },
+  "homepage": "https://github.com/saharansameer/wavyTV"
+}
