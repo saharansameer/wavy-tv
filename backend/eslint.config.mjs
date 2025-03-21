@@ -1,0 +1,36 @@
+import { defineConfig } from "eslint/config";
+import globals from "globals";
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import jest from "eslint-plugin-jest";
+import prettier from "eslint-config-prettier";
+
+export default defineConfig([
+  {
+    ignores: ["node_modules/", "dist/"],
+  },
+  { files: ["src/**/*.{js,ts,jsx,tsx}", "tests/**/*.{js,ts,jsx,tsx}"] },
+  { files: ["**/*.{js,ts}"], languageOptions: { sourceType: "module" } },
+  {
+    files: ["src/**/*.{js,ts,jsx,tsx}"],
+    plugins: { js },
+    extends: ["js/recommended", prettier],
+    rules: {
+      "no-console": "off",
+      "quotes": ["error", "double"],
+      "semi": ["error", "always"],
+    },
+  },
+  {
+    languageOptions: { globals: globals.node },
+  },
+  ...tseslint.configs.recommended,
+  {
+    files: ["tests/**/*.{js,ts,jsx,tsx}"],
+    ...jest.configs["flat/recommended"],
+    rules: {
+      ...jest.configs["flat/recommended"].rules,
+      "jest/prefer-expect-assertions": "off",
+    },
+  },
+]);

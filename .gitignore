@@ -1,0 +1,14 @@
+# Ignore Node.js dependencies
+node_modules/
+dist/
+
+# Ignore environment variables
+.env
+
+# Ignore package lock files (of repo root)
+/package-lock.json
+
+# Ignore specific backend files
+backend/node_modules/
+backend/dist/
+
