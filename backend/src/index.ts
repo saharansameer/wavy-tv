@@ -1,17 +1,11 @@
-import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import app from "./app.js";
-
-dotenv.config({
-  path: "../.env",
-});
-
-const PORT = process.env.PORT || 4040;
+import { PORT } from "./config/env.js";
 
 connectDB()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`wavytv-backend is listening Port: ${PORT}`);
+    app.listen(PORT || 4040, () => {
+      console.log(`wavytv-backend is listening Port: ${PORT || 4040}`);
     });
   })
   .catch((err: unknown) => {
