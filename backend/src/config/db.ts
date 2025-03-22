@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import { DB_NAME } from "../utils/constants.js";
+import { MONGO_URI } from "../config/env.js";
 
 const connectDB = async (): Promise<void> => {
   try {
-    await mongoose.connect(process.env.MONGO_URI as string, {
-      dbName: DB_NAME
+    await mongoose.connect(MONGO_URI as string, {
+      dbName: "wavytvdb",
     });
     console.log("MongoDB Connected");
   } catch (err: unknown) {
