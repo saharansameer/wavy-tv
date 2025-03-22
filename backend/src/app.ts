@@ -2,12 +2,13 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { SIZE_LIMIT } from "./utils/constants.js";
+import { FRONTEND_URL, LOCAL_HOST } from "./config/env.js";
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: [FRONTEND_URL as string, LOCAL_HOST as string],
     credentials: true,
   })
 );
