@@ -18,7 +18,7 @@ interface UserObject extends Document {
   coverImage: string;
   coverImagePublicId: string;
   refreshToken: string;
-  watchHistory: Array<object>;
+  watchHistory: Schema.Types.ObjectId[];
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -28,18 +28,18 @@ const userSchema = new Schema(
   {
     fullName: {
       type: String,
-      require: [true, "Full Name is required"],
+      required: [true, "Full Name is required"],
     },
     username: {
       type: String,
-      require: [true, "Username is required"],
+      required: [true, "Username is required"],
       unique: [true, "Username already exists"],
       lowercase: true,
       trim: true,
     },
     email: {
       type: String,
-      require: [true, "Email is required"],
+      required: [true, "Email is required"],
       unique: [true, "Email already exists"],
       lowercase: true,
       trim: true,
@@ -50,7 +50,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      require: [true, "Password is required"],
+      required: [true, "Password is required"],
       minLength: [8, "Password length should be atleast 8 or greater"],
       match: [
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/,
@@ -72,12 +72,10 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
-    watchHistory: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Video",
-      },
-    ],
+    watchHistory: {
+      type: [Schema.Types.ObjectId],
+      ref: "Video",
+    },
   },
   { timestamps: true }
 );
