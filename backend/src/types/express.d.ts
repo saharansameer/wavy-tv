@@ -1,16 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 
-export type Controller = (req: Request, res: Response) => Promise<void>;
+declare global {
+  type Controller = (req: Request, res: Response) => Promise<void>;
 
-export type Middleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => Promise<void>;
+  type Middleware = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => Promise<void>;
 
-export type ErrorHandler = (
-  err: unknown,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => void;
+  type ErrorHandler = (
+    err: unknown,
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => void;
+}
+
+export {};
