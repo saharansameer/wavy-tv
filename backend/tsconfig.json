@@ -16,6 +16,6 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "src/utils/constants.ts"],
+  "include": ["src/**/*", "src/utils/constants.ts", "src/types/**/*.d.ts" ],
   "exclude": ["node_modules", "dist"]
 }
