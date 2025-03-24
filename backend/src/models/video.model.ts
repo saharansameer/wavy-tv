@@ -8,16 +8,15 @@ enum PublishStatus {
 
 interface VideoObject extends Document {
   title: string;
-  description: string;
+  description?: string;
   duration: number;
   views: number;
   owner: string;
   videoFile: string;
   videoFilePublicId: string;
-  thumbnail: string;
-  thumbnailPublicId: string;
+  thumbnail?: string;
+  thumbnailPublicId?: string;
   publishStatus: PublishStatus;
-  usersWithPrivateAccess: Schema.Types.ObjectId[];
 }
 
 const videoSchema = new Schema(
@@ -35,6 +34,7 @@ const videoSchema = new Schema(
     },
     duration: {
       type: Number,
+      required: true,
     },
     views: {
       type: Number,
@@ -43,12 +43,15 @@ const videoSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     videoFile: {
       type: String,
+      required: true,
     },
     videoFilePublicId: {
       type: String,
+      required: true,
     },
     thumbnail: {
       type: String,
@@ -59,11 +62,8 @@ const videoSchema = new Schema(
     publishStatus: {
       type: String,
       enum: Object.values(PublishStatus),
+      required: true,
       default: PublishStatus.PUBLIC,
-    },
-    usersWithPrivateAccess: {
-      type: [Schema.Types.ObjectId],
-      ref: "User",
     },
   },
   { timestamps: true }
