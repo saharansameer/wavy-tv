@@ -1,4 +1,4 @@
-import { Document, model, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import {
@@ -13,12 +13,17 @@ interface UserObject extends Document {
   username: string;
   email: string;
   password: string;
-  avatar: string;
-  avatarPublicId: string;
-  coverImage: string;
-  coverImagePublicId: string;
+  avatar?: string;
+  avatarPublicId?: string;
+  coverImage?: string;
+  coverImagePublicId?: string;
   refreshToken: string;
+  searchHistory: string[];
+  isSearchHistorySaved: boolean;
   watchHistory: Schema.Types.ObjectId[];
+  isWatchHistorySaved: boolean;
+  savedPlaylists: Schema.Types.ObjectId[];
+  createrMode: boolean;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -72,9 +77,30 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    searchHistory: {
+      type: [String],
+      default: [],
+    },
+    isSearchHistorySaved: {
+      type: Boolean,
+      default: true,
+    },
     watchHistory: {
       type: [Schema.Types.ObjectId],
       ref: "Video",
+      default: [],
+    },
+    isWatchHistorySaved: {
+      type: Boolean,
+      default: true,
+    },
+    savedPlaylists: {
+      type: [Schema.Types.ObjectId],
+      ref: "Playlist",
+    },
+    createrMode: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
@@ -117,4 +143,4 @@ userSchema.methods = {
   },
 };
 
-export const User = model<UserObject>("User", userSchema);
+export const User = mongoose.model<UserObject>("User", userSchema);
