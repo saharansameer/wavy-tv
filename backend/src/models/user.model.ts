@@ -34,6 +34,7 @@ const userSchema = new Schema(
     fullName: {
       type: String,
       required: [true, "Full Name is required"],
+      index: true,
     },
     username: {
       type: String,
@@ -41,6 +42,13 @@ const userSchema = new Schema(
       unique: [true, "Username already exists"],
       lowercase: true,
       trim: true,
+      index: true,
+      match: [
+        /^[a-zA-Z0-9]+$/,
+        "Special characters (e.g. !@#$%^&*()_-=+) are not allowed in username",
+      ],
+      minlength: [3, "Username should be at least 3 characters long"],
+      maxlength: [20, "Username should not exceed 20 characters"],
     },
     email: {
       type: String,
