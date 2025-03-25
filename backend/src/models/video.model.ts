@@ -28,6 +28,7 @@ const videoSchema = new Schema(
         /[a-zA-Z0-9]/,
         "Title can not be empty and must contain a valid letter",
       ],
+      index: true,
     },
     description: {
       type: String,
