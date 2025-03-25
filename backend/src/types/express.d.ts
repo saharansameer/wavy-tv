@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { Types } from "mongoose";
 
 declare global {
   type Controller = (req: Request, res: Response) => Promise<Response>;
@@ -15,6 +16,14 @@ declare global {
     res: Response,
     next: NextFunction
   ) => void;
+}
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: {
+      _id: Types.ObjectId;
+    };
+  }
 }
 
 export {};
