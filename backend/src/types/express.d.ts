@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 
 declare global {
-  type Controller = (req: Request, res: Response) => Promise<void>;
+  type Controller = (req: Request, res: Response) => Promise<Response>;
 
   type Middleware = (
     req: Request,
     res: Response,
     next: NextFunction
-  ) => Promise<void>;
+  ) => Promise<void> | void;
 
   type ErrorHandler = (
     err: unknown,
