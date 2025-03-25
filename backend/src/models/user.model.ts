@@ -145,7 +145,7 @@ userSchema.methods = {
       },
       REFRESH_TOKEN_SECRET,
       {
-        REFRESH_TOKEN_EXPIRY,
+        expiresIn: REFRESH_TOKEN_EXPIRY,
       }
     );
   },
