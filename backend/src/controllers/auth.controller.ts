@@ -2,9 +2,12 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
 import { trimAndClean } from "../utils/stringUtils.js";
-import { HTTP_STATUS } from "../utils/constants.js";
+import {
+  HTTP_STATUS,
+  RESPONSE_MESSAGE,
+  cookiesOptions,
+} from "../utils/constants.js";
 import { Types } from "mongoose";
-import { cookiesOptions } from "../utils/constants.js";
 import jwt from "jsonwebtoken";
 import { REFRESH_TOKEN_SECRET } from "../config/env.js";
 
@@ -16,7 +19,7 @@ async function generateTokens(userId: Types.ObjectId): Promise<TokenPayload> {
     if (!user) {
       throw new ApiError({
         status: HTTP_STATUS.NOT_FOUND,
-        message: "User does not exist",
+        message: RESPONSE_MESSAGE.USER.NOT_FOUND,
       });
     }
 
@@ -49,7 +52,7 @@ export const registerUser: Controller = async (req, res) => {
   if (!trimmedFullName || !trimmedUsername || !email || !password) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "All fields are required",
+      message: RESPONSE_MESSAGE.AUTH.SIGNUP_REQUIRED_FIELDS,
     });
   }
 
@@ -64,14 +67,14 @@ export const registerUser: Controller = async (req, res) => {
   if (!user) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Unable to register new user",
+      message: RESPONSE_MESSAGE.AUTH.SIGNUP_FAILED,
     });
   }
 
   return res.status(200).json(
     new ApiResponse({
       status: HTTP_STATUS.CREATED,
-      message: "User registered successfully",
+      message: RESPONSE_MESSAGE.AUTH.SIGNUP_SUCCESS,
       data: { _id: user._id, username: user.username, email },
     })
   );
@@ -83,7 +86,7 @@ export const loginUser: Controller = async (req, res) => {
   if (!trimmedEmail || !password) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Email and password are required",
+      message: RESPONSE_MESSAGE.AUTH.LOGIN_REQUIRED_FIELDS,
     });
   }
 
@@ -94,7 +97,7 @@ export const loginUser: Controller = async (req, res) => {
   if (!user) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Invalid Email or Username",
+      message: RESPONSE_MESSAGE.AUTH.INVALID_LOGIN_CREDS,
     });
   }
 
@@ -102,7 +105,7 @@ export const loginUser: Controller = async (req, res) => {
   if (!validatePassword) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Password is incorrect",
+      message: RESPONSE_MESSAGE.AUTH.INCORRECT_PASSWORD,
     });
   }
 
@@ -117,11 +120,9 @@ export const loginUser: Controller = async (req, res) => {
     .json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "User logged in successfully",
+        message: RESPONSE_MESSAGE.AUTH.LOGIN_SUCCESS,
       })
     );
-
-  return res.status(200);
 };
 
 export const logoutUser: Controller = async (req, res) => {
@@ -131,7 +132,7 @@ export const logoutUser: Controller = async (req, res) => {
   if (!existingRefreshToken) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Refresh Token not found in cookies",
+      message: `refreshToken: ${RESPONSE_MESSAGE.COOKIES.NOT_FOUND}`,
     });
   }
 
@@ -141,7 +142,7 @@ export const logoutUser: Controller = async (req, res) => {
   if (!decodedToken) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Refresh token is expired or invalid",
+      message: RESPONSE_MESSAGE.COOKIES.REFRESH_TOKEN_EXPIRED,
     });
   }
 
@@ -155,7 +156,7 @@ export const logoutUser: Controller = async (req, res) => {
   if (!user) {
     throw new ApiError({
       status: HTTP_STATUS.NOT_FOUND,
-      message: "Unable to clear refreshToken or Inavlid user id",
+      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
     });
   }
 
@@ -166,7 +167,7 @@ export const logoutUser: Controller = async (req, res) => {
     .json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "User logged out successfully",
+        message: RESPONSE_MESSAGE.AUTH.LOGOUT_SUCCESS,
       })
     );
 };
@@ -177,7 +178,7 @@ export const renewTokens: Controller = async (req, res) => {
   if (!existingRefreshToken) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Refresh Token not found",
+      message: `refreshToken: ${RESPONSE_MESSAGE.COOKIES.NOT_FOUND}`,
     });
   }
 
@@ -186,7 +187,7 @@ export const renewTokens: Controller = async (req, res) => {
   if (!decodedToken) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Refresh Token is expired or invalid",
+      message: RESPONSE_MESSAGE.COOKIES.REFRESH_TOKEN_EXPIRED,
     });
   }
 
@@ -198,7 +199,7 @@ export const renewTokens: Controller = async (req, res) => {
   if (!user) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Please Login, User is not authenticated",
+      message: RESPONSE_MESSAGE.AUTH.LOGIN_AGAIN,
     });
   }
 
@@ -218,7 +219,7 @@ export const renewTokens: Controller = async (req, res) => {
     .json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
-        message: "New Access and Refresh Token generated successfully",
+        message: RESPONSE_MESSAGE.COOKIES.TOKEN_GENERATED,
       })
     );
 };
