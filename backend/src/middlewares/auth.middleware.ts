@@ -19,10 +19,6 @@ export const checkAuth: Middleware = (req, _res, next) => {
       message: "Access Token expired",
     });
   }
-  console.log("Token Response:", validateToken);
-  console.log("Full URL:", req.originalUrl);
-  console.log("Path:", req.path);
-  console.log("Query Params:", req.query);
 
   req.user = validateToken;
 
