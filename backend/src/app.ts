@@ -21,9 +21,11 @@ app.use(cookieParser());
 
 // Routes import
 import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 // Routes declaration
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/user", userRoutes);
 
 // Handle Undefined Routes
 app.use(undefinedRoutesHandler);
