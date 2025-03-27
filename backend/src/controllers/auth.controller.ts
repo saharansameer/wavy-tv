@@ -7,14 +7,14 @@ import {
   RESPONSE_MESSAGE,
   cookiesOptions,
 } from "../utils/constants.js";
-import { Types } from "mongoose";
 import jwt from "jsonwebtoken";
 import { REFRESH_TOKEN_SECRET } from "../config/env.js";
+import { generatePublicId } from "../utils/crypto.js";
 
-async function generateTokens(userId: Types.ObjectId): Promise<TokenPayload> {
+async function generateTokens(userPublicId: string): Promise<TokenPayload> {
   try {
     // Find user by userId
-    const user = await User.findById(userId);
+    const user = await User.findOne({ publicId: userPublicId });
     // Check If user document is valid
     if (!user) {
       throw new ApiError({
@@ -58,6 +58,7 @@ export const registerUser: Controller = async (req, res) => {
 
   // Create user
   const user = await User.create({
+    publicId: generatePublicId(),
     fullName: trimmedFullName,
     username: trimmedUsername,
     email: email,
@@ -75,7 +76,7 @@ export const registerUser: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.CREATED,
       message: RESPONSE_MESSAGE.AUTH.SIGNUP_SUCCESS,
-      data: { _id: user._id, username: user.username, email },
+      data: { publicId: user.publicId, username: user.username, email },
     })
   );
 };
@@ -109,9 +110,7 @@ export const loginUser: Controller = async (req, res) => {
     });
   }
 
-  const { accessToken, refreshToken } = await generateTokens(
-    user._id as Types.ObjectId
-  );
+  const { accessToken, refreshToken } = await generateTokens(user.publicId);
 
   return res
     .status(HTTP_STATUS.OK)
@@ -136,8 +135,9 @@ export const logoutUser: Controller = async (req, res) => {
     });
   }
 
-  // Verify existing refreshToken and return payload (i.e user's _id)
+  // Verify existing refreshToken and return payload (i.e publicId)
   const decodedToken = jwt.verify(existingRefreshToken, REFRESH_TOKEN_SECRET);
+
   // Check if token is valid
   if (!decodedToken) {
     throw new ApiError({
@@ -147,12 +147,12 @@ export const logoutUser: Controller = async (req, res) => {
   }
 
   // Find current logged-in user and clear refreshToken from DB
-  const user = await User.findByIdAndUpdate(
-    decodedToken._id,
+  const user = await User.findOneAndUpdate(
+    { publicId: decodedToken.publicId },
     { refreshToken: "" },
     { new: true }
   );
-  // Check If user updated successfully
+
   if (!user) {
     throw new ApiError({
       status: HTTP_STATUS.NOT_FOUND,
@@ -160,6 +160,7 @@ export const logoutUser: Controller = async (req, res) => {
     });
   }
 
+  // Final Response
   return res
     .status(HTTP_STATUS.OK)
     .clearCookie("accessToken")
@@ -193,9 +194,10 @@ export const renewTokens: Controller = async (req, res) => {
 
   // Check if user is authenticated
   const user = await User.findOne({
-    _id: decodedToken._id,
+    publicId: decodedToken.publicId,
     refreshToken: existingRefreshToken,
   });
+
   if (!user) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
@@ -204,14 +206,13 @@ export const renewTokens: Controller = async (req, res) => {
   }
 
   // Generate New Tokens
-  const { accessToken, refreshToken } = await generateTokens(
-    user._id as Types.ObjectId
-  );
+  const { accessToken, refreshToken } = await generateTokens(user.publicId);
 
   // Update User's refreshToken in DB
   user.refreshToken = refreshToken;
   await user.save();
 
+  // Final Response
   return res
     .status(HTTP_STATUS.OK)
     .cookie("accessToken", accessToken, cookiesOptions)

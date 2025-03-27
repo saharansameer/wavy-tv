@@ -9,8 +9,8 @@ export const getCurrentUser: Controller = async (req, res) => {
   req.user = req.user as Required<typeof req.user>;
 
   // Get User Details
-  const user = await User.findById(req.user?._id).select(
-    "fullName username email createrMode"
+  const user = await User.findOne({ publicId: req.user?.publicId }).select(
+    "-_id publicId fullName username email createrMode"
   );
 
   if (!user) {
@@ -48,11 +48,11 @@ export const updateUserNames: Controller = async (req, res) => {
   }
 
   // Update User Details
-  const user = await User.findByIdAndUpdate(
-    req.user?._id,
+  const user = await User.findOneAndUpdate(
+    { publicId: req.user?.publicId },
     { $set: { fullName: trimmedFullName, username: trimmedUsername } },
     { new: true, runValidators: true }
-  );
+  ).select("-_id publicId fullName username");
 
   if (!user) {
     throw new ApiError({
@@ -74,14 +74,22 @@ export const updateUserEmail: Controller = async (req, res) => {
   // Ensure TypeScript recognizes req.user as defined
   req.user = req.user as Required<typeof req.user>;
 
-  const { email } = req.body;
+  const { currentEmail, newEmail } = req.body;
+
+  // What if current Email and new Email are same
+  if (currentEmail === newEmail) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "New email must be different from the current email.",
+    });
+  }
 
   // Update User Email
-  const user = await User.findByIdAndUpdate(
-    req.user?._id,
-    { email },
+  const user = await User.findOneAndUpdate(
+    { publicId: req.user?.publicId },
+    { email: newEmail },
     { new: true, runValidators: true }
-  ).select("email");
+  ).select("-_id publicId username email");
 
   if (!user) {
     throw new ApiError({
@@ -121,8 +129,16 @@ export const updateUserPassword: Controller = async (req, res) => {
     });
   }
 
+  // What if old Password and new Password are same
+  if (oldPassword === newPassword) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "New password must be different from the old password.",
+    });
+  }
+
   // Get user details
-  const user = await User.findById(req.user?._id);
+  const user = await User.findOne({ publicId: req.user?.publicId });
 
   if (!user) {
     throw new ApiError({
@@ -158,11 +174,11 @@ export const toggleCreaterMode: Controller = async (req, res) => {
   req.user = req.user as Required<typeof req.user>;
 
   // Toggle User's Creater Mode
-  const user = await User.findByIdAndUpdate(
-    req.user?._id,
+  const user = await User.findOneAndUpdate(
+    { publicId: req.user?.publicId },
     [{ $set: { createrMode: { $not: "$createrMode" } } }],
     { new: true }
-  ).select("username createrMode");
+  ).select("-_id publicId username createrMode");
 
   if (!user) {
     throw new ApiError({
