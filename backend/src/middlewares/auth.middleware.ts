@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import ApiError from "../utils/apiError.js";
 import { ACCESS_TOKEN_SECRET } from "../config/env.js";
-import { HTTP_STATUS } from "../utils/constants.js";
+import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
+import rateLimit from "express-rate-limit";
 
 export const checkAuth: Middleware = (req, _res, next) => {
   const token = req.cookies?.accessToken;
@@ -16,7 +17,7 @@ export const checkAuth: Middleware = (req, _res, next) => {
   if (!validateToken) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Access Token expired",
+      message: RESPONSE_MESSAGE.COOKIES.ACCESS_TOKEN_EXPIRED,
     });
   }
 
@@ -24,3 +25,15 @@ export const checkAuth: Middleware = (req, _res, next) => {
 
   next();
 };
+
+export const authRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: "draft-8",
+  handler: (_req, _res, _next): Middleware => {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "Too many requests, please try again later.",
+    });
+  },
+});
