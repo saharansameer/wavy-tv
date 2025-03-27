@@ -7,6 +7,7 @@ enum PublishStatus {
 }
 
 interface PlaylistObject extends Document {
+  publicId: string;
   title: string;
   description?: string;
   owner: Schema.Types.ObjectId;
@@ -17,6 +18,11 @@ interface PlaylistObject extends Document {
 
 const playlistSchema = new Schema(
   {
+    publicId: {
+      type: String,
+      required: [true, "publicId is required"],
+      unique: true,
+    },
     title: {
       type: String,
       required: [true, "Title is required"],

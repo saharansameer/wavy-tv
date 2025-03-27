@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 interface PostObject extends Document {
+  publicId: string;
   content: string;
   owner: Schema.Types.ObjectId;
   upvotes: number;
@@ -9,6 +10,11 @@ interface PostObject extends Document {
 
 const postSchema = new Schema(
   {
+    publicId: {
+      type: String,
+      required: [true, "publicId is required"],
+      unique: true,
+    },
     content: {
       type: String,
       required: true,

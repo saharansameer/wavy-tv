@@ -7,6 +7,7 @@ enum PublishStatus {
 }
 
 interface VideoObject extends Document {
+  publicId: string;
   title: string;
   description?: string;
   duration: number;
@@ -21,6 +22,11 @@ interface VideoObject extends Document {
 
 const videoSchema = new Schema(
   {
+    publicId: {
+      type: String,
+      required: [true, "publicId is required"],
+      unique: true,
+    },
     title: {
       type: String,
       required: [true, "Title is required"],
