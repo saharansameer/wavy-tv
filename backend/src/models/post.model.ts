@@ -14,6 +14,7 @@ const postSchema = new Schema(
       type: String,
       required: [true, "publicId is required"],
       unique: true,
+      index: true,
     },
     content: {
       type: String,

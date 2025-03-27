@@ -26,6 +26,7 @@ const videoSchema = new Schema(
       type: String,
       required: [true, "publicId is required"],
       unique: true,
+      index: true,
     },
     title: {
       type: String,

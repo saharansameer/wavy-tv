@@ -36,6 +36,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "publicId is required"],
       unique: true,
+      index: true,
     },
     fullName: {
       type: String,
@@ -135,7 +136,8 @@ userSchema.methods = {
   generateAccessToken: function () {
     return jwt.sign(
       {
-        _id: this._id,
+        publicId: this.publicId,
+        email: this.email,
       },
       ACCESS_TOKEN_SECRET,
       {
@@ -147,7 +149,8 @@ userSchema.methods = {
   generateRefreshToken: function () {
     return jwt.sign(
       {
-        _id: this._id,
+        publicId: this.publicId,
+        email: this.email,
       },
       REFRESH_TOKEN_SECRET,
       {
