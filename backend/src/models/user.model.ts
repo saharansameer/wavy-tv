@@ -137,7 +137,6 @@ userSchema.methods = {
     return jwt.sign(
       {
         publicId: this.publicId,
-        email: this.email,
       },
       ACCESS_TOKEN_SECRET,
       {
@@ -150,7 +149,6 @@ userSchema.methods = {
     return jwt.sign(
       {
         publicId: this.publicId,
-        email: this.email,
       },
       REFRESH_TOKEN_SECRET,
       {
