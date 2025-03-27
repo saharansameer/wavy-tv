@@ -9,27 +9,34 @@ import {
   updateUserPassword,
   toggleCreaterMode,
 } from "../controllers/user.controller.js";
+import { authRateLimiter } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
 // Check User Auth
-router.use(asyncHandler(checkAuth));
+router.use(checkAuth);
 
 // GET - Get User details
 // PATCH - Update User names (i.e fullName and username)
 router
   .route("/")
   .get(asyncHandler(getCurrentUser))
-  .patch(asyncHandler(updateUserNames));
+  .patch(authRateLimiter, asyncHandler(updateUserNames));
 
 // PATCH - Update User email
-router.route("/security/email").patch(asyncHandler(updateUserEmail));
+router
+  .route("/security/email")
+  .patch(authRateLimiter, asyncHandler(updateUserEmail));
 
 // PATCH - Update User password
-router.route("/security/password").patch(asyncHandler(updateUserPassword));
+router
+  .route("/security/password")
+  .patch(authRateLimiter, asyncHandler(updateUserPassword));
 
 // PATCH - Toggle createrMode (i.e true or false)
-router.route("/privacy/creator").patch(asyncHandler(toggleCreaterMode));
+router
+  .route("/privacy/creator")
+  .patch(authRateLimiter, asyncHandler(toggleCreaterMode));
 
 // Error Handler
 router.use(errorHandler);
