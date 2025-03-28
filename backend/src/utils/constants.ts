@@ -38,7 +38,7 @@ export const RESPONSE_MESSAGE = {
     NOT_FOUND: "User does not exist",
     NOT_AUTHORIZED: "User is not authorized",
     UPDATE_SUCCESS: "User details updated successfully",
-    UPDATE_FAILED: "Failed to update existing user",
+    UPDATE_FAILED: "Failed to update user details",
     FETCH_DETAILS_SUCCESS: "User details fetched successfully",
   },
   COOKIES: {
@@ -47,5 +47,11 @@ export const RESPONSE_MESSAGE = {
     TOKEN_EXPIRED: "Token is expired or invalid",
     ACCESS_TOKEN_EXPIRED: "Access token is expired or invalid",
     REFRESH_TOKEN_EXPIRED: "Refresh token is expired or invalid",
+  },
+  VIDEO: {
+    NOT_FOUND: "Video is private or does not exist",
+    FETCH_SUCCESS: "Video fetched successfully",
+    UPDATE_SUCCESS: "Video details updated successfully",
+    DELETE_SUCCESS: "Video deleted successfully",
   },
 };
