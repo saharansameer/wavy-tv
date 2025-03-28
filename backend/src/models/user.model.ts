@@ -9,7 +9,6 @@ import {
 } from "../config/env.js";
 
 interface UserObject extends Document {
-  publicId: string;
   fullName: string;
   username: string;
   email: string;
@@ -32,12 +31,6 @@ interface UserObject extends Document {
 
 const userSchema = new Schema(
   {
-    publicId: {
-      type: String,
-      required: [true, "publicId is required"],
-      unique: true,
-      index: true,
-    },
     fullName: {
       type: String,
       required: [true, "Full Name is required"],
@@ -136,7 +129,7 @@ userSchema.methods = {
   generateAccessToken: function () {
     return jwt.sign(
       {
-        publicId: this.publicId,
+        _id: this._id,
       },
       ACCESS_TOKEN_SECRET,
       {
@@ -148,7 +141,7 @@ userSchema.methods = {
   generateRefreshToken: function () {
     return jwt.sign(
       {
-        publicId: this.publicId,
+        _id: this._id,
       },
       REFRESH_TOKEN_SECRET,
       {

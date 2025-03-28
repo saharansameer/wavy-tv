@@ -7,14 +7,14 @@ import {
   RESPONSE_MESSAGE,
   cookiesOptions,
 } from "../utils/constants.js";
+import { Types } from "mongoose";
 import jwt from "jsonwebtoken";
 import { REFRESH_TOKEN_SECRET } from "../config/env.js";
-import { generatePublicId } from "../utils/crypto.js";
 
-async function generateTokens(userPublicId: string): Promise<TokenPayload> {
+async function generateTokens(userId: Types.ObjectId): Promise<TokenPayload> {
   try {
     // Find user by userId
-    const user = await User.findOne({ publicId: userPublicId });
+    const user = await User.findById(userId);
     // Check If user document is valid
     if (!user) {
       throw new ApiError({
@@ -58,7 +58,6 @@ export const registerUser: Controller = async (req, res) => {
 
   // Create user
   const user = await User.create({
-    publicId: generatePublicId(),
     fullName: trimmedFullName,
     username: trimmedUsername,
     email: email,
@@ -72,11 +71,12 @@ export const registerUser: Controller = async (req, res) => {
     });
   }
 
+  // Final Response
   return res.status(200).json(
     new ApiResponse({
       status: HTTP_STATUS.CREATED,
       message: RESPONSE_MESSAGE.AUTH.SIGNUP_SUCCESS,
-      data: { publicId: user.publicId, username: user.username, email },
+      data: { _id: user._id, username: user.username, email },
     })
   );
 };
@@ -84,6 +84,7 @@ export const registerUser: Controller = async (req, res) => {
 export const loginUser: Controller = async (req, res) => {
   const { email, password } = req.body;
   const trimmedEmail = trimAndClean(email);
+
   if (!trimmedEmail || !password) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
@@ -91,6 +92,7 @@ export const loginUser: Controller = async (req, res) => {
     });
   }
 
+  // Find user with the recieved email or username
   const user = await User.findOne({
     $or: [{ username: trimmedEmail }, { email: trimmedEmail }],
   });
@@ -102,6 +104,7 @@ export const loginUser: Controller = async (req, res) => {
     });
   }
 
+  // Check if password is correct
   const validatePassword = await user.isPasswordCorrect(password);
   if (!validatePassword) {
     throw new ApiError({
@@ -110,8 +113,12 @@ export const loginUser: Controller = async (req, res) => {
     });
   }
 
-  const { accessToken, refreshToken } = await generateTokens(user.publicId);
+  // Generate Tokens
+  const { accessToken, refreshToken } = await generateTokens(
+    user._id as Types.ObjectId
+  );
 
+  // Final Response
   return res
     .status(HTTP_STATUS.OK)
     .cookie("accessToken", accessToken, cookiesOptions)
@@ -127,6 +134,7 @@ export const loginUser: Controller = async (req, res) => {
 export const logoutUser: Controller = async (req, res) => {
   // Get existing refreshToken from cookies
   const existingRefreshToken: string = req.cookies?.refreshToken;
+
   // Check if token exists
   if (!existingRefreshToken) {
     throw new ApiError({
@@ -135,7 +143,7 @@ export const logoutUser: Controller = async (req, res) => {
     });
   }
 
-  // Verify existing refreshToken and return payload (i.e publicId)
+  // Verify existing refreshToken and return payload (i.e user's _id)
   const decodedToken = jwt.verify(existingRefreshToken, REFRESH_TOKEN_SECRET);
 
   // Check if token is valid
@@ -147,12 +155,13 @@ export const logoutUser: Controller = async (req, res) => {
   }
 
   // Find current logged-in user and clear refreshToken from DB
-  const user = await User.findOneAndUpdate(
-    { publicId: decodedToken.publicId },
+  const user = await User.findByIdAndUpdate(
+    decodedToken._id,
     { refreshToken: "" },
     { new: true }
   );
 
+  // Check If user updated successfully
   if (!user) {
     throw new ApiError({
       status: HTTP_STATUS.NOT_FOUND,
@@ -176,6 +185,7 @@ export const logoutUser: Controller = async (req, res) => {
 export const renewTokens: Controller = async (req, res) => {
   // Get existing refresh token
   const existingRefreshToken = req.cookies?.refreshToken;
+
   if (!existingRefreshToken) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
@@ -185,6 +195,7 @@ export const renewTokens: Controller = async (req, res) => {
 
   // Validate Refresh Token
   const decodedToken = jwt.verify(existingRefreshToken, REFRESH_TOKEN_SECRET);
+
   if (!decodedToken) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
@@ -194,7 +205,7 @@ export const renewTokens: Controller = async (req, res) => {
 
   // Check if user is authenticated
   const user = await User.findOne({
-    publicId: decodedToken.publicId,
+    _id: decodedToken._id,
     refreshToken: existingRefreshToken,
   });
 
@@ -206,7 +217,9 @@ export const renewTokens: Controller = async (req, res) => {
   }
 
   // Generate New Tokens
-  const { accessToken, refreshToken } = await generateTokens(user.publicId);
+  const { accessToken, refreshToken } = await generateTokens(
+    user._id as Types.ObjectId
+  );
 
   // Update User's refreshToken in DB
   user.refreshToken = refreshToken;

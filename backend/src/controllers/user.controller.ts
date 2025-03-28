@@ -5,12 +5,9 @@ import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 
 export const getCurrentUser: Controller = async (req, res) => {
-  // Ensure TypeScript recognizes req.user as defined
-  req.user = req.user as Required<typeof req.user>;
-
   // Get User Details
-  const user = await User.findOne({ publicId: req.user?.publicId }).select(
-    "-_id publicId fullName username email createrMode"
+  const user = await User.findById(req.user?._id).select(
+    "-_id fullName username email createrMode"
   );
 
   if (!user) {
@@ -31,14 +28,13 @@ export const getCurrentUser: Controller = async (req, res) => {
 };
 
 export const updateUserNames: Controller = async (req, res) => {
-  // Ensure TypeScript recognizes req.user as defined
-  req.user = req.user as Required<typeof req.user>;
-
   // User new details (i.e fullName and username)
   const { fullName, username } = req.body;
+
   // Remove Extra Spaces
   const trimmedFullName = trimAndClean(fullName);
   const trimmedUsername = trimAndClean(username);
+
   // Check if both values exist
   if (!trimmedFullName || !trimmedUsername) {
     throw new ApiError({
@@ -48,11 +44,11 @@ export const updateUserNames: Controller = async (req, res) => {
   }
 
   // Update User Details
-  const user = await User.findOneAndUpdate(
-    { publicId: req.user?.publicId },
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
     { $set: { fullName: trimmedFullName, username: trimmedUsername } },
     { new: true, runValidators: true }
-  ).select("-_id publicId fullName username");
+  ).select("-_id fullName username");
 
   if (!user) {
     throw new ApiError({
@@ -66,14 +62,12 @@ export const updateUserNames: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
+      data: user,
     })
   );
 };
 
 export const updateUserEmail: Controller = async (req, res) => {
-  // Ensure TypeScript recognizes req.user as defined
-  req.user = req.user as Required<typeof req.user>;
-
   const { currentEmail, newEmail } = req.body;
 
   // What if current Email and new Email are same
@@ -85,11 +79,11 @@ export const updateUserEmail: Controller = async (req, res) => {
   }
 
   // Update User Email
-  const user = await User.findOneAndUpdate(
-    { publicId: req.user?.publicId },
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
     { email: newEmail },
     { new: true, runValidators: true }
-  ).select("-_id publicId username email");
+  ).select("-_id email username fullName");
 
   if (!user) {
     throw new ApiError({
@@ -109,10 +103,8 @@ export const updateUserEmail: Controller = async (req, res) => {
 };
 
 export const updateUserPassword: Controller = async (req, res) => {
-  // Ensure TypeScript recognizes req.user as defined
-  req.user = req.user as Required<typeof req.user>;
-
   const { oldPassword, newPassword, confirmNewPassword } = req.body;
+
   // Check for required fields
   if (!oldPassword || !newPassword || !confirmNewPassword) {
     throw new ApiError({
@@ -138,7 +130,7 @@ export const updateUserPassword: Controller = async (req, res) => {
   }
 
   // Get user details
-  const user = await User.findOne({ publicId: req.user?.publicId });
+  const user = await User.findById(req.user?._id);
 
   if (!user) {
     throw new ApiError({
@@ -149,6 +141,7 @@ export const updateUserPassword: Controller = async (req, res) => {
 
   // Validate existing password
   const validatePassword = await user.isPasswordCorrect(oldPassword);
+
   if (!validatePassword) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
@@ -170,15 +163,12 @@ export const updateUserPassword: Controller = async (req, res) => {
 };
 
 export const toggleCreaterMode: Controller = async (req, res) => {
-  // Ensure TypeScript recognizes req.user as defined
-  req.user = req.user as Required<typeof req.user>;
-
   // Toggle User's Creater Mode
-  const user = await User.findOneAndUpdate(
-    { publicId: req.user?.publicId },
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
     [{ $set: { createrMode: { $not: "$createrMode" } } }],
     { new: true }
-  ).select("-_id publicId username createrMode");
+  ).select("-_id fullName username createrMode");
 
   if (!user) {
     throw new ApiError({
