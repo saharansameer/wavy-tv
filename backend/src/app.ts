@@ -23,11 +23,13 @@ app.use(cookieParser());
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import videoRoutes from "./routes/video.routes.js";
+import followRoutes from "./routes/follow.routes.js";
 
 // Routes declaration
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/video", videoRoutes);
+app.use("/api/v1/follow", followRoutes);
 
 // Handle Undefined Routes
 app.use(undefinedRoutesHandler);
