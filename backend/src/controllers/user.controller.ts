@@ -7,7 +7,7 @@ import { trimAndClean } from "../utils/stringUtils.js";
 export const getCurrentUser: Controller = async (req, res) => {
   // Get User Details
   const user = await User.findById(req.user?._id).select(
-    "-_id fullName username email createrMode"
+    "-_id fullName username email creatorMode"
   );
 
   if (!user) {
@@ -162,13 +162,13 @@ export const updateUserPassword: Controller = async (req, res) => {
   );
 };
 
-export const toggleCreaterMode: Controller = async (req, res) => {
+export const toggleCreatorMode: Controller = async (req, res) => {
   // Toggle User's Creater Mode
   const user = await User.findByIdAndUpdate(
     req.user?._id,
-    [{ $set: { createrMode: { $not: "$createrMode" } } }],
+    [{ $set: { creatorMode: { $not: "$creatorMode" } } }],
     { new: true }
-  ).select("-_id fullName username createrMode");
+  ).select("-_id fullName username creatorMode");
 
   if (!user) {
     throw new ApiError({

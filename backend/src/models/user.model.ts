@@ -23,7 +23,7 @@ interface UserObject extends Document {
   watchHistory: Schema.Types.ObjectId[];
   isWatchHistorySaved: boolean;
   savedPlaylists: Schema.Types.ObjectId[];
-  createrMode: boolean;
+  creatorMode: boolean;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -106,7 +106,7 @@ const userSchema = new Schema(
       type: [Schema.Types.ObjectId],
       ref: "Playlist",
     },
-    createrMode: {
+    creatorMode: {
       type: Boolean,
       default: true,
     },

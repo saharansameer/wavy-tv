@@ -7,7 +7,7 @@ import {
   updateUserNames,
   updateUserEmail,
   updateUserPassword,
-  toggleCreaterMode,
+  toggleCreatorMode,
 } from "../controllers/user.controller.js";
 import { authRateLimiter } from "../middlewares/auth.middleware.js";
 
@@ -33,10 +33,10 @@ router
   .route("/security/password")
   .patch(authRateLimiter, asyncHandler(updateUserPassword));
 
-// PATCH - Toggle createrMode (i.e true or false)
+// PATCH - Toggle creatorMode (i.e true or false)
 router
   .route("/privacy/creator")
-  .patch(authRateLimiter, asyncHandler(toggleCreaterMode));
+  .patch(authRateLimiter, asyncHandler(toggleCreatorMode));
 
 // Error Handler
 router.use(errorHandler);
