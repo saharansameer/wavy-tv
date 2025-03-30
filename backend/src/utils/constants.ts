@@ -54,4 +54,13 @@ export const RESPONSE_MESSAGE = {
     UPDATE_SUCCESS: "Video details updated successfully",
     DELETE_SUCCESS: "Video deleted successfully",
   },
+  FOLLOW: {
+    FOLLOWING: "Followed successfully",
+    UNFOLLOWED: "Unfollowed successfully",
+    TOGGLE_FAILURE: "Failed to toggle follow",
+    FOLLOWER_FETCH_SUCCESS: "Followers fetched successfully",
+    ZERO_FOLLOWER: "User has zero follower",
+    FOLLOWING_FETCH_SUCCESS: "Following fetched successfully",
+    ZERO_FOLLOWING: "User has zero following ",
+  },
 };
