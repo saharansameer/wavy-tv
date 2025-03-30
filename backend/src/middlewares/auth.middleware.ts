@@ -3,6 +3,7 @@ import ApiError from "../utils/apiError.js";
 import { ACCESS_TOKEN_SECRET } from "../config/env.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import rateLimit from "express-rate-limit";
+import { MAX_RATE_LIMIT } from "../config/env.js";
 
 export const checkAuth: Middleware = (req, _res, next) => {
   const token = req.cookies?.accessToken;
@@ -28,7 +29,7 @@ export const checkAuth: Middleware = (req, _res, next) => {
 
 export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: Number(MAX_RATE_LIMIT),
   standardHeaders: "draft-8",
   handler: (_req, _res, _next): Middleware => {
     throw new ApiError({
