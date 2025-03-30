@@ -12,8 +12,7 @@ interface PlaylistObject extends Document {
   description?: string;
   owner: Schema.Types.ObjectId;
   publishStatus: PublishStatus;
-  collaborators: Schema.Types.ObjectId[];
-  videos: Schema.Types.ObjectId[];
+  videos: string[];
 }
 
 const playlistSchema = new Schema(
@@ -46,14 +45,8 @@ const playlistSchema = new Schema(
       enum: Object.values(PublishStatus),
       default: PublishStatus.PRIVATE,
     },
-    collaborators: {
-      type: [Schema.Types.ObjectId],
-      ref: "User",
-      default: [],
-    },
     videos: {
-      type: [Schema.Types.ObjectId],
-      ref: "Video",
+      type: [String],
       default: [],
     },
   },
