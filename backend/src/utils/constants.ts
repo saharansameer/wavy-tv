@@ -63,4 +63,12 @@ export const RESPONSE_MESSAGE = {
     FOLLOWING_FETCH_SUCCESS: "Following fetched successfully",
     ZERO_FOLLOWING: "User has zero following ",
   },
+  PLAYLIST: {
+    NOT_FOUND: "Playlist is private or does not exist",
+    CREATE_SUCCESS: "Playlist created successfully",
+    CREATE_FAILURE: "Failed to create new playlist",
+    UPDATE_SUCCESS: "Playlist updated successfully",
+    DELETE_SUCCESS: "Playlist deleted successfully",
+    FETCH_SUCCESS: "Playlist fetched successfully",
+  },
 };
