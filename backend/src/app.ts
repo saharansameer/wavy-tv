@@ -24,12 +24,16 @@ import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import videoRoutes from "./routes/video.routes.js";
 import followRoutes from "./routes/follow.routes.js";
+import channelRoutes from "./routes/channel.routes.js";
+import playlistRoutes from "./routes/playlist.routes.js";
 
 // Routes declaration
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/video", videoRoutes);
 app.use("/api/v1/follow", followRoutes);
+app.use("/api/v1/channel", channelRoutes);
+app.use("/api/v1/playlist", playlistRoutes);
 
 // Handle Undefined Routes
 app.use(undefinedRoutesHandler);
