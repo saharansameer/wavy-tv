@@ -3,6 +3,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import { Video } from "../models/video.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
+import { getLoggedInUserId } from "../utils/authUtils.js";
 
 export const getAllVideos: Controller = async (_req, res) => {
   // Fetch videos including owner details
@@ -10,11 +11,6 @@ export const getAllVideos: Controller = async (_req, res) => {
     {
       $match: {
         publishStatus: "PUBLIC",
-      },
-    },
-    {
-      $project: {
-        _id: 0,
       },
     },
     {
@@ -42,6 +38,11 @@ export const getAllVideos: Controller = async (_req, res) => {
         },
       },
     },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
   ]);
 
   if (videos.length === 0) {
@@ -65,17 +66,18 @@ export const getAllVideos: Controller = async (_req, res) => {
 export const getVideoByPublicId: Controller = async (req, res) => {
   const { videoPublicId } = req.params;
 
+  // Verify logged-in User and Extract user ID
+  const userId = getLoggedInUserId(req?.cookies?.refreshToken);
+
   // Fetch video by publicId
   const video = await Video.aggregate([
     {
       $match: {
         publicId: videoPublicId,
-        publishStatus: { $in: ["PUBLIC", "UNLISTED"] },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
+        $or: [
+          { publishStatus: { $in: ["PUBLIC", "UNLISTED"] } },
+          { publishStatus: "PRIVATE", owner: userId },
+        ],
       },
     },
     {
@@ -102,6 +104,11 @@ export const getVideoByPublicId: Controller = async (req, res) => {
         owner: {
           $first: "$owner",
         },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
       },
     },
   ]);

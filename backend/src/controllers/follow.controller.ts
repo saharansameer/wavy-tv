@@ -37,7 +37,6 @@ export const toggleFollow: Controller = async (req, res) => {
       new ApiResponse({
         status: HTTP_STATUS.OK,
         message: RESPONSE_MESSAGE.FOLLOW.UNFOLLOWED,
-        data: { action: false },
       })
     );
   }
@@ -60,7 +59,6 @@ export const toggleFollow: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.FOLLOW.FOLLOWING,
-      data: { action: true },
     })
   );
 };
