@@ -129,7 +129,7 @@ export const updateVideoDetails: Controller = async (req, res) => {
   const { title, description, publishStatus } = req.body;
 
   // Remove extra spaces from title
-  const trimmedTitle = trimAndClean(title);
+  const trimmedTitle = trimAndClean(title || "");
 
   // Check all fields (i.e title, description, publishStatus) are provided
   if (!trimmedTitle || !description || !publishStatus) {

@@ -32,8 +32,8 @@ export const updateUserNames: Controller = async (req, res) => {
   const { fullName, username } = req.body;
 
   // Remove Extra Spaces
-  const trimmedFullName = trimAndClean(fullName);
-  const trimmedUsername = trimAndClean(username);
+  const trimmedFullName = trimAndClean(fullName || "");
+  const trimmedUsername = trimAndClean(username || "");
 
   // Check if both values exist
   if (!trimmedFullName || !trimmedUsername) {

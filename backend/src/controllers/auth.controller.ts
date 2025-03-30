@@ -45,8 +45,8 @@ async function generateTokens(userId: Types.ObjectId): Promise<TokenPayload> {
 
 export const registerUser: Controller = async (req, res) => {
   const { fullName, username, email, password } = req.body;
-  const trimmedFullName = trimAndClean(fullName);
-  const trimmedUsername = trimAndClean(username);
+  const trimmedFullName = trimAndClean(fullName || "");
+  const trimmedUsername = trimAndClean(username || "");
 
   // Checks all fields exist
   if (!trimmedFullName || !trimmedUsername || !email || !password) {
@@ -83,7 +83,7 @@ export const registerUser: Controller = async (req, res) => {
 
 export const loginUser: Controller = async (req, res) => {
   const { email, password } = req.body;
-  const trimmedEmail = trimAndClean(email);
+  const trimmedEmail = trimAndClean(email || "");
 
   if (!trimmedEmail || !password) {
     throw new ApiError({
