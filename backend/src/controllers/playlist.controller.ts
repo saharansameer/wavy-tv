@@ -5,6 +5,7 @@ import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { generatePublicId } from "../utils/crypto.js";
 import { getLoggedInUserId } from "../utils/authUtils.js";
+import { Types } from "mongoose";
 
 export const createPlaylist: Controller = async (req, res) => {
   const { title, description, publishStatus } = req.body;
@@ -97,11 +98,6 @@ export const getPlaylistByPublicId: Controller = async (req, res) => {
         },
       },
     },
-    {
-      $project: {
-        _id: 0,
-      },
-    },
   ]);
 
   // What If playlist is private or does not exist
@@ -143,7 +139,7 @@ export const updatePlaylistDetails: Controller = async (req, res) => {
     { publicId: playlistPublicId, owner: req?.user?._id },
     { title: trimmedTitle, description: trimmedDescription, publishStatus },
     { new: true, runValidators: true }
-  ).select("-_id publicId title publishStatus");
+  ).select("publicId title publishStatus");
 
   if (!playlist) {
     throw new ApiError({
@@ -164,7 +160,7 @@ export const updatePlaylistDetails: Controller = async (req, res) => {
 
 export const addVideoToPlaylist: Controller = async (req, res) => {
   const { playlistPublicId } = req.params;
-  const { videos }: { videos: string[] } = req.body;
+  const { videos }: { videos: Types.ObjectId[] } = req.body;
 
   if (videos.length === 0) {
     throw new ApiError({
@@ -183,7 +179,7 @@ export const addVideoToPlaylist: Controller = async (req, res) => {
       $push: { videos: { $each: videos } },
     },
     { new: true, runValidators: true }
-  ).select("-_id publicId videos");
+  ).select("publicId videos");
 
   if (!playlist) {
     throw new ApiError({
@@ -204,7 +200,7 @@ export const addVideoToPlaylist: Controller = async (req, res) => {
 
 export const removeVideoFromPlaylist: Controller = async (req, res) => {
   const { playlistPublicId } = req.params;
-  const { videos }: { videos: string[] } = req.body;
+  const { videos }: { videos: Types.ObjectId[] } = req.body;
 
   if (videos.length === 0) {
     throw new ApiError({
@@ -218,7 +214,7 @@ export const removeVideoFromPlaylist: Controller = async (req, res) => {
     { publicId: playlistPublicId, owner: req?.user?._id },
     { $pull: { videos: { $in: videos } } },
     { new: true, runValidators: true }
-  ).select("-_id publicId videos");
+  ).select("publicId videos");
 
   if (!playlist) {
     throw new ApiError({

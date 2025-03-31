@@ -38,11 +38,6 @@ export const getAllVideos: Controller = async (_req, res) => {
         },
       },
     },
-    {
-      $project: {
-        _id: 0,
-      },
-    },
   ]);
 
   if (videos.length === 0) {
@@ -106,11 +101,6 @@ export const getVideoByPublicId: Controller = async (req, res) => {
         },
       },
     },
-    {
-      $project: {
-        _id: 0,
-      },
-    },
   ]);
 
   // What If video is private or publicId is invalid
@@ -151,7 +141,7 @@ export const updateVideoDetails: Controller = async (req, res) => {
     { publicId: videoPublicId, owner: req.user?._id },
     { title: trimmedTitle, description, publishStatus },
     { new: true, runValidators: true }
-  ).select("-_id publicId title description publishStatus");
+  ).select("publicId title description publishStatus");
 
   if (!video) {
     throw new ApiError({
