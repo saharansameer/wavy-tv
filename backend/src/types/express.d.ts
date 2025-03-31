@@ -16,6 +16,19 @@ declare global {
     res: Response,
     next: NextFunction
   ) => void;
+
+  type ToggleEntityType = (
+    entity: string,
+    entityId: string,
+    userId: string,
+    res: Response
+  ) => Promise<Response>;
+
+  type VoteServiceType = (
+    entity: string,
+    entityId: string,
+    userId: string,
+  ) => Promise<boolean>;
 }
 
 declare module "express-serve-static-core" {
