@@ -20,6 +20,7 @@ export const RESPONSE_MESSAGE = {
   COMMON: {
     ALL_REQUIRED_FIELDS: "All fields are required",
     REQ_NOT_FOUND: "No such property found in Request Object",
+    ALL_QUERY_PARAMS_REQUIRED: "All Query Parameters are Required",
   },
   AUTH: {
     SIGNUP_SUCCESS: "New user registered successfully",
@@ -70,5 +71,21 @@ export const RESPONSE_MESSAGE = {
     UPDATE_SUCCESS: "Playlist updated successfully",
     DELETE_SUCCESS: "Playlist deleted successfully",
     FETCH_SUCCESS: "Playlist fetched successfully",
+  },
+  VOTES: {
+    UPVOTE_SUCCESS: "Upvoted successfully",
+    UPVOTE_FAILURE: "Failed to add Upvote",
+    REMOVE_UPVOTE_SUCCESS: "Removed upvote successfully",
+    REMOVE_UPVOTE_FAILURE: "Failed to remove upvote",
+    DOWNVOTE_SUCCESS: "Downvoted successfully",
+    DOWNVOTE_FAILURE: "Failed to add Downvote",
+    REMOVE_DOWNVOTE_SUCCESS: "Removed downvote successfully",
+    REMOVE_DOWNVOTE_FAILURE: "Failed to remove downvote",
+  },
+  POST: {
+    NOT_FOUND: "Post no longer exist",
+  },
+  COMMENT: {
+    NOT_FOUND: "Comment no longer exist",
   },
 };
