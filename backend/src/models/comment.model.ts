@@ -1,16 +1,22 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 interface CommentObject extends Document {
+  publicId: string;
   content: string;
   owner: Schema.Types.ObjectId;
   video?: Schema.Types.ObjectId;
   post?: Schema.Types.ObjectId;
-  upvotes: number;
-  downvotes: number;
+  parentComment?: Schema.Types.ObjectId;
 }
 
 const commentSchema = new Schema(
   {
+    publicId: {
+      type: String,
+      required: [true, "publicId is required"],
+      unique: true,
+      index: true,
+    },
     content: {
       type: String,
       required: true,
@@ -26,19 +32,15 @@ const commentSchema = new Schema(
     },
     video: {
       type: Schema.Types.ObjectId,
-      ref: "Video",
+      ref: "Video"
     },
     post: {
       type: Schema.Types.ObjectId,
-      ref: "Post",
+      ref: "Post"
     },
-    upvotes: {
-      type: Number,
-      default: 1,
-    },
-    downvotes: {
-      type: Number,
-      default: 0,
+    parentComment: {
+      type: Schema.Types.ObjectId,
+      ref: "Comment"
     },
   },
   { timestamps: true }

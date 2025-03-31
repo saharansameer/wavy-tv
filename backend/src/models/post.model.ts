@@ -4,8 +4,6 @@ interface PostObject extends Document {
   publicId: string;
   content: string;
   owner: Schema.Types.ObjectId;
-  upvotes: number;
-  downvotes: number;
 }
 
 const postSchema = new Schema(
@@ -28,14 +26,6 @@ const postSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
-    upvotes: {
-      type: Number,
-      default: 1,
-    },
-    downvotes: {
-      type: Number,
-      default: 0,
     },
   },
   { timestamps: true }
