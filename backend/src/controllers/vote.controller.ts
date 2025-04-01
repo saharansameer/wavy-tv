@@ -5,12 +5,18 @@ import { Video } from "../models/video.model.js";
 import { Post } from "../models/post.model.js";
 import { Comment } from "../models/comment.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
+import { ToggleEntityType, VoteServiceType } from "../types/vote.js";
+
+// The term "entity" refers to 'video' or 'post' or 'comment'
 
 // Mini Toggle Services (Used in Services which are already being used in Controllers)
 
-const addUpvote: ToggleEntityType = async (entity, entityId, userId, res) => {
-  // "Entity" refers to video or post or comment
-
+const addUpvoteToEntity: ToggleEntityType = async (
+  entity,
+  entityId,
+  userId,
+  res
+) => {
   const addUpvote = await Vote.create({
     votedBy: userId,
     [entity]: entityId,
@@ -34,27 +40,28 @@ const addUpvote: ToggleEntityType = async (entity, entityId, userId, res) => {
   );
 };
 
-const removeUpvote: VoteServiceType = async (entity, entityId, userId) => {
-  // "Entity" refers to video or post or comment
-
-  // If Entity is already Upvoted, So remove upvote
+const removeUpvoteFromEntity: VoteServiceType = async (
+  entity,
+  entityId,
+  userId
+) => {
   const removeUpvote = await Vote.findOneAndDelete({
     votedBy: userId,
     [entity]: entityId,
     vote: "UPVOTE",
   });
 
-  // Handle Edge Case Issues
-  if (!removeUpvote) {
-    return false;
-  }
+  if (!removeUpvote) return false;
 
   return true;
 };
 
-const addDownvote: ToggleEntityType = async (entity, entityId, userId, res) => {
-  // "Entity" refers to video or post or comment
-
+const addDownvoteToEntity: ToggleEntityType = async (
+  entity,
+  entityId,
+  userId,
+  res
+) => {
   const addDownvote = await Vote.create({
     votedBy: userId,
     [entity]: entityId,
@@ -78,20 +85,18 @@ const addDownvote: ToggleEntityType = async (entity, entityId, userId, res) => {
   );
 };
 
-const removeDownvote: VoteServiceType = async (entity, entityId, userId) => {
-  // "Entity" refers to video or post or comment
-
-  // If Entity is already Downvoted, So remove downvote
+const removeDownvoteFromEntity: VoteServiceType = async (
+  entity,
+  entityId,
+  userId
+) => {
   const removeDownvote = await Vote.findOneAndDelete({
     votedBy: userId,
     [entity]: entityId,
     vote: "DOWNVOTE",
   });
 
-  // Handle Edge Case Issues
-  if (!removeDownvote) {
-    return false;
-  }
+  if (!removeDownvote) return false;
 
   return true;
 };
@@ -104,20 +109,22 @@ const toggleEntityUpvote: ToggleEntityType = async (
   userId,
   res
 ) => {
-  // Remove a downvote if it exists
-  const rmDownvote = await removeDownvote(entity, entityId, userId);
+  // Remove Downvote if it exists
+  const rmDownvote = await removeDownvoteFromEntity(entity, entityId, userId);
 
-  // If a downvote was removed, attempt to add an upvote
+  // If a downvote was removed, attempt to add upvote
   if (rmDownvote) {
-    return await addUpvote(entity, entityId, userId, res);
+    // Response - Upvote Added
+    return await addUpvoteToEntity(entity, entityId, userId, res);
   }
 
-  // Remove Upvote if it exist
-  const rmUpvote = await removeUpvote(entity, entityId, userId);
+  // If downvote didn't exist, So Check and Remove Upvote (if upvote exist)
+  const rmUpvote = await removeUpvoteFromEntity(entity, entityId, userId);
 
-  // If Upvote dont exist
+  // If Upvote don't exist
   if (!rmUpvote) {
-    return await addUpvote(entity, entityId, userId, res);
+    // Response - Upvote Added
+    return await addUpvoteToEntity(entity, entityId, userId, res);
   }
 
   // Response - Removed Upvote
@@ -135,20 +142,22 @@ const toggleEntityDownvote: ToggleEntityType = async (
   userId,
   res
 ) => {
-  // Remove a upvote if it exists
-  const rmUpvote = await removeUpvote(entity, entityId, userId);
+  // Remove Upvote if it exists
+  const rmUpvote = await removeUpvoteFromEntity(entity, entityId, userId);
 
-  // If a upvote was removed, attempt to add a downvote
+  // If a upvote was removed, attempt to add downvote
   if (rmUpvote) {
-    return await addDownvote(entity, entityId, userId, res);
+    // Response - Downvote Added
+    return await addDownvoteToEntity(entity, entityId, userId, res);
   }
 
-  // Remove Downvote if it exist
-  const rmDownvote = await removeDownvote(entity, entityId, userId);
+  // If upvote didn't exist, So Check and Remove Downvote (if downvote exist)
+  const rmDownvote = await removeDownvoteFromEntity(entity, entityId, userId);
 
-  // If Downvote dont exist
+  // If Downvote don't exist
   if (!rmDownvote) {
-    return await addDownvote(entity, entityId, userId, res);
+    // Response - Downvote Added
+    return await addDownvoteToEntity(entity, entityId, userId, res);
   }
 
   // Response - Removed Downvote
