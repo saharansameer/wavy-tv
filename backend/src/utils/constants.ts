@@ -84,8 +84,18 @@ export const RESPONSE_MESSAGE = {
   },
   POST: {
     NOT_FOUND: "Post no longer exist",
+    CREATE_SUCCESS: "Post created successfully",
+    CREATE_FAILURE: "Failed to create new Post",
+    UPDATE_SUCCESS: "Post updated successfully",
+    DELETE_SUCCESS: "Post deleted successfully",
+    FETCH_SUCCESS: "Post fetched successfully",
   },
   COMMENT: {
     NOT_FOUND: "Comment no longer exist",
+    CREATE_SUCCESS: "Comment created successfully",
+    CREATE_FAILURE: "Failed to add Comment",
+    UPDATE_SUCCESS: "Comment updated successfully",
+    DELETE_SUCCESS: "Comment deleted successfully",
+    FETCH_SUCCESS: "Comment fetched successfully",
   },
 };
