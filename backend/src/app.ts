@@ -27,6 +27,8 @@ import followRoutes from "./routes/follow.routes.js";
 import channelRoutes from "./routes/channel.routes.js";
 import playlistRoutes from "./routes/playlist.routes.js";
 import voteRoutes from "./routes/vote.routes.js";
+import postRoutes from "./routes/post.routes.js";
+import commentRoutes from "./routes/comment.routes.js";
 
 // Routes declaration
 app.use("/api/v1/auth", authRoutes);
@@ -36,6 +38,8 @@ app.use("/api/v1/follow", followRoutes);
 app.use("/api/v1/channel", channelRoutes);
 app.use("/api/v1/playlist", playlistRoutes);
 app.use("/api/v1/vote", voteRoutes);
+app.use("/api/v1/post", postRoutes);
+app.use("/api/v1/comment", commentRoutes);
 
 // Handle Undefined Routes
 app.use(undefinedRoutesHandler);
