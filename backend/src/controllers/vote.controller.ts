@@ -203,7 +203,7 @@ export const toggleVideoVotes: Controller = async (req, res) => {
   const video = await Video.findOne({
     publicId: videoPublicId,
     $or: [
-      { publishStatus: { $in: ["PUBLIC, UNLISTED"] } },
+      { publishStatus: { $in: ["PUBLIC", "UNLISTED"] } },
       {
         publishStatus: "PRIVATE",
         owner: req?.user?._id,
