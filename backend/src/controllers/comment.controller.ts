@@ -5,6 +5,7 @@ import { Video } from "../models/video.model.js";
 import { Post } from "../models/post.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
+import { Types } from "mongoose";
 
 export const addCommentOnVideo: Controller = async (req, res) => {
   const videoPublicId = req.query.videoPublicId as string;
@@ -31,7 +32,7 @@ export const addCommentOnVideo: Controller = async (req, res) => {
   const video = await Video.findOne({
     publicId: videoPublicId,
     $or: [
-      { publishStatus: { $in: ["PUBLIC, UNLISTED"] } },
+      { publishStatus: { $in: ["PUBLIC", "UNLISTED"] } },
       {
         publishStatus: "PRIVATE",
         owner: req?.user?._id,
@@ -257,6 +258,117 @@ export const deleteCommentById: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.COMMENT.DELETE_SUCCESS,
+    })
+  );
+};
+
+export const getEntityComments: Controller = async (req, res) => {
+  // The term "entity" refers to 'video' or 'post' or 'comment'
+
+  const entity = req.query.entity as string;
+  const entityId = req.query.entityId as string;
+
+  // Check for valid query params
+  if (!entityId || !entity) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: `?entity=<>&entityId=<> : ${RESPONSE_MESSAGE.COMMON.ALL_QUERY_PARAMS_REQUIRED}`,
+    });
+  }
+
+  // Check for invalid entity type
+  if (!["video", "post", "parentComment"].includes(entity)) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message:
+        "Inavlid Entity Type, Valid Types are: [video, post, parentComment]",
+    });
+  }
+
+  // Fetch all comments of the entity
+  const comments = await Comment.aggregate([
+    {
+      $match: {
+        [entity]: new Types.ObjectId(String(entityId)),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              _id: 0,
+              fullName: 1,
+              username: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "votes",
+        localField: "_id",
+        foreignField: "comment",
+        as: "upvotes",
+        pipeline: [
+          {
+            $match: {
+              vote: "UPVOTE",
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "votes",
+        localField: "_id",
+        foreignField: "comment",
+        as: "downvotes",
+        pipeline: [
+          {
+            $match: {
+              vote: "DOWNVOTE",
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner",
+        },
+        upvotes: {
+          $size: "$upvotes",
+        },
+        downvotes: {
+          $size: "$downvotes",
+        },
+      },
+    },
+  ]);
+
+  // What If entity has zero comments
+  if (comments.length === 0) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.COMMENT.ZERO_COMMENTS,
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.COMMENT.FETCH_SUCCESS,
+      data: comments,
     })
   );
 };
