@@ -137,15 +137,46 @@ export const getPostByPublicId: Controller = async (req, res) => {
       },
     },
     {
+      $lookup: {
+        from: "votes",
+        localField: "_id",
+        foreignField: "post",
+        as: "upvotes",
+        pipeline: [
+          {
+            $match: {
+              vote: "UPVOTE",
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "votes",
+        localField: "_id",
+        foreignField: "post",
+        as: "downvotes",
+        pipeline: [
+          {
+            $match: {
+              vote: "DOWNVOTE",
+            },
+          },
+        ],
+      },
+    },
+    {
       $addFields: {
         owner: {
           $first: "$owner",
         },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
+        upvotes: {
+          $size: "$upvotes",
+        },
+        downvotes: {
+          $size: "$downvotes",
+        },
       },
     },
   ]);

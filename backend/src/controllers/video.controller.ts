@@ -95,9 +95,45 @@ export const getVideoByPublicId: Controller = async (req, res) => {
       },
     },
     {
+      $lookup: {
+        from: "votes",
+        localField: "_id",
+        foreignField: "video",
+        as: "upvotes",
+        pipeline: [
+          {
+            $match: {
+              vote: "UPVOTE",
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "votes",
+        localField: "_id",
+        foreignField: "video",
+        as: "downvotes",
+        pipeline: [
+          {
+            $match: {
+              vote: "DOWNVOTE",
+            },
+          },
+        ],
+      },
+    },
+    {
       $addFields: {
         owner: {
           $first: "$owner",
+        },
+        upvotes: {
+          $size: "$upvotes",
+        },
+        downvotes: {
+          $size: "$downvotes",
         },
       },
     },
