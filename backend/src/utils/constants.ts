@@ -96,6 +96,7 @@ export const RESPONSE_MESSAGE = {
     CREATE_FAILURE: "Failed to add Comment",
     UPDATE_SUCCESS: "Comment updated successfully",
     DELETE_SUCCESS: "Comment deleted successfully",
-    FETCH_SUCCESS: "Comment fetched successfully",
+    FETCH_SUCCESS: "Comments fetched successfully",
+    ZERO_COMMENTS: "Entity has zero comments or replies",
   },
 };
