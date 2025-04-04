@@ -8,11 +8,15 @@ import {
   addReplyComment,
   updateCommentById,
   deleteCommentById,
+  getEntityComments,
 } from "../controllers/comment.controller.js";
 
 const router = Router();
 
-// Check User Auth
+// GET - Fetch comments of video/post/comment
+router.route("/").get(asyncHandler(getEntityComments));
+
+// Check User Auth (For all following routes)
 router.use(checkAuth);
 
 // POST - Add Comment on video
