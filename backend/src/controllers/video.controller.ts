@@ -5,9 +5,12 @@ import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { getLoggedInUserId } from "../utils/authUtils.js";
 
-export const getAllVideos: Controller = async (_req, res) => {
-  // Fetch videos including owner details
-  const videos = await Video.aggregate([
+export const getAllVideos: Controller = async (req, res) => {
+  const page = Number(req.query.page as string) || 1;
+  const limit = Number(req.query.limit as string) || 10;
+
+  // Aggregate Query
+  const videoAggregateQuery = Video.aggregate([
     {
       $match: {
         publishStatus: "PUBLIC",
@@ -40,11 +43,24 @@ export const getAllVideos: Controller = async (_req, res) => {
     },
   ]);
 
-  if (videos.length === 0) {
+  // Paginate Options
+  const options = {
+    page,
+    limit,
+  };
+
+  // Paginated Response
+  const paginatedVideos = await Video.aggregatePaginate(
+    videoAggregateQuery,
+    options
+  );
+
+  // What If aggregation pipeline or pagination fails
+  if (paginatedVideos.totalDocs === 0) {
     throw new ApiError({
       status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
       message:
-        "Unable to retrieve videos, aggregation pipeline failure or internal server error",
+        "Unable to retrieve videos, aggregation pipeline or pagination failure",
     });
   }
 
@@ -53,7 +69,7 @@ export const getAllVideos: Controller = async (_req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.VIDEO.FETCH_SUCCESS,
-      data: videos,
+      data: paginatedVideos,
     })
   );
 };
