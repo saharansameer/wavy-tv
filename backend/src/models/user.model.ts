@@ -8,11 +8,29 @@ import {
   REFRESH_TOKEN_EXPIRY,
 } from "../config/env.js";
 
-interface UserObject extends Document {
+interface Social {
+  socialName: string;
+  socialHandle: string;
+  socialLink: string;
+}
+
+interface LastModified {
+  fullName?: Date;
+  username?: Date;
+  email?: Date;
+  password?: Date;
+  about?: Date;
+  avatar?: Date;
+  coverImage?: Date;
+}
+
+interface UserDocument extends Document {
   fullName: string;
   username: string;
   email: string;
   password: string;
+  about: string;
+  socials: Social[];
   avatar?: string;
   avatarPublicId?: string;
   coverImage?: string;
@@ -24,10 +42,37 @@ interface UserObject extends Document {
   isWatchHistorySaved: boolean;
   savedPlaylists: Schema.Types.ObjectId[];
   creatorMode: boolean;
+  tags: string[];
+  lastModified: LastModified;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
 }
+
+const socialSubSchema = new Schema({
+  socialName: {
+    type: String,
+    required: true,
+  },
+  socialHandle: {
+    type: String,
+    required: true,
+  },
+  socialLink: {
+    type: String,
+    required: true,
+  },
+});
+
+const lastModifiedSubSchema = new Schema({
+  fullName: Date,
+  username: Date,
+  email: Date,
+  password: Date,
+  about: Date,
+  avatar: Date,
+  coverImage: Date,
+});
 
 const userSchema = new Schema(
   {
@@ -65,10 +110,20 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Password is required"],
       minLength: [8, "Password length should be atleast 8 or greater"],
+      maxlength: [128, "Password should not exceed 128 characters"],
       match: [
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/,
         "Password should contain alteast one uppercase, one lowercase, one digit and one special character (e.g. Pass@123)",
       ],
+    },
+    aboout: {
+      type: String,
+      default: "",
+      maxlength: [200, "User About should not exceed 200 characters"],
+    },
+    socials: {
+      type: [socialSubSchema],
+      default: [],
     },
     avatar: {
       type: String,
@@ -110,19 +165,51 @@ const userSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    tags: {
+      type: [String],
+      default: [],
+    },
+    lastModified: {
+      type: lastModifiedSubSchema,
+      default: {
+        fullName: null,
+        username: null,
+        email: null,
+        password: null,
+        about: null,
+        avatar: null,
+        coverImage: null,
+      },
+    },
   },
   { timestamps: true }
 );
 
-userSchema.pre<UserObject>("save", async function (next) {
+userSchema.pre<UserDocument>("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   this.password! = await bcrypt.hash(this.password, 10);
   return next();
 });
 
+userSchema.pre<UserDocument>("save", function (next) {
+  this.tags = [this.fullName, this.username];
+  return next();
+});
+
+userSchema.pre<UserDocument>("save", function (next) {
+  const now = new Date();
+
+  this.lastModified.username = now;
+  this.lastModified.fullName = now;
+  this.lastModified.email = now;
+  this.lastModified.password = now;
+
+  return next();
+});
+
 userSchema.methods = {
-  isPasswordCorrect: async function (this: UserObject, password: string) {
+  isPasswordCorrect: async function (this: UserDocument, password: string) {
     return bcrypt.compare(password, this.password);
   },
 
@@ -151,4 +238,4 @@ userSchema.methods = {
   },
 };
 
-export const User = mongoose.model<UserObject>("User", userSchema);
+export const User = mongoose.model<UserDocument>("User", userSchema);
