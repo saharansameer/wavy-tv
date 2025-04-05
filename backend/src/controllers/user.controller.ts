@@ -46,7 +46,15 @@ export const updateUserNames: Controller = async (req, res) => {
   // Update User Details
   const user = await User.findByIdAndUpdate(
     req.user?._id,
-    { $set: { fullName: trimmedFullName, username: trimmedUsername } },
+    {
+      $set: {
+        fullName: trimmedFullName,
+        username: trimmedUsername,
+        "lastModified.fullName": new Date(),
+        "lastModified.username": new Date(),
+        tags: [trimmedFullName, trimmedUsername],
+      },
+    },
     { new: true, runValidators: true }
   ).select("-_id fullName username");
 
@@ -81,7 +89,7 @@ export const updateUserEmail: Controller = async (req, res) => {
   // Update User Email
   const user = await User.findByIdAndUpdate(
     req.user?._id,
-    { email: newEmail },
+    { email: newEmail, "lastModified.email": new Date() },
     { new: true, runValidators: true }
   ).select("-_id email username fullName");
 
@@ -151,6 +159,7 @@ export const updateUserPassword: Controller = async (req, res) => {
 
   // Save new password
   user.password = newPassword;
+  user.lastModified.password = new Date();
   await user.save();
 
   // Final Response
