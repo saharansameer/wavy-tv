@@ -1,4 +1,6 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, AggregatePaginateModel } from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import { excludedTags } from "../utils/constants.js";
 
 enum PublishStatus {
   PUBLIC = "PUBLIC",
@@ -6,10 +8,10 @@ enum PublishStatus {
   UNLISTED = "UNLISTED",
 }
 
-interface VideoObject extends Document {
+interface VideoDocument extends Document {
   publicId: string;
   title: string;
-  description?: string;
+  description: string;
   duration: number;
   views: number;
   owner: string;
@@ -18,6 +20,7 @@ interface VideoObject extends Document {
   thumbnail?: string;
   thumbnailPublicId?: string;
   publishStatus: PublishStatus;
+  tags: string[];
 }
 
 const videoSchema = new Schema(
@@ -36,9 +39,12 @@ const videoSchema = new Schema(
         "Title can not be empty and must contain a valid letter",
       ],
       index: true,
+      maxlength: [100, "Title should not exceed 100 characters"],
     },
     description: {
       type: String,
+      default: "",
+      maxlength: [5000, "Description should not exceed 5000 characters"],
     },
     duration: {
       type: Number,
@@ -73,8 +79,56 @@ const videoSchema = new Schema(
       required: true,
       default: PublishStatus.PUBLIC,
     },
+    tags: {
+      type: [String],
+    },
   },
   { timestamps: true }
 );
 
-export const Video = model<VideoObject>("Video", videoSchema);
+videoSchema.pre<VideoDocument>("save", async function (next) {
+  const tagsSet = new Set<string>(); // To store unique tags
+
+  // Convert to lowercase and remove non-alphanumerics
+  const cleanWord = (word: string) => {
+    return word.toLowerCase().replace(/[^\w]/g, "");
+  };
+
+  // Extract tags from title
+  this.title.split(" ").forEach((word) => {
+    const tag = cleanWord(word);
+
+    if (tag && !excludedTags.includes(tag)) {
+      tagsSet.add(tag); // Add cleaned tag if not excluded
+    }
+  });
+
+  // Extract max 5 hashtags from description (if any)
+  if (this.description !== undefined) {
+    this.description
+      .split(" ")
+      .filter((word) => word.startsWith("#")) // Only hashtags
+      .slice(0, 5) // Limit to first 5
+      .map((word) => cleanWord(word)) // Clean them
+      .forEach((tag) => {
+        if (tag && !excludedTags.includes(tag)) {
+          tagsSet.add(tag); // Add cleaned hashtag if not excluded
+        }
+      });
+  }
+
+  this.tags = Array.from(tagsSet); // Assign unique, cleaned tags
+
+  return next(); // Proceed with save
+});
+
+// Enable Indexing for tags array
+videoSchema.index({ tags: 1 });
+
+// Aggregate Paginate v2
+videoSchema.plugin(mongooseAggregatePaginate);
+
+export const Video = model<
+  VideoDocument,
+  AggregatePaginateModel<VideoDocument>
+>("Video", videoSchema);
