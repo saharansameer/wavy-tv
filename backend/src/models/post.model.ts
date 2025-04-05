@@ -21,6 +21,7 @@ const postSchema = new Schema(
         /[a-zA-Z0-9]/,
         "Content can not be empty and must contain a valid letter",
       ],
+      maxlength: [1000, "Title should not exceed 1000 characters"],
     },
     owner: {
       type: Schema.Types.ObjectId,

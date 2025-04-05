@@ -31,6 +31,7 @@ const playlistSchema = new Schema(
         "Title can not be empty and must contain a valid letter",
       ],
       index: true,
+      maxlength: [100, "Title should not exceed 100 characters"],
     },
     description: {
       type: String,
