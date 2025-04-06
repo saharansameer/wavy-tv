@@ -1,9 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface PostObject extends Document {
+interface PostDocument extends Document {
   publicId: string;
   content: string;
   owner: Schema.Types.ObjectId;
+  nsfw: boolean;
 }
 
 const postSchema = new Schema(
@@ -28,8 +29,12 @@ const postSchema = new Schema(
       ref: "User",
       required: true,
     },
+    nsfw: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
 
-export const Post = mongoose.model<PostObject>("Post", postSchema);
+export const Post = mongoose.model<PostDocument>("Post", postSchema);

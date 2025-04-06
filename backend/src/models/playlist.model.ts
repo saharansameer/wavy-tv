@@ -6,13 +6,14 @@ enum PublishStatus {
   UNLISTED = "UNLISTED",
 }
 
-interface PlaylistObject extends Document {
+interface PlaylistDocument extends Document {
   publicId: string;
   title: string;
   description?: string;
   owner: Schema.Types.ObjectId;
   publishStatus: PublishStatus;
   videos: Schema.Types.ObjectId;
+  nsfw: boolean;
 }
 
 const playlistSchema = new Schema(
@@ -51,11 +52,15 @@ const playlistSchema = new Schema(
       ref: "Video",
       default: [],
     },
+    nsfw: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
 
-export const Playlist = mongoose.model<PlaylistObject>(
+export const Playlist = mongoose.model<PlaylistDocument>(
   "Playlist",
   playlistSchema
 );
