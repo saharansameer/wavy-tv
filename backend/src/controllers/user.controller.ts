@@ -176,8 +176,108 @@ export const toggleCreatorMode: Controller = async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     [{ $set: { creatorMode: { $not: "$creatorMode" } } }],
-    { new: true }
+    { new: true, runValidators: true }
   ).select("-_id fullName username creatorMode");
+
+  if (!user) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
+      data: user,
+    })
+  );
+};
+
+export const updateUserPreferences: Controller = async (req, res) => {
+  const { theme, nsfwContent } = req.body;
+
+  // Check If recieved all preferences in req body
+  if (!theme || !nsfwContent) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
+    });
+  }
+
+  // Update User's preferences
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      preferences: {
+        theme,
+        nsfwContent,
+      },
+    },
+    { new: true, runValidators: true }
+  ).select("-_id fullName username preferences");
+
+  if (!user) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
+      data: user,
+    })
+  );
+};
+
+export const toggleSearchAndWatchHistory: Controller = async (req, res) => {
+  // Toggle User's Search and Watch History Preferences
+  const user = await User.findByIdAndUpdate(
+    req?.user?._id,
+    [
+      {
+        $set: {
+          isSearchHistorySaved: { $not: "$isSearchHistorySaved" },
+          isWatchHistorySaved: { $not: "$isWatchHistorySaved" },
+        },
+      },
+    ],
+    { new: true, runValidators: true }
+  ).select("-_id fulName username isSearchHistorySaved isWatchHistorySaved");
+
+  if (!user) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
+      data: user,
+    })
+  );
+};
+
+export const deleteSearchAndWatchHistory: Controller = async (req, res) => {
+  // Delete (Clear) User's Search and Watch History
+  const user = await User.findByIdAndUpdate(
+    req?.user?._id,
+    {
+      searchHistory: [],
+      watchHistory: [],
+    },
+    { new: true, runValidators: true }
+  ).select("-_id fullName username searchHistory watchHistory");
 
   if (!user) {
     throw new ApiError({

@@ -24,6 +24,23 @@ interface LastModified {
   coverImage?: Date;
 }
 
+enum ThemeType {
+  LIGHT = "LIGHT",
+  DARK = "DARK",
+  SYSTEM = "SYSTEM",
+}
+
+enum NsfwType {
+  SHOW = "SHOW",
+  HIDE = "HIDE",
+  BLUR = "BLUR",
+}
+
+interface UserPreferences {
+  theme: ThemeType;
+  nsfwContent: NsfwType;
+}
+
 interface UserDocument extends Document {
   fullName: string;
   username: string;
@@ -44,6 +61,7 @@ interface UserDocument extends Document {
   creatorMode: boolean;
   tags: string[];
   lastModified: LastModified;
+  preferences: UserPreferences;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -72,6 +90,17 @@ const lastModifiedSubSchema = new Schema({
   about: Date,
   avatar: Date,
   coverImage: Date,
+});
+
+const preferenceSubSchema = new Schema({
+  theme: {
+    type: String,
+    enum: Object.values(ThemeType),
+  },
+  nsfwContent: {
+    type: String,
+    enum: Object.values(NsfwType),
+  },
 });
 
 const userSchema = new Schema(
@@ -179,6 +208,13 @@ const userSchema = new Schema(
         about: null,
         avatar: null,
         coverImage: null,
+      },
+    },
+    preferences: {
+      type: preferenceSubSchema,
+      default: {
+        theme: ThemeType.LIGHT,
+        nsfwContent: NsfwType.BLUR,
       },
     },
   },
