@@ -1,6 +1,7 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { AggregatePaginateModel, Document, Schema } from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
-interface FollowObject extends Document {
+interface FollowDocument extends Document {
   channel: Schema.Types.ObjectId;
   follower: Schema.Types.ObjectId;
 }
@@ -19,4 +20,9 @@ const followSchema = new Schema(
   { timestamps: true }
 );
 
-export const Follow = mongoose.model<FollowObject>("Follow", followSchema);
+followSchema.plugin(mongooseAggregatePaginate);
+
+export const Follow = mongoose.model<
+  FollowDocument,
+  AggregatePaginateModel<FollowDocument>
+>("Follow", followSchema);

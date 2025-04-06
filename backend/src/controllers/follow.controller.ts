@@ -64,6 +64,8 @@ export const toggleFollow: Controller = async (req, res) => {
 };
 
 export const getFollowers: Controller = async (req, res) => {
+  const page = Number(req.query.page as string) || 1;
+  const limit = Number(req.query.limit as string) || 10;
   const { username } = req.params;
 
   if (!username) {
@@ -83,8 +85,8 @@ export const getFollowers: Controller = async (req, res) => {
     });
   }
 
-  // Get followers
-  const followers = await Follow.aggregate([
+  // Aggregate Query
+  const followersAggregateQuery = Follow.aggregate([
     {
       $match: {
         channel: channel?._id,
@@ -124,11 +126,23 @@ export const getFollowers: Controller = async (req, res) => {
     },
   ]);
 
-  // What If channel (i.e User) has no followers
-  if (followers.length === 0) {
+  // Paginate Options
+  const options = {
+    page,
+    limit,
+  };
+
+  // Paginated Response
+  const paginatedFollowers = await Follow.aggregatePaginate(
+    followersAggregateQuery,
+    options
+  );
+
+  // Validate Page Number
+  if (paginatedFollowers.page! > paginatedFollowers.totalPages) {
     throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGE.FOLLOW.ZERO_FOLLOWER,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: RESPONSE_MESSAGE.PAGINATE.INVALID_PAGE_SELECTION,
     });
   }
 
@@ -137,12 +151,14 @@ export const getFollowers: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.FOLLOW.FOLLOWER_FETCH_SUCCESS,
-      data: followers,
+      data: paginatedFollowers,
     })
   );
 };
 
 export const getFollowing: Controller = async (req, res) => {
+  const page = Number(req.query.page as string) || 1;
+  const limit = Number(req.query.limit as string) || 10;
   const { username } = req.params;
 
   if (!username) {
@@ -162,8 +178,8 @@ export const getFollowing: Controller = async (req, res) => {
     });
   }
 
-  // Get Following
-  const following = await Follow.aggregate([
+  // Aggregate Query
+  const followingAggregateQuery = Follow.aggregate([
     {
       $match: {
         follower: channel?._id,
@@ -203,11 +219,23 @@ export const getFollowing: Controller = async (req, res) => {
     },
   ]);
 
-  // What If user has not followed anyone
-  if (following.length === 0) {
+  // Paginate Options
+  const options = {
+    page,
+    limit,
+  };
+
+  // Following Paginated Response
+  const paginatedFollowing = await Follow.aggregatePaginate(
+    followingAggregateQuery,
+    options
+  );
+
+  // Validate Page Number
+  if (paginatedFollowing.page! > paginatedFollowing.totalPages) {
     throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGE.FOLLOW.ZERO_FOLLOWING,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: RESPONSE_MESSAGE.PAGINATE.INVALID_PAGE_SELECTION,
     });
   }
 
@@ -216,7 +244,7 @@ export const getFollowing: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.FOLLOW.FOLLOWING_FETCH_SUCCESS,
-      data: following,
+      data: paginatedFollowing,
     })
   );
 };
