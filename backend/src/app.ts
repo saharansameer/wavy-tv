@@ -29,6 +29,7 @@ import playlistRoutes from "./routes/playlist.routes.js";
 import voteRoutes from "./routes/vote.routes.js";
 import postRoutes from "./routes/post.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
+import searchRoutes from "./routes/search.routes.js";
 
 // Routes declaration
 app.use("/api/v1/auth", authRoutes);
@@ -40,6 +41,7 @@ app.use("/api/v1/playlist", playlistRoutes);
 app.use("/api/v1/vote", voteRoutes);
 app.use("/api/v1/post", postRoutes);
 app.use("/api/v1/comment", commentRoutes);
+app.use("/api/v1/search", searchRoutes);
 
 // Handle Undefined Routes
 app.use(undefinedRoutesHandler);
