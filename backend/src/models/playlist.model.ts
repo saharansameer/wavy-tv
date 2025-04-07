@@ -1,4 +1,5 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { AggregatePaginateModel, Document, Schema } from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 enum PublishStatus {
   PUBLIC = "PUBLIC",
@@ -60,7 +61,13 @@ const playlistSchema = new Schema(
   { timestamps: true }
 );
 
-export const Playlist = mongoose.model<PlaylistDocument>(
-  "Playlist",
-  playlistSchema
-);
+// Enable full-text search on the playlist title
+playlistSchema.index({ title: "text" });
+
+// Aggregate Paginate v2
+playlistSchema.plugin(mongooseAggregatePaginate);
+
+export const Playlist = mongoose.model<
+  PlaylistDocument,
+  AggregatePaginateModel<PlaylistDocument>
+>("Playlist", playlistSchema);

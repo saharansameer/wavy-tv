@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { AggregatePaginateModel, Document, Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import {
@@ -7,6 +7,7 @@ import {
   REFRESH_TOKEN_SECRET,
   REFRESH_TOKEN_EXPIRY,
 } from "../config/env.js";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 interface Social {
   socialName: string;
@@ -59,6 +60,7 @@ interface UserDocument extends Document {
   isWatchHistorySaved: boolean;
   savedPlaylists: Schema.Types.ObjectId[];
   creatorMode: boolean;
+  nsfwProfile: boolean;
   tags: string[];
   lastModified: LastModified;
   preferences: UserPreferences;
@@ -145,7 +147,7 @@ const userSchema = new Schema(
         "Password should contain alteast one uppercase, one lowercase, one digit and one special character (e.g. Pass@123)",
       ],
     },
-    aboout: {
+    about: {
       type: String,
       default: "",
       maxlength: [200, "User About should not exceed 200 characters"],
@@ -194,9 +196,13 @@ const userSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    nsfwProfile: {
+      type: Boolean,
+      default: false,
+    },
     tags: {
       type: [String],
-      default: [],
+      index: true,
     },
     lastModified: {
       type: lastModifiedSubSchema,
@@ -253,6 +259,7 @@ userSchema.methods = {
     return jwt.sign(
       {
         _id: this._id,
+        preferences: this.preferences,
       },
       ACCESS_TOKEN_SECRET,
       {
@@ -265,6 +272,7 @@ userSchema.methods = {
     return jwt.sign(
       {
         _id: this._id,
+        preferences: this.preferences,
       },
       REFRESH_TOKEN_SECRET,
       {
@@ -274,4 +282,13 @@ userSchema.methods = {
   },
 };
 
-export const User = mongoose.model<UserDocument>("User", userSchema);
+// Enable full-text search on the user fullname
+userSchema.index({ fullName: "text" });
+
+// Aggregate Paginate v2
+userSchema.plugin(mongooseAggregatePaginate);
+
+export const User = mongoose.model<
+  UserDocument,
+  AggregatePaginateModel<UserDocument>
+>("User", userSchema);

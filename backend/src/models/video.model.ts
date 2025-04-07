@@ -85,13 +85,14 @@ const videoSchema = new Schema(
     },
     tags: {
       type: [String],
+      index: true,
     },
   },
   { timestamps: true }
 );
 
-// Enable Indexing for tags array
-videoSchema.index({ tags: 1 });
+// Enable full-text search on the video title
+videoSchema.index({ title: "text" });
 
 // Aggregate Paginate v2
 videoSchema.plugin(mongooseAggregatePaginate);
