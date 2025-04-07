@@ -6,6 +6,7 @@ import { Post } from "../models/post.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { Types } from "mongoose";
+import { getLoggedInUserId } from "../utils/authUtils.js";
 
 export const addCommentOnVideo: Controller = async (req, res) => {
   const videoPublicId = req.query.videoPublicId as string;
@@ -263,8 +264,10 @@ export const deleteCommentById: Controller = async (req, res) => {
 };
 
 export const getEntityComments: Controller = async (req, res) => {
-  // The term "entity" refers to 'video' or 'post' or 'comment'
+  const page = Number(req.query.page as string) || 1;
+  const limit = Number(req.query.limit as string) || 10;
 
+  // The term "entity" refers to 'video' or 'post' or 'comment'
   const entity = req.query.entity as string;
   const entityId = req.query.entityId as string;
 
@@ -285,8 +288,11 @@ export const getEntityComments: Controller = async (req, res) => {
     });
   }
 
-  // Fetch all comments of the entity
-  const comments = await Comment.aggregate([
+  // Verify logged-in User and Extract user ID
+  const userId = getLoggedInUserId(req?.cookies?.refreshToken);
+
+  // Aggregate Query
+  const commentsAggregateQuery = Comment.aggregate([
     {
       $match: {
         [entity]: new Types.ObjectId(String(entityId)),
@@ -322,6 +328,12 @@ export const getEntityComments: Controller = async (req, res) => {
               vote: "UPVOTE",
             },
           },
+          {
+            $project: {
+              _id: 0,
+              votedBy: 1,
+            },
+          },
         ],
       },
     },
@@ -337,6 +349,12 @@ export const getEntityComments: Controller = async (req, res) => {
               vote: "DOWNVOTE",
             },
           },
+          {
+            $project: {
+              _id: 0,
+              votedBy: 1,
+            },
+          },
         ],
       },
     },
@@ -344,6 +362,19 @@ export const getEntityComments: Controller = async (req, res) => {
       $addFields: {
         owner: {
           $first: "$owner",
+        },
+        currUserVoteType: {
+          $cond: {
+            if: { $in: [userId, "$upvotes.votedBy"] },
+            then: "UPVOTE",
+            else: {
+              $cond: {
+                if: { $in: [userId, "$downvotes.votedBy"] },
+                then: "DOWNVOTE",
+                else: null,
+              },
+            },
+          },
         },
         upvotes: {
           $size: "$upvotes",
@@ -355,11 +386,23 @@ export const getEntityComments: Controller = async (req, res) => {
     },
   ]);
 
-  // What If entity has zero comments
-  if (comments.length === 0) {
+  // Paginate Options
+  const options = {
+    page,
+    limit,
+  };
+
+  // Paginated Response
+  const paginatedComments = await Comment.aggregatePaginate(
+    commentsAggregateQuery,
+    options
+  );
+
+  // Validate Page Number
+  if (paginatedComments.page! > paginatedComments.totalPages) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGE.COMMENT.ZERO_COMMENTS,
+      message: RESPONSE_MESSAGE.PAGINATE.INVALID_PAGE_SELECTION,
     });
   }
 
@@ -368,7 +411,7 @@ export const getEntityComments: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.COMMENT.FETCH_SUCCESS,
-      data: comments,
+      data: paginatedComments,
     })
   );
 };
