@@ -6,7 +6,7 @@ import { Post } from "../models/post.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { Types } from "mongoose";
-import { getLoggedInUserId } from "../utils/authUtils.js";
+import { getLoggedInUserInfo } from "../utils/authUtils.js";
 
 export const addCommentOnVideo: Controller = async (req, res) => {
   const videoPublicId = req.query.videoPublicId as string;
@@ -288,8 +288,8 @@ export const getEntityComments: Controller = async (req, res) => {
     });
   }
 
-  // Verify logged-in User and Extract user ID
-  const userId = getLoggedInUserId(req?.cookies?.refreshToken);
+  // Verify logged-in User and Extract user info
+  const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
 
   // Aggregate Query
   const commentsAggregateQuery = Comment.aggregate([
@@ -365,11 +365,11 @@ export const getEntityComments: Controller = async (req, res) => {
         },
         currUserVoteType: {
           $cond: {
-            if: { $in: [userId, "$upvotes.votedBy"] },
+            if: { $in: [userInfo._id, "$upvotes.votedBy"] },
             then: "UPVOTE",
             else: {
               $cond: {
-                if: { $in: [userId, "$downvotes.votedBy"] },
+                if: { $in: [userInfo._id, "$downvotes.votedBy"] },
                 then: "DOWNVOTE",
                 else: null,
               },

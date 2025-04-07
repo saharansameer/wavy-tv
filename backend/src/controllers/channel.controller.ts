@@ -2,7 +2,7 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
-import { getLoggedInUserId } from "../utils/authUtils.js";
+import { getLoggedInUserInfo } from "../utils/authUtils.js";
 
 export const getChannelProfile: Controller = async (req, res) => {
   const { username } = req.params;
@@ -13,9 +13,9 @@ export const getChannelProfile: Controller = async (req, res) => {
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
     });
   }
-  
-  // Verify logged-in User and Extract user ID
-  const userId = getLoggedInUserId(req?.cookies?.refreshToken);
+
+  // Verify logged-in User and Extract user info
+  const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
 
   // Fetch User's Channel Profile
   const channelProfile = await User.aggregate([
@@ -66,14 +66,14 @@ export const getChannelProfile: Controller = async (req, res) => {
         },
         isSelf: {
           $cond: {
-            if: { $eq: ["$_id", userId] },
+            if: { $eq: ["$_id", userInfo._id] },
             then: true,
             else: false,
           },
         },
         isFollower: {
           $cond: {
-            if: { $in: [userId, "$followers.follower"] },
+            if: { $in: [userInfo._id, "$followers.follower"] },
             then: true,
             else: false,
           },

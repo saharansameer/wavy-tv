@@ -4,7 +4,7 @@ import { Playlist } from "../models/playlist.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { generatePublicId } from "../utils/crypto.js";
-import { getLoggedInUserId } from "../utils/authUtils.js";
+import { getLoggedInUserInfo } from "../utils/authUtils.js";
 import { Types } from "mongoose";
 
 export const createPlaylist: Controller = async (req, res) => {
@@ -55,8 +55,8 @@ export const createPlaylist: Controller = async (req, res) => {
 export const getPlaylistByPublicId: Controller = async (req, res) => {
   const { playlistPublicId } = req.params;
 
-  // Verify logged-in User and Extract user ID
-  const userId = getLoggedInUserId(req?.cookies?.refreshToken);
+  // Verify logged-in User and Extract user info
+  const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
 
   // Find playlist by publicId
   const playlist = await Playlist.aggregate([
@@ -67,7 +67,7 @@ export const getPlaylistByPublicId: Controller = async (req, res) => {
           { publishStatus: { $in: ["PUBLIC", "UNLISTED"] } },
           {
             publishStatus: "PRIVATE",
-            owner: userId,
+            owner: userInfo._id,
           },
         ],
       },

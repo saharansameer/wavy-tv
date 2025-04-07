@@ -3,7 +3,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import { Video } from "../models/video.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
-import { getLoggedInUserId } from "../utils/authUtils.js";
+import { getLoggedInUserInfo } from "../utils/authUtils.js";
 import { excludedTags } from "../utils/constants.js";
 
 const extractTagsAndKeywords = (title: string, description: string) => {
@@ -113,8 +113,8 @@ export const getAllVideos: Controller = async (req, res) => {
 export const getVideoByPublicId: Controller = async (req, res) => {
   const { videoPublicId } = req.params;
 
-  // Verify logged-in User and Extract user ID
-  const userId = getLoggedInUserId(req?.cookies?.refreshToken);
+  // Verify logged-in User and Extract user info
+  const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
 
   // Fetch video by publicId
   const video = await Video.aggregate([
@@ -123,7 +123,7 @@ export const getVideoByPublicId: Controller = async (req, res) => {
         publicId: videoPublicId,
         $or: [
           { publishStatus: { $in: ["PUBLIC", "UNLISTED"] } },
-          { publishStatus: "PRIVATE", owner: userId },
+          { publishStatus: "PRIVATE", owner: userInfo._id },
         ],
       },
     },
@@ -195,11 +195,11 @@ export const getVideoByPublicId: Controller = async (req, res) => {
         },
         currUserVoteType: {
           $cond: {
-            if: { $in: [userId, "$upvotes.votedBy"] },
+            if: { $in: [userInfo._id, "$upvotes.votedBy"] },
             then: "UPVOTE",
             else: {
               $cond: {
-                if: { $in: [userId, "$downvotes.votedBy"] },
+                if: { $in: [userInfo._id, "$downvotes.votedBy"] },
                 then: "DOWNVOTE",
                 else: null,
               },
