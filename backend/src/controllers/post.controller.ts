@@ -4,6 +4,7 @@ import { Post } from "../models/post.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { generatePublicId } from "../utils/crypto.js";
+import { getLoggedInUserId } from "../utils/authUtils.js";
 
 export const createPost: Controller = async (req, res) => {
   const { content } = req.body;
@@ -111,6 +112,9 @@ export const deletePost: Controller = async (req, res) => {
 export const getPostByPublicId: Controller = async (req, res) => {
   const { postPublicId } = req.params;
 
+  // Verify logged-in User and Extract user ID
+  const userId = getLoggedInUserId(req?.cookies?.refreshToken);
+
   // Find Post and Owner Details
   const post = await Post.aggregate([
     {
@@ -148,6 +152,12 @@ export const getPostByPublicId: Controller = async (req, res) => {
               vote: "UPVOTE",
             },
           },
+          {
+            $project: {
+              _id: 0,
+              votedBy: 1,
+            },
+          },
         ],
       },
     },
@@ -163,6 +173,12 @@ export const getPostByPublicId: Controller = async (req, res) => {
               vote: "DOWNVOTE",
             },
           },
+          {
+            $project: {
+              _id: 0,
+              votedBy: 1,
+            },
+          },
         ],
       },
     },
@@ -170,6 +186,19 @@ export const getPostByPublicId: Controller = async (req, res) => {
       $addFields: {
         owner: {
           $first: "$owner",
+        },
+        currUserVoteType: {
+          $cond: {
+            if: { $in: [userId, "$upvotes.votedBy"] },
+            then: "UPVOTE",
+            else: {
+              $cond: {
+                if: { $in: [userId, "$downvotes.votedBy"] },
+                then: "DOWNVOTE",
+                else: null,
+              },
+            },
+          },
         },
         upvotes: {
           $size: "$upvotes",

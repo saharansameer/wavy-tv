@@ -158,6 +158,12 @@ export const getVideoByPublicId: Controller = async (req, res) => {
               vote: "UPVOTE",
             },
           },
+          {
+            $project: {
+              _id: 0,
+              votedBy: 1,
+            },
+          },
         ],
       },
     },
@@ -173,6 +179,12 @@ export const getVideoByPublicId: Controller = async (req, res) => {
               vote: "DOWNVOTE",
             },
           },
+          {
+            $project: {
+              _id: 0,
+              votedBy: 1,
+            },
+          },
         ],
       },
     },
@@ -180,6 +192,19 @@ export const getVideoByPublicId: Controller = async (req, res) => {
       $addFields: {
         owner: {
           $first: "$owner",
+        },
+        currUserVoteType: {
+          $cond: {
+            if: { $in: [userId, "$upvotes.votedBy"] },
+            then: "UPVOTE",
+            else: {
+              $cond: {
+                if: { $in: [userId, "$downvotes.votedBy"] },
+                then: "DOWNVOTE",
+                else: null,
+              },
+            },
+          },
         },
         upvotes: {
           $size: "$upvotes",
