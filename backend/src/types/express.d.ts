@@ -22,6 +22,10 @@ declare module "express-serve-static-core" {
   interface Request {
     user?: {
       _id: Types.ObjectId;
+      preferences: {
+        theme: string;
+        nsfwContent: string;
+      };
     };
   }
 }
