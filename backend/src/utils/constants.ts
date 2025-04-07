@@ -100,7 +100,11 @@ export const RESPONSE_MESSAGE = {
     ZERO_COMMENTS: "Entity has zero comments or replies",
   },
   PAGINATE: {
-    INVALID_PAGE_SELECTION: "Invalid Page Selection, No Docs Exist on this page",
+    INVALID_PAGE_SELECTION:
+      "Invalid Page Selection, No Docs Exist on this page",
+  },
+  SEARCH: {
+    FETCH_SUCCESS: "Search Query fetched successfully",
   },
 };
 
