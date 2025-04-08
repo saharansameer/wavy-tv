@@ -259,7 +259,10 @@ userSchema.methods = {
     return jwt.sign(
       {
         _id: this._id,
-        preferences: this.preferences,
+        preferences: {
+          theme: this.preferences.theme,
+          nsfwContent: this.preferences.nsfwContent,
+        },
       },
       ACCESS_TOKEN_SECRET,
       {
@@ -272,7 +275,10 @@ userSchema.methods = {
     return jwt.sign(
       {
         _id: this._id,
-        preferences: this.preferences,
+        preferences: {
+          theme: this.preferences.theme,
+          nsfwContent: this.preferences.nsfwContent,
+        },
       },
       REFRESH_TOKEN_SECRET,
       {
@@ -283,7 +289,7 @@ userSchema.methods = {
 };
 
 // Enable full-text search on the user fullname
-userSchema.index({ fullName: "text" });
+userSchema.index({ fullName: "text", username: "text", tags: "text" });
 
 // Aggregate Paginate v2
 userSchema.plugin(mongooseAggregatePaginate);

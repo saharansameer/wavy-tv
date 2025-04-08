@@ -92,7 +92,7 @@ const videoSchema = new Schema(
 );
 
 // Enable full-text search on the video title
-videoSchema.index({ title: "text" });
+videoSchema.index({ title: "text", tags: "text" });
 
 // Aggregate Paginate v2
 videoSchema.plugin(mongooseAggregatePaginate);
