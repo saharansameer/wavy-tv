@@ -11,6 +11,7 @@ import {
   updateUserPreferences,
   toggleSearchAndWatchHistory,
   deleteSearchAndWatchHistory,
+  updateUserAbout,
 } from "../controllers/user.controller.js";
 import { authRateLimiter } from "../middlewares/auth.middleware.js";
 
@@ -22,33 +23,38 @@ router.use(checkAuth);
 // GET - Get User details
 // PATCH - Update User names (i.e fullName and username)
 router
-  .route("/")
+  .route("/update/names")
   .get(asyncHandler(getCurrentUser))
   .patch(authRateLimiter, asyncHandler(updateUserNames));
 
 // PATCH - Update User email
 router
-  .route("/security/email")
+  .route("/update/email")
   .patch(authRateLimiter, asyncHandler(updateUserEmail));
 
 // PATCH - Update User password
 router
-  .route("/security/password")
+  .route("/update/password")
   .patch(authRateLimiter, asyncHandler(updateUserPassword));
 
 // PATCH - Toggle creatorMode (i.e true or false)
 router
-  .route("/privacy/creator")
+  .route("/toggle/creatorMode")
   .patch(authRateLimiter, asyncHandler(toggleCreatorMode));
 
 // PATCH - Update User's preferences
-router.route("/preferences").patch(asyncHandler(updateUserPreferences));
+router.route("/update/preferences").patch(asyncHandler(updateUserPreferences));
 
 // PATCH - Update User's Search and Watch History preferences
-router.route("/history").patch(asyncHandler(toggleSearchAndWatchHistory));
+router
+  .route("/toggle/history")
+  .patch(asyncHandler(toggleSearchAndWatchHistory));
 
 // PATCH - Delete (Clear) User's Search and Watch History
-router.route("/history/clear").patch(asyncHandler(deleteSearchAndWatchHistory));
+router.route("/delete/history").patch(asyncHandler(deleteSearchAndWatchHistory));
+
+// PATCH - Update User's about (bio)
+router.route("/update/about").patch(asyncHandler(updateUserAbout));
 
 // Error Handler
 router.use(errorHandler);
