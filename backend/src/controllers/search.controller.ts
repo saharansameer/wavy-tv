@@ -16,14 +16,12 @@ const getSearchResultForVideo: SearchUtility = async (
 ) => {
   // Video Match Stage
   const videoMatchStage: Record<string, unknown> = {
-    $or: [
-      { tags: { $in: searchQuery.split(" ") } },
-      { $text: { $search: searchQuery } },
-    ],
+    $text: { $search: searchQuery },
     publishStatus: "PUBLIC",
   };
 
-  if (userInfo.preferences.nsfwContent === "HIDE") {
+  console.log(userInfo);
+  if (userInfo?.preferences.nsfwContent === "HIDE") {
     videoMatchStage.nsfw = false;
   }
 
@@ -83,13 +81,10 @@ const getSearchResultForChannel: SearchUtility = async (
 ) => {
   // Channel Match Stage
   const channelMatchStage: Record<string, unknown> = {
-    $or: [
-      { tags: { $in: searchQuery.split(" ") } },
-      { $text: { $search: searchQuery } },
-    ],
+    $text: { $search: searchQuery },
   };
 
-  if (userInfo.preferences.nsfwContent === "HIDE") {
+  if (userInfo?.preferences.nsfwContent === "HIDE") {
     channelMatchStage.nsfwProfile = false;
   }
 
@@ -143,14 +138,11 @@ const getSearchResultForPlaylist: SearchUtility = async (
 ) => {
   // Playlist Match Stage
   const playlistMatchStage: Record<string, unknown> = {
-    $or: [
-      { tags: { $in: searchQuery.split(" ") } },
-      { $text: { $search: searchQuery } },
-    ],
+    $text: { $search: searchQuery },
     publishStatus: "PUBLIC",
   };
 
-  if (userInfo.preferences.nsfwContent === "HIDE") {
+  if (userInfo?.preferences.nsfwContent === "HIDE") {
     playlistMatchStage.nsfw = false;
   }
 
@@ -158,6 +150,68 @@ const getSearchResultForPlaylist: SearchUtility = async (
   const playlistAggregateQuery = Playlist.aggregate([
     {
       $match: playlistMatchStage,
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              _id: 0,
+              fullName: 1,
+              username: 1,
+              avatar: 1,
+              coverImage: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videos",
+        foreignField: "_id",
+        as: "videos",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 0,
+                    fullName: 1,
+                    username: 1,
+                    avatar: 1,
+                    coverImage: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner",
+        },
+      },
     },
   ]);
 
@@ -213,7 +267,7 @@ export const getSearchResults: Controller = async (req, res) => {
   } else {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Invalid ?type=<>",
+      message: `type=${type} : Invalid type`,
     });
   }
 };
