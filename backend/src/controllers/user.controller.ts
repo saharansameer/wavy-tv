@@ -3,11 +3,12 @@ import ApiResponse from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
+import { extractTagsAndKeywords } from "../utils/stringUtils.js";
 
 export const getCurrentUser: Controller = async (req, res) => {
   // Get User Details
   const user = await User.findById(req.user?._id).select(
-    "-_id fullName username email creatorMode"
+    "-_id -password -refreshToken"
   );
 
   if (!user) {
@@ -52,7 +53,8 @@ export const updateUserNames: Controller = async (req, res) => {
         username: trimmedUsername,
         "lastModified.fullName": new Date(),
         "lastModified.username": new Date(),
-        tags: [trimmedFullName, trimmedUsername],
+        "tags.0": trimmedFullName,
+        "tags.1": trimmedUsername,
       },
     },
     { new: true, runValidators: true }
@@ -77,6 +79,14 @@ export const updateUserNames: Controller = async (req, res) => {
 
 export const updateUserEmail: Controller = async (req, res) => {
   const { currentEmail, newEmail } = req.body;
+
+  // Check for required fields
+  if (!currentEmail || !newEmail) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
+    });
+  }
 
   // What if current Email and new Email are same
   if (currentEmail === newEmail) {
@@ -278,6 +288,46 @@ export const deleteSearchAndWatchHistory: Controller = async (req, res) => {
     },
     { new: true, runValidators: true }
   ).select("-_id fullName username searchHistory watchHistory");
+
+  if (!user) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
+      data: user,
+    })
+  );
+};
+
+export const updateUserAbout: Controller = async (req, res) => {
+  const { about } = req.body;
+  // Remove extra spaces
+  const trimmedAbout = trimAndClean(about || "");
+
+  // Check if about field exist in
+  if (!trimmedAbout) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
+    });
+  }
+
+  // Extract relevant tags and keywords from About
+  const extTags = extractTagsAndKeywords(about, "");
+  console.log(extTags);
+  // Update User's about (bio)
+  const user = await User.findByIdAndUpdate(
+    req?.user?._id,
+    { about: trimmedAbout, $push: { tags: { $each: extTags } } },
+    { new: true, runValidators: true }
+  ).select("-_id fullName username about");
 
   if (!user) {
     throw new ApiError({
