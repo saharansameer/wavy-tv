@@ -20,7 +20,6 @@ const getSearchResultForVideo: SearchUtility = async (
     publishStatus: "PUBLIC",
   };
 
-  console.log(userInfo);
   if (userInfo?.preferences.nsfwContent === "HIDE") {
     videoMatchStage.nsfw = false;
   }
@@ -246,11 +245,29 @@ export const getSearchResults: Controller = async (req, res) => {
   const query = req.query.query as string;
   const type = req.query.type as string;
 
+  if (!query || !type) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: `?query=<${query}>&type=<${type}> : ${RESPONSE_MESSAGE.COMMON.ALL_QUERY_PARAMS_REQUIRED}`,
+    });
+  }
+
   // Auto-correct misspelled words in the search query
   const correctedSearch = getCorrectSearchQuery(query || "");
 
   // Verify logged-in User and Extract user info
   const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
+
+  // If user is logged-in and search history is turned on
+  if (userInfo?._id) {
+    await User.findByIdAndUpdate(
+      userInfo._id,
+      {
+        $push: { searchHistory: query },
+      },
+      { new: true }
+    );
+  }
 
   // Paginate Options
   const options = {
@@ -267,7 +284,7 @@ export const getSearchResults: Controller = async (req, res) => {
   } else {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: `type=${type} : Invalid type`,
+      message: `type=${type} : "type" query is invalid, Correct types are [video, channel, playlist]`,
     });
   }
 };
