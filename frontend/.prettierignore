@@ -1,0 +1,17 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore build output
+dist/
+coverage/
+
+# Ignore environment files
+.env
+.env.sample
+    
+# Ignore package lock files
+package-lock.json
+
+# Ignore config files
+eslint.config.js
+jest.config.ts
