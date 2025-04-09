@@ -7,6 +7,21 @@ enum PublishStatus {
   UNLISTED = "UNLISTED",
 }
 
+enum Category {
+  GENERAL = "GENERAL",
+  ENTERTAINMENT = "ENTERTAINMENT",
+  GAMING = "GAMING",
+  MUSIC = "MUSIC",
+  COMEDY = "COMEDY",
+  EDUCATION = "EDUCATION",
+  PROGRAMMING = "PROGRAMMING",
+  SCIENCE = "SCIENCE",
+  TECH = "TECH",
+  ART = "ART",
+  ANIMATION = "ANIMATION",
+  GRAPHICS = "GRAPHICS",
+}
+
 interface VideoDocument extends Document {
   publicId: string;
   title: string;
@@ -20,6 +35,7 @@ interface VideoDocument extends Document {
   thumbnailPublicId?: string;
   publishStatus: PublishStatus;
   nsfw: boolean;
+  category: Category;
   tags: string[];
 }
 
@@ -82,6 +98,11 @@ const videoSchema = new Schema(
     nsfw: {
       type: Boolean,
       default: false,
+    },
+    category: {
+      type: String,
+      enum: Object.values(Category),
+      default: Category.GENERAL,
     },
     tags: {
       type: [String],

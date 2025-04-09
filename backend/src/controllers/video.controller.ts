@@ -201,13 +201,13 @@ export const getVideoByPublicId: Controller = async (req, res) => {
 
 export const updateVideoDetails: Controller = async (req, res) => {
   const { videoPublicId } = req.params;
-  const { title, description, publishStatus } = req.body;
+  const { title, description, publishStatus, category } = req.body;
 
   // Remove extra spaces from title
   const trimmedTitle = trimAndClean(title || "");
 
   // Check all fields (i.e title, description, publishStatus) are provided
-  if (!trimmedTitle || !description || !publishStatus) {
+  if (!trimmedTitle || !description || !publishStatus || !category) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -224,10 +224,11 @@ export const updateVideoDetails: Controller = async (req, res) => {
       title: trimmedTitle,
       description,
       publishStatus,
+      category,
       tags,
     },
     { new: true, runValidators: true }
-  ).select("publicId title description publishStatus");
+  ).select("publicId title description publishStatus category tags");
 
   if (!video) {
     throw new ApiError({
