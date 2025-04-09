@@ -1,19 +1,15 @@
 import Fuse from "fuse.js";
+import { readFile } from "fs/promises";
 
-const knownWords = [
-  "mongoose",
-  "mongodb",
-  "data",
-  "analytics",
-  "analysis",
-  "javascript",
-  "typescript",
-  "python",
-  "express",
-  "node",
-  "nodejs",
-  "expressjs",
-];
+const loadKnownWords = async () => {
+  const raw = await readFile(
+    new URL("../data/words.json", import.meta.url),
+    "utf-8"
+  );
+  return JSON.parse(raw) as string[];
+};
+
+const knownWords = await loadKnownWords();
 
 const fuse = new Fuse(knownWords, {
   includeScore: true,
