@@ -4,7 +4,6 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 import prettier from "eslint-config-prettier";
-import jest from "eslint-plugin-jest";
 
 export default tseslint.config(
   { ignores: ["dist"] },
@@ -31,12 +30,4 @@ export default tseslint.config(
       ],
     },
   },
-  {
-    files: ["tests/**/*.{js,ts,jsx,tsx}"],
-    ...jest.configs["flat/recommended"],
-    rules: {
-      ...jest.configs["flat/recommended"].rules,
-      "jest/prefer-expect-assertions": "off",
-    },
-  }
 );

@@ -1,21 +1,16 @@
 import Fuse from "fuse.js";
-import { readFile } from "fs/promises";
+import { readAndLoadJsonArray } from "../utils/fs.js";
 
-const loadKnownWords = async () => {
-  const raw = await readFile(
-    new URL("../data/words.json", import.meta.url),
-    "utf-8"
-  );
-  return JSON.parse(raw) as string[];
-};
+// Known Words (Used to correct misspelled words)
+const knownWords = await readAndLoadJsonArray("src/data/words.json");
 
-const knownWords = await loadKnownWords();
-
+// Fuse Init
 const fuse = new Fuse(knownWords, {
   includeScore: true,
   threshold: 0.4,
 });
 
+// Misspelled words correction
 export const getCorrectSearchQuery = (input: string) => {
   const inputWords = input.toLocaleLowerCase().split(" ");
   const correctedWords = inputWords.map((word) => {

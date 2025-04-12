@@ -14,4 +14,3 @@ package-lock.json
 
 # Ignore config files
 eslint.config.js
-jest.config.ts

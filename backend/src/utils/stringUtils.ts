@@ -1,8 +1,11 @@
-import { excludedTags } from "./constants.js";
+import { readAndLoadJsonArray } from "./fs.js";
 
 export const trimAndClean = (val: string) => {
   return val.trim().replace(/\s+/g, " ");
 };
+
+// Excluded Tags and Keywords
+const excludedTags = await readAndLoadJsonArray("src/data/ex-tags.json");
 
 export const extractTagsAndKeywords = (title: string, description: string) => {
   const tagsSet = new Set<string>(); // To store unique tags
