@@ -7,7 +7,7 @@ export default function Header() {
       <img
         src="/wavytv-logo.png"
         alt="wavytv"
-        className="w-28 fixed inset-x-15"
+        className="w-28 fixed inset-x-15 inset-y-4"
       />
       <div className="fixed w-full pl-64 lg:pl-0 pr-2 md:pr-0">
         <SearchBar />

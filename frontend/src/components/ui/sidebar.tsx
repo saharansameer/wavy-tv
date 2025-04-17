@@ -1,8 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { CircleX } from "lucide-react";
-import SidebarIcon from "./sidebar-icon";
+import { CircleX, PanelLeftOpen } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -273,7 +272,11 @@ function SidebarTrigger({
       {...props}
     >
       {/*Trigger Icon */}
-      {isMobile && openMobile ? <CircleX style={{ width: "20px", height: "20px" }}/> : <SidebarIcon />}
+      {isMobile && openMobile ? (
+        <CircleX style={{ width: "20px", height: "20px" }} />
+      ) : (
+        <PanelLeftOpen style={{ width: "24px", height: "24px" }} />
+      )}
 
       <span className="sr-only"></span>
     </Button>
