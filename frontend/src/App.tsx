@@ -4,15 +4,17 @@ import { AppSidebar, Header } from "./layout";
 
 function App() {
   return (
-    <div className="bg-background dark:bg-background">
-      <div className="w-full py-2 px-2 bg-background dark:bg-background sticky top-0 shadow-sm dark:shadow-[#252525]">
+    <div className="bg-background">
+      <div className="w-full py-2 px-2 bg-background dark:bg-background sticky top-0">
         <Header />
       </div>
 
       <div className="flex flex-row w-full max-w-screen mx-auto">
         <div>
           <SidebarProvider>
-            <SidebarTrigger className={"fixed inset-y-4 inset-x-2 cursor-pointer"}/>
+            <SidebarTrigger
+              className={"fixed inset-y-4 inset-x-2 cursor-pointer"}
+            />
             <AppSidebar />
           </SidebarProvider>
         </div>

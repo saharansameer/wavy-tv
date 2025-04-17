@@ -9,7 +9,7 @@ export default function Header() {
         alt="wavytv"
         className="w-28 fixed inset-x-15"
       />
-      <div className="fixed w-full pl-64 pr-2 md:pr-0">
+      <div className="fixed w-full pl-64 lg:pl-0 pr-2 md:pr-0">
         <SearchBar />
       </div>
     </div>
