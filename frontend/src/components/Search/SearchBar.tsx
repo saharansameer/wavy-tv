@@ -1,9 +1,11 @@
-import { Input } from "../ui/input";
-import { Search, CircleX } from "lucide-react";
-import { useState, useRef } from "react";
+import { SearchInput } from "./search-input";
+import SearchButton from "./SearchButton";
+import { CircleX, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import useSearchStore from "@/app/store/searchStore";
 
 export default function SearchBar() {
-  const [inputText, setInputText] = useState("");
+  const { inputText, setInputText } = useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const clearInputHandler = () => {
@@ -11,16 +13,29 @@ export default function SearchBar() {
     inputRef.current?.focus();
   };
 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const mobileInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (isSearchOpen) {
+      mobileInputRef.current?.focus();
+    }
+  }, [isSearchOpen]);
+
   return (
     <div className="w-full flex flex-row items-center justify-end md:justify-center">
       <div className="relative w-[400px] hidden md:block lg:w-[500px]">
-        <Input
+        <SearchInput
           type={"input"}
           placeholder={"Search"}
           className={"w-[400px] hidden md:block lg:w-[500px]"}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           ref={inputRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
         />
         <button
           className={`${inputText !== "" ? "" : "hidden"} absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer`}
@@ -29,9 +44,45 @@ export default function SearchBar() {
           <CircleX style={{ width: "18px", height: "18px" }} />
         </button>
       </div>
-      <button className="cursor-pointer bg-primary rounded-3xl md:rounded-[0px] md:rounded-e-3xl h-10 px-4">
-        <Search style={{ width: "22px", height: "22px" }} />
-      </button>
+
+      <SearchButton className={"hidden md:block md:rounded-e-3xl"} />
+
+      <SearchButton
+        className={"rounded-3xl md:hidden"}
+        onClick={() => setIsSearchOpen(true)}
+      />
+      {isSearchOpen && (
+        <div className="fixed top-0 left-0 w-full z-50 pl-10 md:hidden">
+          <div className="backdrop-blur-sm bg-background px-4 py-3 shadow-md">
+            <div className="relative gap-2">
+              <SearchInput
+                type="search"
+                placeholder="Search..."
+                className="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                ref={mobileInputRef}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    mobileInputRef.current?.blur();
+                  }
+                }}
+              />
+
+              <button
+                onClick={() => {
+                  setIsSearchOpen(false);
+                  setInputText("");
+                }}
+                className="p-[1px] absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer md:hidden bg-primary rounded-full"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
