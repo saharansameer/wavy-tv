@@ -15,6 +15,7 @@ interface PlaylistDocument extends Document {
   publishStatus: PublishStatus;
   videos: Schema.Types.ObjectId;
   nsfw: boolean;
+  isSystemPlaylist: boolean;
 }
 
 const playlistSchema = new Schema(
@@ -54,6 +55,10 @@ const playlistSchema = new Schema(
       default: [],
     },
     nsfw: {
+      type: Boolean,
+      default: false,
+    },
+    isSystemPlaylist: {
       type: Boolean,
       default: false,
     },

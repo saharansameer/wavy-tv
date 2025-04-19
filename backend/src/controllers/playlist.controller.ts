@@ -136,7 +136,11 @@ export const updatePlaylistDetails: Controller = async (req, res) => {
 
   // Update playlist details
   const playlist = await Playlist.findOneAndUpdate(
-    { publicId: playlistPublicId, owner: req?.user?._id },
+    {
+      publicId: playlistPublicId,
+      owner: req?.user?._id,
+      isSystemPlaylist: false,
+    },
     { title: trimmedTitle, description: trimmedDescription, publishStatus },
     { new: true, runValidators: true }
   ).select("publicId title publishStatus");
@@ -240,6 +244,7 @@ export const deletePlaylist: Controller = async (req, res) => {
   const playlist = await Playlist.findOneAndDelete({
     publicId: playlistPublicId,
     owner: req?.user?._id,
+    isSystemPlaylist: false,
   });
 
   if (!playlist) {
