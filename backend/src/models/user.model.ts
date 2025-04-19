@@ -56,9 +56,10 @@ interface UserDocument extends Document {
   refreshToken: string;
   searchHistory: string[];
   isSearchHistorySaved: boolean;
-  watchHistory: Schema.Types.ObjectId[];
   isWatchHistorySaved: boolean;
   savedPlaylists: Schema.Types.ObjectId[];
+  watchLater: Schema.Types.ObjectId;
+  favourites: Schema.Types.ObjectId;
   creatorMode: boolean;
   nsfwProfile: boolean;
   tags: string[];
@@ -179,17 +180,20 @@ const userSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    watchHistory: {
-      type: [Schema.Types.ObjectId],
-      ref: "Video",
-      default: [],
-    },
     isWatchHistorySaved: {
       type: Boolean,
       default: true,
     },
     savedPlaylists: {
       type: [Schema.Types.ObjectId],
+      ref: "Playlist",
+    },
+    watchLater: {
+      type: Schema.Types.ObjectId,
+      ref: "Playlist",
+    },
+    favourites: {
+      type: Schema.Types.ObjectId,
       ref: "Playlist",
     },
     creatorMode: {

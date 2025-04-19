@@ -21,10 +21,11 @@ const router = Router();
 router.use(checkAuth);
 
 // GET - Get User details
+router.route("/").get(asyncHandler(getCurrentUser));
+
 // PATCH - Update User names (i.e fullName and username)
 router
   .route("/update/names")
-  .get(asyncHandler(getCurrentUser))
   .patch(authRateLimiter, asyncHandler(updateUserNames));
 
 // PATCH - Update User email
@@ -51,7 +52,9 @@ router
   .patch(asyncHandler(toggleSearchAndWatchHistory));
 
 // PATCH - Delete (Clear) User's Search and Watch History
-router.route("/delete/history").patch(asyncHandler(deleteSearchAndWatchHistory));
+router
+  .route("/delete/history")
+  .patch(asyncHandler(deleteSearchAndWatchHistory));
 
 // PATCH - Update User's about (bio)
 router.route("/update/about").patch(asyncHandler(updateUserAbout));
