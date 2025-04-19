@@ -106,4 +106,13 @@ export const RESPONSE_MESSAGE = {
   SEARCH: {
     FETCH_SUCCESS: "Search Query fetched successfully",
   },
+  HISTORY: {
+    DELETE_SUCCESS: "Watch History deleted successfully",
+    DELETE_FAILURE: "Failed to delete Watch History",
+    VIDEO_ADD_SUCCESS: "Video added to Watch History",
+    VIDEO_ADD_FAILURE: "Failed to add Video to Watch History",
+    VIDEO_REMOVE_SUCCESS: "Videos removed from Watch History",
+    VIDEO_REMOVE_FAILURE: "Failed to remove Videos from Watch History",
+    FETCH_SUCCESS: "Watch History fetched successfully",
+  },
 };
