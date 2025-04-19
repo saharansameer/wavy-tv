@@ -278,16 +278,15 @@ export const toggleSearchAndWatchHistory: Controller = async (req, res) => {
   );
 };
 
-export const deleteSearchAndWatchHistory: Controller = async (req, res) => {
+export const deleteSearchHistory: Controller = async (req, res) => {
   // Delete (Clear) User's Search and Watch History
   const user = await User.findByIdAndUpdate(
     req?.user?._id,
     {
       searchHistory: [],
-      watchHistory: [],
     },
     { new: true, runValidators: true }
-  ).select("-_id fullName username searchHistory watchHistory");
+  ).select("-_id fullName username searchHistory");
 
   if (!user) {
     throw new ApiError({
