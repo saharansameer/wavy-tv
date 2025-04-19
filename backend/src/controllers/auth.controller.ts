@@ -10,6 +10,8 @@ import {
 import { Types } from "mongoose";
 import jwt from "jsonwebtoken";
 import { REFRESH_TOKEN_SECRET } from "../config/env.js";
+import { Playlist } from "../models/playlist.model.js";
+import { generatePublicId } from "../utils/crypto.js";
 
 async function generateTokens(userId: Types.ObjectId): Promise<TokenPayload> {
   try {
@@ -65,6 +67,38 @@ export const registerUser: Controller = async (req, res) => {
   });
 
   if (!user) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.AUTH.SIGNUP_FAILED,
+    });
+  }
+
+  // Create default playlists (Watch Later and Favourites)
+  const watchLater = await Playlist.create({
+    publicId: generatePublicId(),
+    title: "Watch Later",
+    owner: user._id,
+    isSystemPlaylist: true,
+  });
+
+  const favourites = await Playlist.create({
+    publicId: generatePublicId(),
+    title: "Favourites",
+    owner: user._id,
+    isSystemPlaylist: true,
+  });
+
+  // Update User with playlist reference
+  const updateUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      watchLater: watchLater._id,
+      favourites: favourites._id,
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!updateUser) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.AUTH.SIGNUP_FAILED,
