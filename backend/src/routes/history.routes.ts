@@ -7,6 +7,7 @@ import {
   deleteWatchHistory,
   addVideoToWatchHistory,
   removeVideoFromWatchHistory,
+  deleteSearchHistory,
 } from "../controllers/history.controller.js";
 
 const router = Router();
@@ -18,13 +19,16 @@ router.use(checkAuth);
 router.route("/").get(asyncHandler(getWatchHistory));
 
 // DELETE - Delete Watch History
-router.route("/delete").delete(asyncHandler(deleteWatchHistory));
+router.route("/clear/watch").delete(asyncHandler(deleteWatchHistory));
 
 // POST - Add Video to Watch History
 router.route("/watch/add").post(asyncHandler(addVideoToWatchHistory));
 
 // POST - Remove Video from Watch History
 router.route("/watch/remove").post(asyncHandler(removeVideoFromWatchHistory));
+
+// PATCH - Delete (Clear) User's Search History
+router.route("/clear/search").patch(asyncHandler(deleteSearchHistory));
 
 // Error Handler
 router.use(errorHandler);

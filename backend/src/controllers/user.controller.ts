@@ -278,33 +278,6 @@ export const toggleSearchAndWatchHistory: Controller = async (req, res) => {
   );
 };
 
-export const deleteSearchHistory: Controller = async (req, res) => {
-  // Delete (Clear) User's Search and Watch History
-  const user = await User.findByIdAndUpdate(
-    req?.user?._id,
-    {
-      searchHistory: [],
-    },
-    { new: true, runValidators: true }
-  ).select("-_id fullName username searchHistory");
-
-  if (!user) {
-    throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
-    });
-  }
-
-  // Final Response
-  return res.status(HTTP_STATUS.OK).json(
-    new ApiResponse({
-      status: HTTP_STATUS.OK,
-      message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
-      data: user,
-    })
-  );
-};
-
 export const updateUserAbout: Controller = async (req, res) => {
   const { about } = req.body;
   // Remove extra spaces

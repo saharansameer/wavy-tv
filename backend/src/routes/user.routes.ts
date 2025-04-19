@@ -10,7 +10,6 @@ import {
   toggleCreatorMode,
   updateUserPreferences,
   toggleSearchAndWatchHistory,
-  deleteSearchAndWatchHistory,
   updateUserAbout,
 } from "../controllers/user.controller.js";
 import { authRateLimiter } from "../middlewares/auth.middleware.js";
@@ -50,11 +49,6 @@ router.route("/update/preferences").patch(asyncHandler(updateUserPreferences));
 router
   .route("/toggle/history")
   .patch(asyncHandler(toggleSearchAndWatchHistory));
-
-// PATCH - Delete (Clear) User's Search and Watch History
-router
-  .route("/delete/history")
-  .patch(asyncHandler(deleteSearchAndWatchHistory));
 
 // PATCH - Update User's about (bio)
 router.route("/update/about").patch(asyncHandler(updateUserAbout));
