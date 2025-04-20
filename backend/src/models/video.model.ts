@@ -22,6 +22,50 @@ enum Category {
   GRAPHICS = "GRAPHICS",
 }
 
+interface VideoMetaData {
+  url: string;
+  publicId: string;
+  duration: Date;
+  height: number;
+  width: number;
+  frame_rate: number;
+  format: string;
+  bytes: number;
+  bit_rate: number;
+  is_audio: boolean;
+}
+
+const videoMetaDataSubSchema = new Schema({
+  url: String,
+  publicId: String,
+  duration: Date,
+  height: Number,
+  width: Number,
+  frame_rate: Number,
+  format: String,
+  bytes: Number,
+  bit_rate: Number,
+  is_audio: Boolean,
+});
+
+interface ThumbnailMetaData {
+  url: string;
+  publicId: string;
+  format: string;
+  bytes: number;
+  height: number;
+  width: number;
+}
+
+const thumbnailMetaDataSubSchema = new Schema({
+  url: String,
+  publicId: String,
+  format: String,
+  bytes: Number,
+  height: Number,
+  width: Number,
+});
+
 interface VideoDocument extends Document {
   publicId: string;
   title: string;
@@ -29,10 +73,8 @@ interface VideoDocument extends Document {
   duration: number;
   views: number;
   owner: string;
-  videoFile: string;
-  videoFilePublicId: string;
-  thumbnail?: string;
-  thumbnailPublicId?: string;
+  videoMetaData: VideoMetaData;
+  thumbnailMetaData: ThumbnailMetaData;
   publishStatus: PublishStatus;
   nsfw: boolean;
   category: Category;
@@ -75,19 +117,11 @@ const videoSchema = new Schema(
       ref: "User",
       required: true,
     },
-    videoFile: {
-      type: String,
-      required: true,
+    videoMetaData: {
+      type: videoMetaDataSubSchema,
     },
-    videoFilePublicId: {
-      type: String,
-      required: true,
-    },
-    thumbnail: {
-      type: String,
-    },
-    thumbnailPublicId: {
-      type: String,
+    thumbnailMetaData: {
+      type: thumbnailMetaDataSubSchema,
     },
     publishStatus: {
       type: String,
