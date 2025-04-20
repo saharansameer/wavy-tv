@@ -1,10 +1,12 @@
+import React from "react";
 import {
   Home,
-  UserRound,
   History,
-  Save,
+  Heart,
   ClockFading,
   ListVideo,
+  Upload,
+  PencilLine,
 } from "lucide-react";
 
 import {
@@ -18,71 +20,94 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   useSidebar,
-  SidebarTrigger
+  SidebarTrigger,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
+
+interface GroupItem {
+  title: string;
+  url: string;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
+}
+
+function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
+  return (
+    <SidebarGroup>
+      <SidebarGroupContent>
+        <SidebarMenu className="flex flex-col gap-3">
+          {groupItems.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild className="font-semibold">
+                <a href={item.url}>
+                  <item.icon style={{ width: "22px", height: "22px" }} />
+                  <span>{item.title}</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
+}
 
 export default function AppSidebar() {
   const { isMobile } = useSidebar();
-  const items = [
+
+  const groupOneItems = [
     {
       title: "Home",
-      url: "",
+      url: "/",
       icon: Home,
     },
     {
-      title: "Profile",
-      url: "",
-      icon: UserRound,
+      title: "Create Post",
+      url: "/create",
+      icon: PencilLine,
     },
     {
+      title: "Upload Video",
+      url: "/upload",
+      icon: Upload,
+    },
+  ];
+
+  const groupTwoItems = [
+    {
       title: "Playlists",
-      url: "",
+      url: "/playlist",
       icon: ListVideo,
     },
     {
-      title: "Saved",
-      url: "",
-      icon: Save,
+      title: "Favourites",
+      url: "/saved",
+      icon: Heart,
     },
     {
       title: "Watch Later",
-      url: "",
+      url: "/playlist/watch-later",
       icon: ClockFading,
     },
     {
       title: "History",
-      url: "",
+      url: "/history",
       icon: History,
     },
   ];
+
   return (
     <Sidebar>
       <SidebarHeader>
         {isMobile && (
           <div className="pb-4">
-            <SidebarTrigger
-              className={"fixed inset-x-40 cursor-pointer"}
-            />
+            <SidebarTrigger className={"fixed inset-x-40 cursor-pointer"} />
           </div>
         )}
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu className="flex flex-col gap-3">
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="font-semibold">
-                    <a href={item.url}>
-                      <item.icon style={{ width: "22px", height: "22px" }} />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <SidebarGroupUtil groupItems={groupOneItems} />
+        <SidebarSeparator />
+        <SidebarGroupUtil groupItems={groupTwoItems} />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
