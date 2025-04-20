@@ -5,7 +5,7 @@ import { getCloudinarySignature } from "../controllers/cloudinary.controller.js"
 
 const router = Router();
 
-router.route("/").get(asyncHandler(getCloudinarySignature));
+router.route("/signature").get(asyncHandler(getCloudinarySignature));
 
 // Error Handler
 router.use(errorHandler);

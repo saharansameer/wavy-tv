@@ -3,6 +3,8 @@ declare global {
     accessToken: string;
     refreshToken: string;
   }
+
+  type FolderType = "videos" | "thumbnails" | "avatars" | "coverImages";
 }
 
 export {};
