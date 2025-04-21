@@ -1,9 +1,6 @@
-import { Editor } from "primereact/editor";
-import { InputWithLabel } from "../ui/input-with-label";
-import { InputFile } from "../ui/input-file";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
-import { uploadToCloudinary } from "@/utils/cloudinary";
+import { InputWithLabel } from "@/components/ui/input-with-label";
+import { InputFile } from "@/components/ui/input-file";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -13,15 +10,19 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select";
-import { MySwitch, ErrorMessage } from "@/components";
 import { Label } from "@/components/ui/label";
-import { Switch } from "../ui/switch";
+import { Switch } from "@/components/ui/switch";
+import { ErrorMessage } from "@/components";
+import { useForm, Controller } from "react-hook-form";
+import { uploadToCloudinary } from "@/utils/cloudinary";
+import { TextEditor } from "../TextEditor";
 
 export default function VideoForm() {
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -60,11 +61,12 @@ export default function VideoForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmitHandler)}
-      className="flex flex-col gap-5 px-10"
+      className="flex flex-col gap-10 px-10"
     >
       <div>
         <InputWithLabel
           type="text"
+          placeholder={"Title"}
           label={"Title"}
           {...register("title", {
             required: "Title is required",
@@ -82,16 +84,23 @@ export default function VideoForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="description-editor">Description</Label>
-        <Editor
-          id="description-editor"
-          {...register("description", {
-            maxLength: {
-              value: 5000,
-              message: "Description can't exceed 5000 characters limit",
-            },
-          })}
-          style={{ height: "320px" }}
+        <Controller
+          name="description"
+          control={control}
+          rules={{
+            maxLength: { value: 5000, message: "Max 5000 chars" },
+          }}
+          render={({ field }) => (
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Description</label>
+              <TextEditor
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="Type description..."
+                rows={8}
+              />
+            </div>
+          )}
         />
         {errors.description && (
           <ErrorMessage text={`${errors.description.message}`} />
@@ -143,11 +152,12 @@ export default function VideoForm() {
         )}
       </div>
 
-      <div>
+      <div className="flex flex-col gap-2">
+        <Label>Publish Status</Label>
         <Select>
           <SelectTrigger className="w-48">
             <SelectValue
-              placeholder="Publish Status"
+              placeholder="Select publish status"
               {...register("publishStatus")}
             />
           </SelectTrigger>
@@ -159,10 +169,14 @@ export default function VideoForm() {
         </Select>
       </div>
 
-      <div>
+      <div className="flex flex-col gap-2">
+        <Label>Category</Label>
         <Select>
           <SelectTrigger className="w-48">
-            <SelectValue placeholder="Category" {...register("category")} />
+            <SelectValue
+              placeholder="Select category"
+              {...register("category")}
+            />
           </SelectTrigger>
           <SelectContent style={{ height: "256px" }}>
             <SelectGroup>
@@ -194,13 +208,23 @@ export default function VideoForm() {
         </Select>
       </div>
 
-      <div className="flex flex-row gap-1">
-        <img src="/nsfw-icon.svg" alt="nsfw" className="w-6" />
-        <MySwitch
-          label={"NSFW"}
-          {...register("nsfw")}
-          className={"cursor-pointer"}
-        />
+      <div className="flex flex-col gap-1">
+        <Label>Mark as NSFW</Label>
+        <div className="flex items-center gap-1">
+          <img src="/nsfw-icon.svg" alt="nsfw" className="w-6" />
+          <Controller
+            control={control}
+            name="nsfw"
+            defaultValue={false}
+            render={({ field }) => (
+              <Switch
+                className={"cursor-pointer"}
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            )}
+          />
+        </div>
       </div>
 
       <Button
