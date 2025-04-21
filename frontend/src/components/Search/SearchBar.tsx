@@ -48,11 +48,11 @@ export default function SearchBar() {
       <SearchButton className={"hidden md:block md:rounded-e-3xl"} />
 
       <SearchButton
-        className={"rounded-3xl md:hidden"}
+        className={"rounded-full md:hidden"}
         onClick={() => setIsSearchOpen(true)}
       />
       {isSearchOpen && (
-        <div className="fixed top-0 left-0 w-full z-50 pl-10 md:hidden">
+        <div className="absolute top-0 left-0 w-full z-50 pl-10 md:hidden">
           <div className="backdrop-blur-sm bg-background px-4 py-3 shadow-md">
             <div className="relative gap-2">
               <SearchInput
