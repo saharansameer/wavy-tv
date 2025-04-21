@@ -1,5 +1,4 @@
 import { InputWithLabel } from "@/components/ui/input-with-label";
-import { InputFile } from "@/components/ui/input-file";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -12,10 +11,9 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { ErrorMessage } from "@/components";
 import { useForm, Controller } from "react-hook-form";
 import { uploadToCloudinary } from "@/utils/cloudinary";
-import { TextEditor } from "../TextEditor";
+import { ErrorMessage, FileInput, TextEditor } from "@/components";
 
 export default function VideoForm() {
   const {
@@ -30,7 +28,7 @@ export default function VideoForm() {
     try {
       console.log(data);
       // Video File
-      const videoFile = data.videoFile[0];
+      const videoFile = data.videoFile;
 
       // Video Upload Response (from Cloudinary)
       /*{ public_id, duration, height, width, url,
@@ -42,7 +40,7 @@ export default function VideoForm() {
       });
       console.log(videoFileUploadRes);
       // Thumbnail
-      const thumbnail = data?.thumbnail[0];
+      const thumbnail = data.thumbnail;
 
       // Thumbnail Upload Response (from Cloudinary)
       /*{ public_id, url, bytes, height, width, format, created_at }*/
@@ -61,11 +59,12 @@ export default function VideoForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmitHandler)}
-      className="flex flex-col gap-10 px-10"
+      className="flex flex-col gap-10 px-3 md:px-10 pb-7 pt-3"
     >
       <div>
         <InputWithLabel
           type="text"
+          className={"max-w-5xl"}
           placeholder={"Title"}
           label={"Title"}
           {...register("title", {
@@ -96,7 +95,7 @@ export default function VideoForm() {
               <TextEditor
                 value={field.value}
                 onChange={field.onChange}
-                placeholder="Type description..."
+                placeholder="Type description... (optional)"
                 rows={8}
               />
             </div>
@@ -107,32 +106,11 @@ export default function VideoForm() {
         )}
       </div>
 
-      <div>
-        <InputFile
-          {...register("videoFile", {
-            required: "Video file is required",
-            validate: {
-              isVideo: (files) =>
-                files?.[0] &&
-                ["video/mp4", "video/quicktime", "video/webm"].includes(
-                  files[0].type
-                )
-                  ? true
-                  : "Only MP4, MOV, or WEBM videos are allowed",
-            },
-          })}
-          accept="video/*"
-          className={"cursor-pointer"}
-          label={"Video"}
-        />
-        {errors.videoFile && (
-          <ErrorMessage text={`${errors.videoFile.message}`} />
-        )}
-      </div>
-
-      <div>
-        <InputFile
-          {...register("thumbnail", {
+      <div className="flex flex-col gap-2">
+        <Controller
+          control={control}
+          name="videoFile"
+          rules={{
             required: "Thumbnail is required",
             validate: {
               isImage: (files) =>
@@ -142,70 +120,128 @@ export default function VideoForm() {
                 ) ||
                 "Only JPG, JPEG, or PNG images are allowed",
             },
-          })}
-          accept="image/jpeg, image/jpg, image/png"
-          className={"cursor-pointer"}
-          label={"Thumbnail"}
+          }}
+          render={({ field }) => (
+            <>
+              <Label>Video</Label>
+              <FileInput
+                id={"video-file-input"}
+                value={field.value}
+                onChange={field.onChange}
+                accept="video/*"
+              />
+            </>
+          )}
         />
+        {errors.videoFile && (
+          <ErrorMessage text={`${errors.videoFile.message}`} />
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Controller
+          control={control}
+          name="thumbnail"
+          rules={{
+            required: "Thumbnail is required",
+            validate: {
+              isImage: (files) =>
+                !files?.[0] ||
+                ["image/jpeg", "image/jpg", "image/png"].includes(
+                  files[0].type
+                ) ||
+                "Only JPG, JPEG, or PNG images are allowed",
+            },
+          }}
+          render={({ field }) => (
+            <>
+              <Label>Thumbnail</Label>
+              <FileInput
+                id={"thumbnail-file-input"}
+                value={field.value}
+                onChange={field.onChange}
+                accept="image/jpeg, image/jpg, image/png"
+              />
+            </>
+          )}
+        />
+
         {errors.thumbnail && (
           <ErrorMessage text={`${errors.thumbnail.message}`} />
         )}
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label>Publish Status</Label>
-        <Select>
-          <SelectTrigger className="w-48">
-            <SelectValue
-              placeholder="Select publish status"
-              {...register("publishStatus")}
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="PRIVATE">Private</SelectItem>
-            <SelectItem value="UNLISTED">Unlisted</SelectItem>
-            <SelectItem value="PUBLIC">Public</SelectItem>
-          </SelectContent>
-        </Select>
+        <Controller
+          control={control}
+          name="publishStatus"
+          render={({ field }) => (
+            <>
+              <Label>Publish Status</Label>
+              <Select value={field.value || "PRIVATE"}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Select publish status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="PRIVATE">Private</SelectItem>
+                  <SelectItem value="UNLISTED">Unlisted</SelectItem>
+                  <SelectItem value="PUBLIC">Public</SelectItem>
+                </SelectContent>
+              </Select>
+            </>
+          )}
+        />
+
+        {errors.publishStatus && (
+          <ErrorMessage text={`${errors.publishStatus.message}`} />
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label>Category</Label>
-        <Select>
-          <SelectTrigger className="w-48">
-            <SelectValue
-              placeholder="Select category"
-              {...register("category")}
-            />
-          </SelectTrigger>
-          <SelectContent style={{ height: "256px" }}>
-            <SelectGroup>
-              <SelectLabel></SelectLabel>
-              <SelectItem value="GENERAL">General</SelectItem>
-              <SelectItem value="ENTERTAINMENT">Entertainment</SelectItem>
-              <SelectItem value="EDUCATION">Education</SelectItem>
-            </SelectGroup>
+        <Controller
+          control={control}
+          name="category"
+          render={({ field }) => (
+            <>
+              <Label>Category</Label>
+              <Select value={field.value || "GENERAL"}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent style={{ height: "256px" }}>
+                  <SelectGroup>
+                    <SelectLabel></SelectLabel>
+                    <SelectItem value="GENERAL">General</SelectItem>
+                    <SelectItem value="ENTERTAINMENT">Entertainment</SelectItem>
+                    <SelectItem value="EDUCATION">Education</SelectItem>
+                  </SelectGroup>
 
-            <SelectGroup>
-              <SelectLabel></SelectLabel>
-              <SelectItem value="GAMING">Gaming</SelectItem>
-              <SelectItem value="MUSIC">Music</SelectItem>
-              <SelectItem value="COMEDY">Comedy</SelectItem>
-            </SelectGroup>
-            <SelectGroup>
-              <SelectLabel></SelectLabel>
-              <SelectItem value="PROGRAMMING">Programming</SelectItem>
-              <SelectItem value="SCIENCE">Science</SelectItem>
-              <SelectItem value="TECH">Tech</SelectItem>
-            </SelectGroup>
-            <SelectGroup>
-              <SelectLabel></SelectLabel>
-              <SelectItem value="ART">Art</SelectItem>
-              <SelectItem value="ANIMATION">Animation</SelectItem>
-              <SelectItem value="GRAPHICS">Graphics</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+                  <SelectGroup>
+                    <SelectLabel></SelectLabel>
+                    <SelectItem value="GAMING">Gaming</SelectItem>
+                    <SelectItem value="MUSIC">Music</SelectItem>
+                    <SelectItem value="COMEDY">Comedy</SelectItem>
+                  </SelectGroup>
+                  <SelectGroup>
+                    <SelectLabel></SelectLabel>
+                    <SelectItem value="PROGRAMMING">Programming</SelectItem>
+                    <SelectItem value="SCIENCE">Science</SelectItem>
+                    <SelectItem value="TECH">Tech</SelectItem>
+                  </SelectGroup>
+                  <SelectGroup>
+                    <SelectLabel></SelectLabel>
+                    <SelectItem value="ART">Art</SelectItem>
+                    <SelectItem value="ANIMATION">Animation</SelectItem>
+                    <SelectItem value="GRAPHICS">Graphics</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </>
+          )}
+        />
+        {errors.category && (
+          <ErrorMessage text={`${errors.category.message}`} />
+        )}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -229,7 +265,7 @@ export default function VideoForm() {
 
       <Button
         type="submit"
-        className={`cursor-pointer`}
+        className={`cursor-pointer max-w-sm sm:max-w-3xs font-semibold`}
         disabled={isSubmitting}
       >
         Submit
