@@ -6,6 +6,7 @@ interface FileInputProps {
   id: string;
   accept: string;
   value: File | null;
+  maxFileSize: number;
   onChange: (file: File | null) => void;
 }
 
@@ -13,6 +14,7 @@ export default function FileInput({
   id,
   accept,
   value,
+  maxFileSize,
   onChange,
 }: FileInputProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +28,7 @@ export default function FileInput({
         "selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input rounded-md border bg-transparent text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-base",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        "max-w-2xs border-2 border-dashed border-muted-foreground hover:border-primary transition-all duration-200 cursor-pointer"
+        "max-w-sm md:max-w-2xs border-2 border-dashed border-muted-foreground hover:border-primary transition-all duration-200 cursor-pointer"
       )}
     >
       <label
@@ -39,6 +41,9 @@ export default function FileInput({
           {value ? <FileCheck /> : <CloudUpload />}
           <p className="mt-2 text-sm font-medium">
             {value ? "File selected" : "Select file to upload"}
+          </p>
+          <p className="text-[10px]">
+            {value ? "" : `(Max. Size ${maxFileSize} MB)`}
           </p>
         </div>
       </label>

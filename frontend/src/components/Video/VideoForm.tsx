@@ -1,3 +1,4 @@
+import React from "react";
 import { InputWithLabel } from "@/components/ui/input-with-label";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,9 @@ import { Switch } from "@/components/ui/switch";
 import { useForm, Controller } from "react-hook-form";
 import { uploadToCloudinary } from "@/utils/cloudinary";
 import { ErrorMessage, FileInput, TextEditor } from "@/components";
+import { LoadingOverlay } from "../common/Loading";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { videoFormSchema, VideoFormSchemaType } from "@/app/schema";
 
 export default function VideoForm() {
   const {
@@ -22,7 +26,28 @@ export default function VideoForm() {
     reset,
     control,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm<VideoFormSchemaType>({
+    resolver: zodResolver(videoFormSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: {
+      publishStatus: "PRIVATE",
+      category: "GENERAL",
+      nsfw: false,
+    },
+  });
+
+  const [progressPercent, setProgressPercent] = React.useState(0);
+
+  React.useEffect(() => {
+    if (isSubmitting && progressPercent < 90) {
+      const timer = setInterval(
+        () => setProgressPercent((prev) => prev + 5),
+        1000
+      );
+      return () => clearInterval(timer);
+    }
+  }, [progressPercent, isSubmitting]);
 
   const onSubmitHandler = async (data) => {
     try {
@@ -53,8 +78,13 @@ export default function VideoForm() {
       console.log("Video Form Error:", error);
     }
 
+    setProgressPercent(100);
     reset();
   };
+
+  if (isSubmitting) {
+    return <LoadingOverlay progress={progressPercent} />;
+  }
 
   return (
     <form
@@ -86,14 +116,11 @@ export default function VideoForm() {
         <Controller
           name="description"
           control={control}
-          rules={{
-            maxLength: { value: 5000, message: "Max 5000 chars" },
-          }}
           render={({ field }) => (
             <div className="flex flex-col gap-2">
               <label className="font-medium">Description</label>
               <TextEditor
-                value={field.value}
+                value={field.value || ""}
                 onChange={field.onChange}
                 placeholder="Type description... (optional)"
                 rows={8}
@@ -110,17 +137,6 @@ export default function VideoForm() {
         <Controller
           control={control}
           name="videoFile"
-          rules={{
-            required: "Thumbnail is required",
-            validate: {
-              isImage: (files) =>
-                !files?.[0] ||
-                ["image/jpeg", "image/jpg", "image/png"].includes(
-                  files[0].type
-                ) ||
-                "Only JPG, JPEG, or PNG images are allowed",
-            },
-          }}
           render={({ field }) => (
             <>
               <Label>Video</Label>
@@ -129,6 +145,7 @@ export default function VideoForm() {
                 value={field.value}
                 onChange={field.onChange}
                 accept="video/*"
+                maxFileSize={100}
               />
             </>
           )}
@@ -142,17 +159,6 @@ export default function VideoForm() {
         <Controller
           control={control}
           name="thumbnail"
-          rules={{
-            required: "Thumbnail is required",
-            validate: {
-              isImage: (files) =>
-                !files?.[0] ||
-                ["image/jpeg", "image/jpg", "image/png"].includes(
-                  files[0].type
-                ) ||
-                "Only JPG, JPEG, or PNG images are allowed",
-            },
-          }}
           render={({ field }) => (
             <>
               <Label>Thumbnail</Label>
@@ -161,6 +167,7 @@ export default function VideoForm() {
                 value={field.value}
                 onChange={field.onChange}
                 accept="image/jpeg, image/jpg, image/png"
+                maxFileSize={10}
               />
             </>
           )}
@@ -178,8 +185,8 @@ export default function VideoForm() {
           render={({ field }) => (
             <>
               <Label>Publish Status</Label>
-              <Select value={field.value || "PRIVATE"}>
-                <SelectTrigger className="w-48">
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full max-w-sm md:max-w-2xs">
                   <SelectValue placeholder="Select publish status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -204,8 +211,8 @@ export default function VideoForm() {
           render={({ field }) => (
             <>
               <Label>Category</Label>
-              <Select value={field.value || "GENERAL"}>
-                <SelectTrigger className="w-48">
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full max-w-sm md:max-w-2xs">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent style={{ height: "256px" }}>
@@ -251,7 +258,6 @@ export default function VideoForm() {
           <Controller
             control={control}
             name="nsfw"
-            defaultValue={false}
             render={({ field }) => (
               <Switch
                 className={"cursor-pointer"}
