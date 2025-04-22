@@ -10,7 +10,7 @@ interface FileInputProps {
   onChange: (file: File | null) => void;
 }
 
-export default function FileInput({
+export function FileInput({
   id,
   accept,
   value,

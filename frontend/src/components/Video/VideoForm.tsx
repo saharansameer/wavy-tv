@@ -1,6 +1,5 @@
 import React from "react";
-import { InputWithLabel } from "@/components/ui/input-with-label";
-import { Button } from "@/components/ui/button";
+import { InputWithLabel, Button, Label, Switch } from "@/components/ui";
 import {
   Select,
   SelectContent,
@@ -10,16 +9,18 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { useForm, Controller } from "react-hook-form";
 import { uploadToCloudinary } from "@/utils/cloudinary";
-import { ErrorMessage, FileInput, TextEditor } from "@/components";
-import { LoadingOverlay } from "../common/Loading";
+import {
+  ErrorMessage,
+  FileInput,
+  TextEditor,
+  UploadProgressOverlay,
+} from "@/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { videoFormSchema, VideoFormSchemaType } from "@/app/schema";
 
-export default function VideoForm() {
+export function VideoForm() {
   const {
     register,
     handleSubmit,
@@ -83,7 +84,7 @@ export default function VideoForm() {
   };
 
   if (isSubmitting) {
-    return <LoadingOverlay progress={progressPercent} />;
+    return <UploadProgressOverlay progress={progressPercent} />;
   }
 
   return (

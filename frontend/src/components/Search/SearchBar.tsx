@@ -1,21 +1,20 @@
-import { SearchInput } from "./search-input";
-import SearchButton from "./SearchButton";
+import React from "react";
+import { SearchInput, SearchButton } from "@/components";
 import { CircleX, X } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
 import useSearchStore from "@/app/store/searchStore";
 
-export default function SearchBar() {
+export function SearchBar() {
   const { inputText, setInputText } = useSearchStore();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const clearInputHandler = () => {
     setInputText("");
     inputRef.current?.focus();
   };
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const mobileInputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
+  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const mobileInputRef = React.useRef<HTMLInputElement>(null);
+  React.useEffect(() => {
     if (isSearchOpen) {
       mobileInputRef.current?.focus();
     }

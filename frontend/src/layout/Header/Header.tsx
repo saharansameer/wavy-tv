@@ -1,6 +1,6 @@
 import { Theme, SearchBar } from "@/components";
 
-export default function Header() {
+export function Header() {
   return (
     <div className="w-full flex flex-row items-center justify-evenly h-12">
       <Theme />

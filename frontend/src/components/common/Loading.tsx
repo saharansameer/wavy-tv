@@ -1,17 +1,16 @@
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@/components/ui";
 
-interface LoadingOverlayProps {
+interface UploadProgressOverlay {
   message?: string;
   progress?: number; // Optional 0–100
 }
 
-export function LoadingOverlay({
+export function UploadProgressOverlay({
   message,
   progress,
-}: LoadingOverlayProps) {
-
+}: UploadProgressOverlay) {
   return (
     <div
       className={cn(

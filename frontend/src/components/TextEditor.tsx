@@ -8,7 +8,7 @@ interface TextEditorProps {
   rows?: number;
 }
 
-export default function TextEditor({
+export function TextEditor({
   value,
   onChange,
   placeholder = "",

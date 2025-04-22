@@ -51,7 +51,7 @@ function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
   );
 }
 
-export default function AppSidebar() {
+export function AppSidebar() {
   const { isMobile } = useSidebar();
 
   const groupOneItems = [
