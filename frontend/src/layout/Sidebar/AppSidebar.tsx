@@ -8,6 +8,7 @@ import {
   Upload,
   PencilLine,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import {
   Sidebar,
@@ -38,10 +39,10 @@ function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
           {groupItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild className="font-semibold">
-                <a href={item.url}>
+                <Link to={item.url}>
                   <item.icon style={{ width: "22px", height: "22px" }} />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
