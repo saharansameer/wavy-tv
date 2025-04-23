@@ -3,6 +3,7 @@ export const SIZE_LIMIT = "1mb";
 export const cookiesOptions = {
   httpOnly: true,
   secure: true,
+  sameSite: "none" as const,
 };
 
 export const HTTP_STATUS = {
@@ -46,8 +47,10 @@ export const RESPONSE_MESSAGE = {
     TOKEN_GENERATED: "New Tokens generated successfully",
     NOT_FOUND: "Requested cookies does not exist",
     TOKEN_EXPIRED: "Token is expired or invalid",
+    TOKEN_VALID: "Token is valid",
     ACCESS_TOKEN_EXPIRED: "Access token is expired or invalid",
     REFRESH_TOKEN_EXPIRED: "Refresh token is expired or invalid",
+    
   },
   VIDEO: {
     NOT_FOUND: "Video is private or does not exist",
