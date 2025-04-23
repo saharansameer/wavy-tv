@@ -9,14 +9,14 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select";
-import { useForm, Controller } from "react-hook-form";
-import { uploadToCloudinary } from "@/utils/cloudinary";
 import {
   ErrorMessage,
   FileInput,
   TextEditor,
   UploadProgressOverlay,
 } from "@/components";
+import { uploadToCloudinary } from "@/utils/cloudinary";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { videoFormSchema, VideoFormSchemaType } from "@/app/schema";
 
@@ -50,7 +50,7 @@ export function VideoForm() {
     }
   }, [progressPercent, isSubmitting]);
 
-  const onSubmitHandler = async (data) => {
+  const onSubmitHandler: SubmitHandler<VideoFormSchemaType> = async (data) => {
     try {
       console.log(data);
       // Video File

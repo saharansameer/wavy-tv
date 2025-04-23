@@ -2,7 +2,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui";
 
-interface UploadProgressOverlay {
+interface UploadProgressOverlayProps {
   message?: string;
   progress?: number; // Optional 0–100
 }
@@ -10,7 +10,7 @@ interface UploadProgressOverlay {
 export function UploadProgressOverlay({
   message,
   progress,
-}: UploadProgressOverlay) {
+}: UploadProgressOverlayProps) {
   return (
     <div
       className={cn(
@@ -30,3 +30,13 @@ export function UploadProgressOverlay({
     </div>
   );
 }
+
+export function LoadingOverlay() {
+  return (
+    <div className="w-full h-screen flex items-center justify-center bg-background">
+      <Loader2 className="h-16 w-16 animate-spin text-primary" />
+    </div>
+  );
+}
+
+// fixed inset-y-120 inset-x-230 

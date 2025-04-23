@@ -43,7 +43,7 @@ export function FileInput({
             {value ? "File selected" : "Select file to upload"}
           </p>
           <p className="text-[10px]">
-            {value ? "" : `(Max. Size ${maxFileSize} MB)`}
+            {value ? `${value.name}` : `(Max. Size ${maxFileSize} MB)`}
           </p>
         </div>
       </label>
