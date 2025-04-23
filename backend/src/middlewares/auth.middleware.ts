@@ -9,20 +9,21 @@ export const checkAuth: Middleware = (req, _res, next) => {
   const token = req.cookies?.accessToken;
   if (!token) {
     throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: "Token not found, User is not logged-in",
+      status: HTTP_STATUS.NOT_FOUND,
+      message: RESPONSE_MESSAGE.COOKIES.NOT_FOUND,
     });
   }
 
-  const validateToken = jwt.verify(token, ACCESS_TOKEN_SECRET);
-  if (!validateToken) {
+  try {
+    const validateToken = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    req.user = validateToken;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
     throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
+      status: HTTP_STATUS.FORBIDDEN,
       message: RESPONSE_MESSAGE.COOKIES.ACCESS_TOKEN_EXPIRED,
     });
   }
-
-  req.user = validateToken;
 
   next();
 };

@@ -271,3 +271,12 @@ export const renewTokens: Controller = async (req, res) => {
       })
     );
 };
+
+export const verifyAccessToken: Controller = async (_req, res) => {
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.COOKIES.TOKEN_VALID,
+    })
+  );
+};

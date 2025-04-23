@@ -7,6 +7,7 @@ import {
   loginUser,
   logoutUser,
   renewTokens,
+  verifyAccessToken,
 } from "../controllers/auth.controller.js";
 
 const router = Router();
@@ -18,10 +19,13 @@ router.route("/signup").post(authRateLimiter, asyncHandler(registerUser));
 router.route("/login").post(authRateLimiter, asyncHandler(loginUser));
 
 // POST - Logout user
-router.route("/logout").post(checkAuth, asyncHandler(logoutUser));
+router.route("/logout").get(checkAuth, asyncHandler(logoutUser));
 
 // POST - Renew Token
-router.route("/token").post(asyncHandler(renewTokens));
+router.route("/token/new").get(asyncHandler(renewTokens));
+
+// GET - Verify Access Token
+router.route("/token/verify").get(checkAuth, asyncHandler(verifyAccessToken));
 
 // Error Handler
 router.use(errorHandler);
