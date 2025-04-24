@@ -65,9 +65,8 @@ function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
 }
 
 export function AppSidebar() {
-  const { isMobile } = useSidebar();
-  const { authenticated, setAuthOverlayOpen } =
-    useAuthStore();
+  const { isMobile, toggleSidebar } = useSidebar();
+  const { authenticated, setAuthOverlayOpen } = useAuthStore();
 
   const groupOneItems = [
     {
@@ -138,7 +137,12 @@ export function AppSidebar() {
               ) : (
                 <SidebarMenuButton
                   className="cursor-pointer"
-                  onClick={() => setAuthOverlayOpen(true)}
+                  onClick={() => {
+                    setAuthOverlayOpen(true);
+                    if (isMobile) {
+                      toggleSidebar();
+                    }
+                  }}
                 >
                   <User2 style={{ height: "22px", width: "22px" }} />
                   <span>Login \ Signup</span>
