@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Card,
   CardContent,
@@ -9,11 +10,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button, Input, Label } from "@/components/ui";
 import useAuthStore from "@/app/store/authStore";
-import { X } from "lucide-react";
+import { X, Eye, EyeOff } from "lucide-react";
 import { RenderOverlay } from "@/components";
 
 export function AuthOverlay() {
   const { isAuthOverlayOpen, setAuthOverlayOpen } = useAuthStore();
+  const [showPassword, setShowPassword] = React.useState(false);
 
   if (isAuthOverlayOpen)
     return (
@@ -72,7 +74,7 @@ export function AuthOverlay() {
                 <CardTitle className="text-xl">Signup</CardTitle>
                 <CardDescription>Create a new account</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-7">
                 <div className="space-y-1">
                   <Label htmlFor="signup-fullname">Full Name</Label>
                   <Input
@@ -99,24 +101,23 @@ export function AuthOverlay() {
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="signup-password">Password</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    placeholder="••••••••"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="signup-confirm-password">
-                    Confirm Password
-                  </Label>
-                  <Input
-                    type="password"
-                    id="signup-confirm-password"
-                    placeholder="••••••••"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="signup-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                    />
+                    <Button
+                      className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
+                      variant={"ghost"}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="space-y-1">
                 <Button className="cursor-pointer">Submit</Button>
               </CardFooter>
             </Card>
