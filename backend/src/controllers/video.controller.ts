@@ -4,7 +4,6 @@ import { Video } from "../models/video.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean, extractTagsAndKeywords } from "../utils/stringUtils.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
-import {} from "../utils/stringUtils.js";
 
 export const getAllVideos: Controller = async (req, res) => {
   const page = Number(req.query.page as string) || 1;

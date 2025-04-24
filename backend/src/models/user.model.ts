@@ -223,7 +223,7 @@ const userSchema = new Schema(
     preferences: {
       type: preferenceSubSchema,
       default: {
-        theme: ThemeType.LIGHT,
+        theme: ThemeType.SYSTEM,
         nsfwContent: NsfwType.BLUR,
       },
     },

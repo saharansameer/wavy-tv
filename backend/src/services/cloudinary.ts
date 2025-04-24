@@ -11,9 +11,7 @@ cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
 });
 
-export const generateCloudinarySignature = (
-  folderName: FolderType
-) => {
+export const generateCloudinarySignature = (folderName: FolderType) => {
   const timestamp = Math.floor(Date.now() / 1000);
   const upload_preset = "ml_default";
   const folder = folderName;
@@ -22,5 +20,5 @@ export const generateCloudinarySignature = (
     CLOUDINARY_API_SECRET!
   );
 
-  return { signature, timestamp, upload_preset, folder};
+  return { signature, timestamp, upload_preset, folder };
 };

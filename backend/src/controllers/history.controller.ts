@@ -217,7 +217,7 @@ export const removeVideoFromWatchHistory: Controller = async (req, res) => {
 };
 
 export const deleteSearchHistory: Controller = async (req, res) => {
-  // Delete (Clear) User's Search and Watch History
+  // Delete (Clear) User's Search History
   const user = await User.findByIdAndUpdate(
     req?.user?._id,
     {

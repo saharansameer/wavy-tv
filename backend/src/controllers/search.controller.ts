@@ -260,8 +260,8 @@ export const getSearchResults: Controller = async (req, res) => {
 
   // If user is logged-in and search history is turned on
   if (userInfo?._id) {
-    await User.findByIdAndUpdate(
-      userInfo._id,
+    await User.findOneAndUpdate(
+      { _id: userInfo._id, isSearchHistorySaved: true },
       {
         $push: { searchHistory: query },
       },

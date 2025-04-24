@@ -50,7 +50,7 @@ export const RESPONSE_MESSAGE = {
     TOKEN_VALID: "Token is valid",
     ACCESS_TOKEN_EXPIRED: "Access token is expired or invalid",
     REFRESH_TOKEN_EXPIRED: "Refresh token is expired or invalid",
-    
+    DELETE_SUCCESS: "Token cookies deleted successfully from ",
   },
   VIDEO: {
     NOT_FOUND: "Video is private or does not exist",
