@@ -222,7 +222,7 @@ export const renewTokens: Controller = async (req, res) => {
 
   if (!existingRefreshToken) {
     throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
+      status: HTTP_STATUS.NOT_FOUND,
       message: `refreshToken: ${RESPONSE_MESSAGE.COOKIES.NOT_FOUND}`,
     });
   }
@@ -232,7 +232,7 @@ export const renewTokens: Controller = async (req, res) => {
 
   if (!decodedToken) {
     throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
+      status: HTTP_STATUS.UNAUTHORIZED,
       message: RESPONSE_MESSAGE.COOKIES.REFRESH_TOKEN_EXPIRED,
     });
   }
@@ -245,7 +245,7 @@ export const renewTokens: Controller = async (req, res) => {
 
   if (!user) {
     throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
+      status: HTTP_STATUS.UNAUTHORIZED,
       message: RESPONSE_MESSAGE.AUTH.LOGIN_AGAIN,
     });
   }
@@ -254,10 +254,6 @@ export const renewTokens: Controller = async (req, res) => {
   const { accessToken, refreshToken } = await generateTokens(
     user._id as Types.ObjectId
   );
-
-  // Update User's refreshToken in DB
-  user.refreshToken = refreshToken;
-  await user.save();
 
   // Final Response
   return res
@@ -272,11 +268,15 @@ export const renewTokens: Controller = async (req, res) => {
     );
 };
 
-export const verifyAccessToken: Controller = async (_req, res) => {
-  return res.status(HTTP_STATUS.OK).json(
-    new ApiResponse({
-      status: HTTP_STATUS.OK,
-      message: RESPONSE_MESSAGE.COOKIES.TOKEN_VALID,
-    })
-  );
+export const deleteTokensFromCookies: Controller = async (_req, res) => {
+  return res
+    .status(HTTP_STATUS.OK)
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: RESPONSE_MESSAGE.COOKIES.DELETE_SUCCESS,
+      })
+    );
 };

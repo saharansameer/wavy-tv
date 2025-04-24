@@ -17,8 +17,7 @@ export const checkAuth: Middleware = (req, _res, next) => {
   try {
     const validateToken = jwt.verify(token, ACCESS_TOKEN_SECRET);
     req.user = validateToken;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (err) {
+  } catch {
     throw new ApiError({
       status: HTTP_STATUS.FORBIDDEN,
       message: RESPONSE_MESSAGE.COOKIES.ACCESS_TOKEN_EXPIRED,
