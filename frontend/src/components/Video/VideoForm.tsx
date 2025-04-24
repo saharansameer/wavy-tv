@@ -21,6 +21,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { videoFormSchema, VideoFormSchemaType } from "@/app/schema";
 
 export function VideoForm() {
+  const [progressPercent, setProgressPercent] = React.useState(0);
+
   const {
     register,
     handleSubmit,
@@ -37,8 +39,6 @@ export function VideoForm() {
       nsfw: false,
     },
   });
-
-  const [progressPercent, setProgressPercent] = React.useState(0);
 
   React.useEffect(() => {
     if (isSubmitting && progressPercent < 90) {
@@ -79,7 +79,7 @@ export function VideoForm() {
       console.log("Video Form Error:", error);
     }
 
-    setProgressPercent(100);
+    setProgressPercent(0);
     reset();
   };
 
@@ -121,6 +121,7 @@ export function VideoForm() {
             <div className="flex flex-col gap-2">
               <label className="font-medium">Description</label>
               <TextEditor
+                className="max-w-5xl h-[250px] md:h-[350px]"
                 value={field.value || ""}
                 onChange={field.onChange}
                 placeholder="Type description... (optional)"
