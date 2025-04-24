@@ -7,9 +7,9 @@ import {
   ListVideo,
   Upload,
   PencilLine,
+  User2,
+  ChevronUp,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-
 import {
   Sidebar,
   SidebarContent,
@@ -24,6 +24,14 @@ import {
   SidebarTrigger,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
+import useAuthStore from "@/app/store/authStore";
 
 interface GroupItem {
   title: string;
@@ -32,6 +40,7 @@ interface GroupItem {
 }
 
 function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
+  const { isMobile, toggleSidebar } = useSidebar();
   return (
     <SidebarGroup>
       <SidebarGroupContent>
@@ -39,7 +48,10 @@ function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
           {groupItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild className="font-semibold">
-                <Link to={item.url}>
+                <Link
+                  to={item.url}
+                  onClick={() => (isMobile ? toggleSidebar() : null)}
+                >
                   <item.icon style={{ width: "22px", height: "22px" }} />
                   <span>{item.title}</span>
                 </Link>
@@ -54,6 +66,8 @@ function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
 
 export function AppSidebar() {
   const { isMobile } = useSidebar();
+  const { authenticated, setAuthOverlayOpen } =
+    useAuthStore();
 
   const groupOneItems = [
     {
@@ -105,15 +119,47 @@ export function AppSidebar() {
           </div>
         )}
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="scrollbar-none overflow-x-hidden">
         <SidebarGroupUtil groupItems={groupOneItems} />
         <SidebarSeparator />
         <SidebarGroupUtil groupItems={groupTwoItems} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="md:mb-16">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton></SidebarMenuButton>
+            <DropdownMenu>
+              {authenticated ? (
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton>
+                    <User2 style={{ height: "22px", width: "22px" }} /> Username
+                    <ChevronUp className="ml-auto" />
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+              ) : (
+                <SidebarMenuButton
+                  className="cursor-pointer"
+                  onClick={() => setAuthOverlayOpen(true)}
+                >
+                  <User2 style={{ height: "22px", width: "22px" }} />
+                  <span>Login \ Signup</span>
+                </SidebarMenuButton>
+              )}
+
+              <DropdownMenuContent
+                side="top"
+                className="w-[--radix-popper-anchor-width]"
+              >
+                <DropdownMenuItem>
+                  <span>Account</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <span>Billing</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <span>Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
