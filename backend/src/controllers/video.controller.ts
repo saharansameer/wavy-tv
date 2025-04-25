@@ -87,7 +87,7 @@ export const getVideoByPublicId: Controller = async (req, res) => {
         publicId: videoPublicId,
         $or: [
           { publishStatus: { $in: ["PUBLIC", "UNLISTED"] } },
-          { publishStatus: "PRIVATE", owner: userInfo._id },
+          { publishStatus: "PRIVATE", owner: userInfo?._id },
         ],
       },
     },
@@ -159,11 +159,11 @@ export const getVideoByPublicId: Controller = async (req, res) => {
         },
         currUserVoteType: {
           $cond: {
-            if: { $in: [userInfo._id, "$upvotes.votedBy"] },
+            if: { $in: [userInfo?._id, "$upvotes.votedBy"] },
             then: "UPVOTE",
             else: {
               $cond: {
-                if: { $in: [userInfo._id, "$downvotes.votedBy"] },
+                if: { $in: [userInfo?._id, "$downvotes.votedBy"] },
                 then: "DOWNVOTE",
                 else: null,
               },
