@@ -28,6 +28,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const hideTimeoutRef = useRef<number | null>(null);
   const [isMuted, setMuted] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
 
   const togglePlay = useCallback(() => {
     const video = videoRef.current;
@@ -115,11 +116,19 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         className="w-full h-full"
         onClick={togglePlay}
         onTimeUpdate={handleTimeUpdate}
+        onWaiting={() => setIsBuffering(true)}
+        onPlaying={() => setIsBuffering(false)}
       />
+
+      {isBuffering && (
+        <div className="absolute inset-0 flex items-center justify-center z-10  bg-opacity-40">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
 
       {/* Bottom controls */}
       {showControls && (
-        <div className="absolute bottom-0 left-0 right-0 bg-opacity-60 p-4 flex flex-col space-y-2">
+        <div className="absolute bottom-0 left-0 right-0 bg-opacity-60 px-2 py-1 flex flex-col space-y-2">
           <input
             type="range"
             min={0}

@@ -56,8 +56,8 @@ export function AllVideos() {
   }
 
   return (
-    <div className="w-full h-screen">
-      <div className="flex flex-wrap gap-20">
+    <div className="w-full h-full px-5 py-5">
+      <div className="flex flex-wrap gap-20 min-h-screen">
         {videos?.pages?.[currPage - 1]?.docs.map((doc) => (
           <VideoCard key={doc.publicId} video={doc} />
         ))}
