@@ -1,14 +1,16 @@
 import React from "react";
 import {
-  Home,
   History,
-  Heart,
-  ClockFading,
-  ListVideo,
   Upload,
   PencilLine,
   User2,
   ChevronUp,
+  SquarePlay,
+  Rss,
+  ArrowBigUpDash,
+  ArrowBigDownDash,
+  MessageSquareText,
+  Home,
 } from "lucide-react";
 import {
   Sidebar,
@@ -23,6 +25,7 @@ import {
   useSidebar,
   SidebarTrigger,
   SidebarSeparator,
+  SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -39,10 +42,17 @@ interface GroupItem {
   icon: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
-function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
+function SidebarGroupUtil({
+  groupItems,
+  groupLabel,
+}: {
+  groupItems: GroupItem[];
+  groupLabel: string;
+}) {
   const { isMobile, toggleSidebar } = useSidebar();
   return (
     <SidebarGroup>
+      <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu className="flex flex-col gap-3">
           {groupItems.map((item) => (
@@ -68,16 +78,19 @@ export function AppSidebar() {
   const { isMobile, toggleSidebar } = useSidebar();
   const { authenticated, setAuthOverlayOpen } = useAuthStore();
 
-  const groupOneItems = [
+  const groupZeroItems = [
     {
       title: "Home",
       url: "/",
       icon: Home,
     },
+  ];
+
+  const groupOneItems = [
     {
-      title: "Create Post",
-      url: "/create",
-      icon: PencilLine,
+      title: "Video Feed",
+      url: "/vf",
+      icon: SquarePlay,
     },
     {
       title: "Upload Video",
@@ -88,24 +101,37 @@ export function AppSidebar() {
 
   const groupTwoItems = [
     {
-      title: "Playlists",
-      url: "/playlist",
-      icon: ListVideo,
+      title: "Post Feed",
+      url: "/pf",
+      icon: Rss,
     },
     {
-      title: "Favourites",
-      url: "/saved",
-      icon: Heart,
+      title: "Create Post",
+      url: "/create",
+      icon: PencilLine,
     },
+  ];
+
+  const groupThreeItems = [
     {
-      title: "Watch Later",
-      url: "/playlist/watch-later",
-      icon: ClockFading,
-    },
-    {
-      title: "History",
-      url: "/history",
+      title: "Watch History",
+      url: "/watchhistory",
       icon: History,
+    },
+    {
+      title: "Upvotes",
+      url: "/upvotes",
+      icon: ArrowBigUpDash,
+    },
+    {
+      title: "Downvotes",
+      url: "/downvotes",
+      icon: ArrowBigDownDash,
+    },
+    {
+      title: "Comments",
+      url: "/comments",
+      icon: MessageSquareText,
     },
   ];
 
@@ -119,9 +145,16 @@ export function AppSidebar() {
         )}
       </SidebarHeader>
       <SidebarContent className="scrollbar-none overflow-x-hidden">
-        <SidebarGroupUtil groupItems={groupOneItems} />
+        <SidebarGroupUtil groupItems={groupZeroItems} groupLabel={"General"} />
         <SidebarSeparator />
-        <SidebarGroupUtil groupItems={groupTwoItems} />
+        <SidebarGroupUtil groupItems={groupOneItems} groupLabel={"Video"} />
+        <SidebarSeparator />
+        <SidebarGroupUtil groupItems={groupTwoItems} groupLabel={"Post"} />
+        <SidebarSeparator />
+        <SidebarGroupUtil
+          groupItems={groupThreeItems}
+          groupLabel={"Activity"}
+        />
       </SidebarContent>
       <SidebarFooter className="md:mb-16">
         <SidebarMenu>
