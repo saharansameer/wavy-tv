@@ -8,6 +8,7 @@ import {
   logoutUser,
   renewTokens,
   deleteTokensFromCookies,
+  existingEmailAndUsername,
 } from "../controllers/auth.controller.js";
 
 const router = Router();
@@ -26,6 +27,9 @@ router.route("/token/new").get(asyncHandler(renewTokens));
 
 // GET - Remove Token
 router.route("/token/delete").get(asyncHandler(deleteTokensFromCookies));
+
+// POST - Existing Email and Username
+router.route("/exist").post(asyncHandler(existingEmailAndUsername));
 
 // Error Handler
 router.use(errorHandler);

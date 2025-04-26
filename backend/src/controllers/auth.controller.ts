@@ -117,9 +117,8 @@ export const registerUser: Controller = async (req, res) => {
 
 export const loginUser: Controller = async (req, res) => {
   const { email, password } = req.body;
-  const trimmedEmail = trimAndClean(email || "");
 
-  if (!trimmedEmail || !password) {
+  if (!email || !password) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.AUTH.LOGIN_REQUIRED_FIELDS,
@@ -128,7 +127,7 @@ export const loginUser: Controller = async (req, res) => {
 
   // Find user with the recieved email or username
   const user = await User.findOne({
-    $or: [{ username: trimmedEmail }, { email: trimmedEmail }],
+    email,
   });
 
   if (!user) {
@@ -161,6 +160,12 @@ export const loginUser: Controller = async (req, res) => {
       new ApiResponse({
         status: HTTP_STATUS.OK,
         message: RESPONSE_MESSAGE.AUTH.LOGIN_SUCCESS,
+        data: {
+          username: user.username,
+          avatar: user.avatar,
+          fullName: user.fullName,
+          ...user.preferences,
+        },
       })
     );
 };
@@ -279,4 +284,60 @@ export const deleteTokensFromCookies: Controller = async (_req, res) => {
         message: RESPONSE_MESSAGE.COOKIES.DELETE_SUCCESS,
       })
     );
+};
+
+export const existingEmailAndUsername: Controller = async (req, res) => {
+  const { email, username } = req.body;
+
+  if (!email || !username) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
+    });
+  }
+
+  // Find users with the given email and username
+  const users = await User.find({
+    $or: [{ email }, { username }],
+  });
+
+  // Response - No user found with the given email and username
+  if (users.length === 0) {
+    return res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: "Username and Email both are available",
+        data: {
+          email: true,
+          username: true,
+        },
+      })
+    );
+  }
+
+  // Edge case very rare scenario
+  if (users.length === 2) {
+    return res.status(HTTP_STATUS.OK).json(
+      new ApiResponse({
+        status: HTTP_STATUS.OK,
+        message: "Both username and email are already taken",
+        data: {
+          email: false,
+          username: false,
+        },
+      })
+    );
+  }
+
+  // Final Response - User exist with the given Email or Username
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: "User already exist with the given Email or Username",
+      data: {
+        email: users[0].email !== email,
+        username: users[0].username !== username,
+      },
+    })
+  );
 };
