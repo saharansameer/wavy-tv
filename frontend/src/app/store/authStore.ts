@@ -1,7 +1,7 @@
 import { create, StateCreator } from "zustand";
 import { devtools, persist, createJSONStorage } from "zustand/middleware";
 
-type ThemeType = "DARK" | "LIGHT" | "SYSTEM";
+type ThemeType = "dark" | "light" | "system";
 type NsfwContentType = "SHOW" | "HIDE" | "BLUR";
 
 interface AuthUser {
@@ -37,7 +37,7 @@ const authStore: StateCreator<AuthType> = (set, get) => ({
   setAuthOverlayOpen: (isAuthOverlayOpen: boolean) =>
     set({ isAuthOverlayOpen }),
   authUser: {
-    theme: "SYSTEM",
+    theme: "system",
     nsfwContent: "BLUR",
     fullName: "",
     username: "",

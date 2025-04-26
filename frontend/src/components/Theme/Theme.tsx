@@ -7,7 +7,7 @@ export function Theme() {
   useEffect(() => {
     const root = document.querySelector("html");
 
-    if (authUser.theme === "SYSTEM") {
+    if (authUser.theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"
