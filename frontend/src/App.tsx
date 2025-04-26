@@ -6,7 +6,7 @@ import { AuthOverlay } from "@/pages";
 function App() {
   return (
     <div className="bg-background">
-      <div className="w-full py-2 px-2 bg-background dark:bg-background sticky top-0">
+      <div className="w-full py-2 px-2 bg-background dark:bg-background sticky top-0 z-20"   >
         <Header />
       </div>
 
@@ -14,7 +14,7 @@ function App() {
         <div>
           <SidebarProvider>
             <SidebarTrigger
-              className={"fixed inset-y-4 inset-x-2 cursor-pointer"}
+              className={"fixed inset-y-4 inset-x-2 cursor-pointer z-[20]"}
             />
             <AppSidebar />
           </SidebarProvider>
