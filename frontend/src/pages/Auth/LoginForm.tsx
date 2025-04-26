@@ -34,7 +34,6 @@ export function LoginForm() {
 
   const onSubmitHandler: SubmitHandler<LoginFormSchemaType> = async (data) => {
     try {
-      console.log(data);
       const { email, password } = data;
       const loginResponse = await axios.post("/api/v1/auth/login", {
         email,

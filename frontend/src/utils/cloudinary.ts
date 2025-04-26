@@ -11,7 +11,7 @@ export const uploadToCloudinary = async ({ file, folder }: UploadOptions) => {
     const signatureResponse = await axios.get(
       `/api/v1/cloudinary/signature?dir=${folder}`
     );
-    console.log(signatureResponse.data.data);
+    
     const { signature, timestamp, upload_preset } = signatureResponse.data.data;
 
     const formData = new FormData();
