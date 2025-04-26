@@ -19,6 +19,7 @@ import { uploadToCloudinary } from "@/utils/cloudinary";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { videoFormSchema, VideoFormSchemaType } from "@/app/schema";
+import axios from "axios";
 
 export function VideoForm() {
   const [progressPercent, setProgressPercent] = React.useState(0);
@@ -52,29 +53,39 @@ export function VideoForm() {
 
   const onSubmitHandler: SubmitHandler<VideoFormSchemaType> = async (data) => {
     try {
-      console.log(data);
-      // Video File
-      const videoFile = data.videoFile;
+      // Video Form Data
+      const {
+        title,
+        description,
+        video,
+        thumbnail,
+        publishStatus,
+        category,
+        nsfw,
+      } = data;
 
       // Video Upload Response (from Cloudinary)
-      /*{ public_id, duration, height, width, url,
-        frame_rate, format, created_at, bytes,
-        bit_rate, audio, is_audio }*/
-      const videoFileUploadRes = await uploadToCloudinary({
-        file: videoFile,
+      const videoUploadRes = await uploadToCloudinary({
+        file: video,
         folder: "videos",
       });
-      console.log(videoFileUploadRes);
-      // Thumbnail
-      const thumbnail = data.thumbnail;
 
       // Thumbnail Upload Response (from Cloudinary)
-      /*{ public_id, url, bytes, height, width, format, created_at }*/
       const thumbnailUploadRes = await uploadToCloudinary({
         file: thumbnail,
         folder: "thumbnails",
       });
-      console.log(thumbnailUploadRes);
+
+      // Video Post Request
+      await axios.post("/api/v1/video/upload", {
+        title,
+        description,
+        video: videoUploadRes,
+        thumbnail: thumbnailUploadRes,
+        publishStatus,
+        category,
+        nsfw,
+      });
     } catch (error) {
       console.log("Video Form Error:", error);
     }
@@ -114,7 +125,7 @@ export function VideoForm() {
                 className="max-w-5xl h-[250px] md:h-[350px]"
                 value={field.value || ""}
                 onChange={field.onChange}
-                placeholder="Type description... (optional)"
+                placeholder="Start writing description... (optional)"
                 rows={8}
               />
             </div>
@@ -125,10 +136,10 @@ export function VideoForm() {
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 select-none">
         <Controller
           control={control}
-          name="videoFile"
+          name="video"
           render={({ field }) => (
             <>
               <Label>Video</Label>
@@ -142,12 +153,10 @@ export function VideoForm() {
             </>
           )}
         />
-        {errors.videoFile && (
-          <ErrorMessage text={`${errors.videoFile.message}`} />
-        )}
+        {errors.video && <ErrorMessage text={`${errors.video.message}`} />}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 select-none">
         <Controller
           control={control}
           name="thumbnail"
