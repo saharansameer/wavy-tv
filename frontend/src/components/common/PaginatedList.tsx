@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-import axios from "axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { VideoCard } from "@/components";
 import {
   Pagination,
   PaginationContent,
@@ -13,15 +12,27 @@ import {
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui";
 
-const getVideos = async ({ pageParam }: { pageParam: number }) => {
-  const response = await axios.get(`/api/v1/video?page=${pageParam}&limit=12`);
-  return response.data.data;
-};
+interface PaginatedListProps {
+  queryKey: [string];
+  queryFn: QueryFunction;
+  renderItem: (item: any) => React.ReactNode;
+  mainDivCN?: string;
+  docDivCN?: string;
+  pageDivCN?: string;
+}
 
-export function AllVideos() {
+export function PaginatedList({
+  queryKey,
+  queryFn,
+  renderItem,
+  mainDivCN,
+  docDivCN,
+  pageDivCN,
+}: PaginatedListProps) {
   const [currPage, setCurrPage] = React.useState(1);
+
   const {
-    data: videos,
+    data,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
@@ -30,20 +41,19 @@ export function AllVideos() {
     isError,
     error,
   } = useInfiniteQuery({
-    queryKey: ["videos"],
-    queryFn: getVideos,
+    queryKey,
+    queryFn,
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       return lastPage.hasNextPage ? lastPage.page + 1 : undefined;
     },
     getPreviousPageParam: (firstPage) => {
-      return firstPage.hasPreviousPage ? firstPage.page - 1 : undefined;
+      return firstPage.hasPrevPage ? firstPage.page - 1 : undefined;
     },
   });
 
-  const isPageFetched = (pageNumber: number) => {
-    return !!videos?.pageParams.find((page) => page === pageNumber);
-  };
+  const isPageFetched = (pageNumber: number) =>
+    !!data?.pageParams.find((page) => page === pageNumber);
 
   if (isError) {
     return <div>{error.message}</div>;
@@ -54,14 +64,20 @@ export function AllVideos() {
   }
 
   return (
-    <div className="flex flex-col justify-between w-full h-full px-5 py-5">
-      <div className="flex flex-wrap justify-center gap-x-20 gap-y-10">
-        {videos?.pages?.[currPage - 1]?.docs.map((doc) => (
-          <VideoCard key={doc.publicId} video={doc} />
-        ))}
+    <div
+      className={
+        mainDivCN || "flex flex-col justify-between w-full h-full px-5 py-5"
+      }
+    >
+      <div
+        className={
+          docDivCN || "flex flex-wrap justify-center gap-x-20 gap-y-10"
+        }
+      >
+        {data?.pages?.[currPage - 1]?.docs.map((item: any) => renderItem(item))}
       </div>
 
-      <div className="pt-10">
+      <div className={pageDivCN || "pt-10"}>
         <Pagination>
           <PaginationContent>
             <PaginationItem>
