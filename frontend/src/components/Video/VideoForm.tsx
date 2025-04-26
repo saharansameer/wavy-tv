@@ -98,17 +98,7 @@ export function VideoForm() {
           className={"max-w-5xl"}
           placeholder={"Title"}
           label={"Title"}
-          {...register("title", {
-            required: "Title is required",
-            minLength: {
-              value: 1,
-              message: "Title must be at least 1 characters",
-            },
-            maxLength: {
-              value: 100,
-              message: "Title must be at most 100 characters",
-            },
-          })}
+          {...register("title")}
         />
         {errors.title && <ErrorMessage text={`${errors.title.message}`} />}
       </div>

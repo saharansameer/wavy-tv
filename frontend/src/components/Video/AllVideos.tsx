@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui";
 
 const getVideos = async ({ pageParam }: { pageParam: number }) => {
-  const response = await axios.get(`/api/v1/video?page=${pageParam}&limit=2`);
+  const response = await axios.get(`/api/v1/video?page=${pageParam}&limit=12`);
   return response.data.data;
 };
 
@@ -45,8 +45,6 @@ export function AllVideos() {
     return !!videos?.pageParams.find((page) => page === pageNumber);
   };
 
-  console.log(videos);
-
   if (isError) {
     return <div>{error.message}</div>;
   }
@@ -56,14 +54,14 @@ export function AllVideos() {
   }
 
   return (
-    <div className="w-full h-full px-5 py-5">
-      <div className="flex flex-wrap gap-20 min-h-screen">
+    <div className="flex flex-col justify-between w-full h-full px-5 py-5">
+      <div className="flex flex-wrap justify-center gap-x-20 gap-y-10">
         {videos?.pages?.[currPage - 1]?.docs.map((doc) => (
           <VideoCard key={doc.publicId} video={doc} />
         ))}
       </div>
 
-      <div>
+      <div className="pt-10">
         <Pagination>
           <PaginationContent>
             <PaginationItem>

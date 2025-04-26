@@ -1,6 +1,6 @@
 import { UserAvatar } from "@/components";
 import { Dot } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 import { Link } from "react-router-dom";
 
 export function VideoCard({ video }) {
@@ -19,21 +19,22 @@ export function VideoCard({ video }) {
   };
 
   const getDate = (timestamp: Date) => {
-    return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
+    return formatDistanceToNowStrict(new Date(timestamp), { addSuffix: true });
   };
 
   return (
-    <div className="w-80 flex flex-col gap-y-2">
-      <Link to={`/v/${video.publicId}`} state={{ src: video.videoFile }}>
+    <div className="w-80 h-[268px] flex flex-col gap-y-2">
+      <Link to={`/v/${video.publicId}`}>
         <img
           src={video?.thumbnail}
-          className={`w-full rounded-sm cursor-pointer hover:rounded-xl transition-all duration-500 ease-in-out  ${video.nsfw ? "blur-xs" : ""}`}
+          className={`w-full h-48 rounded-sm cursor-pointer hover:rounded-xl transition-all duration-500 ease-in-out  ${video.nsfw ? "blur-xs" : ""}`}
         />
       </Link>
 
       <div className="flex flex-row">
         <div className="pt-1">
           <UserAvatar
+            className={"size-10"}
             src={video.owner.avatar}
             alt={video.owner.fullName}
             title={video.owner.username}
@@ -41,12 +42,12 @@ export function VideoCard({ video }) {
         </div>
 
         <div className="flex flex-col pl-4 select-none">
-          <div className="font-semibold line-clamp-2 leading-5">
+          <div className="font-semibold line-clamp-2 leading-6">
             {video.title}
           </div>
 
           <Link to={`/u/${video.owner.username}`}>
-            <div className="mt-2 text-sm text-[#252525] dark:text-[#e1e1e1] hover:underline">
+            <div className="mt-2 font-semibold text-sm text-[#252525] dark:text-[#e1e1e1] hover:underline">
               {video.owner.fullName}
             </div>
           </Link>
