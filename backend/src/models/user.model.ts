@@ -26,9 +26,9 @@ interface LastModified {
 }
 
 enum ThemeType {
-  LIGHT = "LIGHT",
-  DARK = "DARK",
-  SYSTEM = "SYSTEM",
+  LIGHT = "light",
+  DARK = "dark",
+  SYSTEM = "system",
 }
 
 enum NsfwType {
@@ -112,6 +112,8 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Full Name is required"],
       index: true,
+      minlength: [1, "Full Name can not be empty"],
+      maxlength: [20, "Full Name should not exceed 20 characters"],
     },
     username: {
       type: String,

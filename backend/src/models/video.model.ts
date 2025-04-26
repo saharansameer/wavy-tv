@@ -22,7 +22,7 @@ enum Category {
   GRAPHICS = "GRAPHICS",
 }
 
-interface VideoMetaData {
+interface VideoFileData {
   url: string;
   publicId: string;
   duration: Date;
@@ -35,7 +35,7 @@ interface VideoMetaData {
   is_audio: boolean;
 }
 
-const videoMetaDataSubSchema = new Schema({
+const videoFileSubSchema = new Schema({
   url: String,
   publicId: String,
   duration: Date,
@@ -48,7 +48,7 @@ const videoMetaDataSubSchema = new Schema({
   is_audio: Boolean,
 });
 
-interface ThumbnailMetaData {
+interface ThumbnailData {
   url: string;
   publicId: string;
   format: string;
@@ -57,7 +57,7 @@ interface ThumbnailMetaData {
   width: number;
 }
 
-const thumbnailMetaDataSubSchema = new Schema({
+const thumbnailSubSchema = new Schema({
   url: String,
   publicId: String,
   format: String,
@@ -73,8 +73,8 @@ interface VideoDocument extends Document {
   duration: number;
   views: number;
   owner: string;
-  videoMetaData: VideoMetaData;
-  thumbnailMetaData: ThumbnailMetaData;
+  videoFile: VideoFileData;
+  thumbnail: ThumbnailData;
   publishStatus: PublishStatus;
   nsfw: boolean;
   category: Category;
@@ -104,10 +104,6 @@ const videoSchema = new Schema(
       default: "",
       maxlength: [5000, "Description should not exceed 5000 characters"],
     },
-    duration: {
-      type: Number,
-      required: true,
-    },
     views: {
       type: Number,
       default: 0,
@@ -117,11 +113,11 @@ const videoSchema = new Schema(
       ref: "User",
       required: true,
     },
-    videoMetaData: {
-      type: videoMetaDataSubSchema,
+    videoFile: {
+      type: videoFileSubSchema,
     },
-    thumbnailMetaData: {
-      type: thumbnailMetaDataSubSchema,
+    thumbnail: {
+      type: thumbnailSubSchema,
     },
     publishStatus: {
       type: String,

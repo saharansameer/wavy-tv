@@ -7,6 +7,7 @@ import {
   getVideoByPublicId,
   updateVideoDetails,
   deleteVideo,
+  uploadVideo,
 } from "../controllers/video.controller.js";
 
 const router = Router();
@@ -22,6 +23,9 @@ router
   .get(asyncHandler(getVideoByPublicId))
   .patch(checkAuth, asyncHandler(updateVideoDetails))
   .delete(checkAuth, asyncHandler(deleteVideo));
+
+// POST - Upload Video
+router.route("/upload").post(checkAuth, asyncHandler(uploadVideo));
 
 // Error Handler
 router.use(errorHandler);

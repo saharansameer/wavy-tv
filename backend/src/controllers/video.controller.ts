@@ -4,6 +4,7 @@ import { Video } from "../models/video.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean, extractTagsAndKeywords } from "../utils/stringUtils.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
+import { generatePublicId } from "../utils/crypto.js";
 
 export const getAllVideos: Controller = async (req, res) => {
   const page = Number(req.query.page as string) || 1;
@@ -267,6 +268,86 @@ export const deleteVideo: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.VIDEO.DELETE_SUCCESS,
+    })
+  );
+};
+
+export const uploadVideo: Controller = async (req, res) => {
+  const {
+    title,
+    description,
+    video,
+    thumbnail,
+    publishStatus,
+    category,
+    nsfw,
+  } = req.body;
+
+  // Remove extra spaces from title
+  const trimmedTitle = trimAndClean(title || "");
+
+  // Check all fields (i.e title, description, publishStatus) are provided
+  if (
+    !trimmedTitle ||
+    !video ||
+    !thumbnail ||
+    !publishStatus ||
+    !category ||
+    nsfw === undefined
+  ) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
+    });
+  }
+
+  // Ectract Tags and Keywords from Title and Description
+  const tags = extractTagsAndKeywords(title, description || "");
+
+  // Create video document
+  const createVideo = await Video.create({
+    publicId: generatePublicId(),
+    title: trimmedTitle,
+    description: description || "",
+    publishStatus,
+    category,
+    nsfw,
+    videoFile: {
+      url: video.url,
+      asset_id: video.asset_id,
+      duration: video.duration,
+      height: video.height,
+      width: video.width,
+      frame_rate: video.frame_rate,
+      format: video.format,
+      bytes: video.bytes,
+      bit_rate: video.bit_rate,
+      is_audio: video.is_audio,
+    },
+    thumbnail: {
+      url: thumbnail.url,
+      asset_id: thumbnail.asset_id,
+      format: thumbnail.format,
+      bytes: thumbnail.bytes,
+      height: thumbnail.height,
+      width: thumbnail.width,
+    },
+    tags,
+    owner: req?.user?._id,
+  });
+
+  if (!createVideo) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.VIDEO.CREATE_FAILURE,
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.CREATED).json(
+    new ApiResponse({
+      status: HTTP_STATUS.CREATED,
+      message: RESPONSE_MESSAGE.VIDEO.CREATE_SUCCESS,
     })
   );
 };

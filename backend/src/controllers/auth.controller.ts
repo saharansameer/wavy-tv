@@ -161,10 +161,11 @@ export const loginUser: Controller = async (req, res) => {
         status: HTTP_STATUS.OK,
         message: RESPONSE_MESSAGE.AUTH.LOGIN_SUCCESS,
         data: {
+          theme: user.preferences.theme,
+          nsfwContent: user.preferences.nsfwContent,
+          fullName: user.fullName,
           username: user.username,
           avatar: user.avatar,
-          fullName: user.fullName,
-          ...user.preferences,
         },
       })
     );
