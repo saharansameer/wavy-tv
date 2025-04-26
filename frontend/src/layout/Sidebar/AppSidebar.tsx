@@ -25,7 +25,6 @@ import {
   useSidebar,
   SidebarTrigger,
   SidebarSeparator,
-  SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -33,8 +32,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui";
+import { UserAvatar } from "@/components";
 import { Link } from "react-router-dom";
 import useAuthStore from "@/app/store/authStore";
+import { useLogout } from "@/hooks/useLogout";
 
 interface GroupItem {
   title: string;
@@ -42,17 +44,10 @@ interface GroupItem {
   icon: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
-function SidebarGroupUtil({
-  groupItems,
-  groupLabel,
-}: {
-  groupItems: GroupItem[];
-  groupLabel: string;
-}) {
+function SidebarGroupUtil({ groupItems }: { groupItems: GroupItem[] }) {
   const { isMobile, toggleSidebar } = useSidebar();
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu className="flex flex-col gap-3">
           {groupItems.map((item) => (
@@ -76,7 +71,7 @@ function SidebarGroupUtil({
 
 export function AppSidebar() {
   const { isMobile, toggleSidebar } = useSidebar();
-  const { authenticated, setAuthOverlayOpen } = useAuthStore();
+  const { authenticated, setAuthOverlayOpen, authUser } = useAuthStore();
 
   const groupZeroItems = [
     {
@@ -84,26 +79,23 @@ export function AppSidebar() {
       url: "/",
       icon: Home,
     },
-  ];
-
-  const groupOneItems = [
     {
       title: "Video Feed",
       url: "/vf",
       icon: SquarePlay,
     },
     {
-      title: "Upload Video",
-      url: "/upload",
-      icon: Upload,
-    },
-  ];
-
-  const groupTwoItems = [
-    {
       title: "Post Feed",
       url: "/pf",
       icon: Rss,
+    },
+  ];
+
+  const groupOneItems = [
+    {
+      title: "Upload Video",
+      url: "/upload",
+      icon: Upload,
     },
     {
       title: "Create Post",
@@ -112,7 +104,7 @@ export function AppSidebar() {
     },
   ];
 
-  const groupThreeItems = [
+  const groupTwoItems = [
     {
       title: "Watch History",
       url: "/watchhistory",
@@ -145,16 +137,12 @@ export function AppSidebar() {
         )}
       </SidebarHeader>
       <SidebarContent className="scrollbar-none overflow-x-hidden">
-        <SidebarGroupUtil groupItems={groupZeroItems} groupLabel={"General"} />
+        <SidebarGroupUtil groupItems={groupZeroItems} />
         <SidebarSeparator />
-        <SidebarGroupUtil groupItems={groupOneItems} groupLabel={"Video"} />
+        <SidebarGroupUtil groupItems={groupOneItems} />
         <SidebarSeparator />
-        <SidebarGroupUtil groupItems={groupTwoItems} groupLabel={"Post"} />
+        <SidebarGroupUtil groupItems={groupTwoItems} />
         <SidebarSeparator />
-        <SidebarGroupUtil
-          groupItems={groupThreeItems}
-          groupLabel={"Activity"}
-        />
       </SidebarContent>
       <SidebarFooter className="md:mb-16">
         <SidebarMenu>
@@ -162,13 +150,23 @@ export function AppSidebar() {
             <DropdownMenu>
               {authenticated ? (
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton>
-                    <User2 style={{ height: "22px", width: "22px" }} /> Username
+                  <SidebarMenuButton
+                    variant={"outline"}
+                    className="cursor-pointer"
+                  >
+                    <UserAvatar
+                      src={authUser.avatar as string}
+                      alt={authUser.username}
+                    />{" "}
+                    <p className="w-40 text-base truncate">
+                      {authUser.username}
+                    </p>
                     <ChevronUp className="ml-auto" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
               ) : (
                 <SidebarMenuButton
+                  variant={"outline"}
                   className="cursor-pointer"
                   onClick={() => {
                     setAuthOverlayOpen(true);
@@ -184,16 +182,26 @@ export function AppSidebar() {
 
               <DropdownMenuContent
                 side="top"
-                className="w-[--radix-popper-anchor-width]"
+                className="w-44 md:w-60 cursor-pointer"
               >
                 <DropdownMenuItem>
-                  <span>Account</span>
+                  <Button variant={"ghost"} className="h-5 p-0 w-full">
+                    Profile
+                  </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <span>Billing</span>
+                  <Button variant={"ghost"} className="h-5 p-0 w-full">
+                    Settings
+                  </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <span>Sign out</span>
+                  <Button
+                    variant={"ghost"}
+                    className="h-5 p-0 w-full"
+                    onClick={useLogout}
+                  >
+                    Log out
+                  </Button>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
