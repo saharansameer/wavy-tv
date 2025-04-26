@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import useAuthStore from "@/app/store/authStore";
 
 export function Theme() {
-  const { preferences } = useAuthStore();
+  const { authUser } = useAuthStore();
 
   useEffect(() => {
     const root = document.querySelector("html");
 
-    if (preferences.theme === "SYSTEM") {
+    if (authUser.theme === "SYSTEM") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"
@@ -19,8 +19,8 @@ export function Theme() {
     }
 
     root?.classList.remove("dark", "light");
-    root?.classList.add(preferences.theme);
-  }, [preferences.theme]);
+    root?.classList.add(authUser.theme);
+  }, [authUser.theme]);
 
   return <></>;
 }

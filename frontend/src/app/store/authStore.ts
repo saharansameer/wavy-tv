@@ -4,9 +4,12 @@ import { devtools, persist, createJSONStorage } from "zustand/middleware";
 type ThemeType = "DARK" | "LIGHT" | "SYSTEM";
 type NsfwContentType = "SHOW" | "HIDE" | "BLUR";
 
-interface Preferences {
+interface AuthUser {
   theme: ThemeType;
   nsfwContent: NsfwContentType;
+  fullName: string;
+  username: string;
+  avatar: string;
 }
 
 interface AuthType {
@@ -16,11 +19,11 @@ interface AuthType {
   setAuthenticated: (value: boolean) => void;
   tokenExpiry: number;
   setTokenExpiry: (value: number) => void;
-  preferences: Preferences;
-  setTheme: (value: ThemeType) => void;
-  setNsfwContent: (value: NsfwContentType) => void;
   isAuthOverlayOpen: boolean;
   setAuthOverlayOpen: (value: boolean) => void;
+  authUser: AuthUser;
+  setAuthUser: (value: AuthUser) => void;
+  setTheme: (value: ThemeType) => void;
 }
 
 const authStore: StateCreator<AuthType> = (set, get) => ({
@@ -30,17 +33,19 @@ const authStore: StateCreator<AuthType> = (set, get) => ({
   setAuthenticated: (authenticated: boolean) => set({ authenticated }),
   tokenExpiry: 0,
   setTokenExpiry: (tokenExpiry: number) => set({ tokenExpiry }),
-  preferences: {
-    theme: "SYSTEM",
-    nsfwContent: "BLUR",
-  },
-  setTheme: (theme: ThemeType) =>
-    set({ preferences: { ...get().preferences, theme } }),
-  setNsfwContent: (nsfwContent: NsfwContentType) =>
-    set({ preferences: { ...get().preferences, nsfwContent } }),
   isAuthOverlayOpen: true,
   setAuthOverlayOpen: (isAuthOverlayOpen: boolean) =>
     set({ isAuthOverlayOpen }),
+  authUser: {
+    theme: "SYSTEM",
+    nsfwContent: "BLUR",
+    fullName: "",
+    username: "",
+    avatar: "",
+  },
+  setAuthUser: (authUser: AuthUser) => set({ authUser }),
+  setTheme: (theme: ThemeType) =>
+    set({ authUser: { ...get().authUser, theme } }),
 });
 
 const useAuthStore = create(
