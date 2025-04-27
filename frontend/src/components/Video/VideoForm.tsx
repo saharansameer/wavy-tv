@@ -20,9 +20,11 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { videoFormSchema, VideoFormSchemaType } from "@/app/schema";
 import axios from "axios";
+import useAuthStore from "@/app/store/authStore";
 
 export function VideoForm() {
   const [progressPercent, setProgressPercent] = React.useState(0);
+  const { setAuthorized, tokenExpiry, authenticated } = useAuthStore();
 
   const {
     register,
@@ -35,7 +37,7 @@ export function VideoForm() {
     mode: "onChange",
     reValidateMode: "onChange",
     defaultValues: {
-      publishStatus: "PRIVATE",
+      publishStatus: "PUBLIC",
       category: "GENERAL",
       nsfw: false,
     },
@@ -53,6 +55,16 @@ export function VideoForm() {
 
   const onSubmitHandler: SubmitHandler<VideoFormSchemaType> = async (data) => {
     try {
+      // Check authentication first
+      if (!authenticated) {
+        return;
+      }
+
+      // Check authorization before form submission
+      if (tokenExpiry < Date.now()) {
+        setAuthorized(false);
+      }
+
       // Video Form Data
       const {
         title,

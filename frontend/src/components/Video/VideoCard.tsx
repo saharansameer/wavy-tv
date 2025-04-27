@@ -8,7 +8,7 @@ export function VideoCard({ video }) {
     <div className="w-80 h-[268px] flex flex-col gap-y-2">
       <Link to={`/v/${video.publicId}`}>
         <img
-          src={video?.thumbnail}
+          src={video?.thumbnail.url}
           className={`w-full h-48 rounded-sm cursor-pointer hover:rounded-xl transition-all duration-500 ease-in-out  ${video.nsfw ? "blur-xs" : ""}`}
         />
       </Link>
@@ -29,12 +29,12 @@ export function VideoCard({ video }) {
           </div>
 
           <Link to={`/u/${video.owner.username}`}>
-            <div className="mt-2 font-semibold text-sm text-[#252525] dark:text-[#e1e1e1] hover:underline">
+            <div className="mt-2 font-semibold text-sm text-secondary hover:underline">
               {video.owner.fullName}
             </div>
           </Link>
 
-          <div className="flex flex-row text-[#252525] dark:text-[#e1e1e1]">
+          <div className="flex flex-row text-secondary">
             <div className="text-sm">{getVideoViews(video.views)} views</div>
             <Dot />
             <div className="text-sm">{getVideoTimestamp(video.createdAt)}</div>

@@ -127,7 +127,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, poster }) => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full max-w-5xl aspect-video bg-black mx-auto"
+      className="relative w-full max-w-5xl aspect-video mx-auto bg-[#141414] dark:bg-[#252525]"
       onMouseMove={handleInteraction}
       onTouchStart={handleInteraction}
     >
@@ -135,17 +135,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, poster }) => {
         ref={videoRef}
         src={src}
         poster={poster}
-        className="w-full h-full object-cover bg-background"
+        className="w-full h-full object-contain "
         onClick={togglePlay}
         onTimeUpdate={handleTimeUpdate}
         onWaiting={() => setIsBuffering(true)}
         onPlaying={() => setIsBuffering(false)}
         onEnded={handleVideoEnd}
         onLoadedMetadata={handleLoadedMetadata}
-        playsInline
-        webkit-playsinline
-        muted
-        controls={false}
         preload="metadata"
       />
 
@@ -220,7 +216,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, poster }) => {
               variant="ghost"
               size="icon"
               onClick={toggleFullscreen}
-              className="hidden md:inline-flex text-white"
+              className="text-white"
             >
               {isFullscreen ? <Minimize2 /> : <Fullscreen />}
             </Button>
