@@ -32,7 +32,7 @@ export function UploadProgressOverlay({
 
 export function LoadingOverlay() {
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-background">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       <Loader2 className="h-16 w-16 animate-spin text-primary" />
     </div>
   );
