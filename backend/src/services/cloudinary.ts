@@ -22,3 +22,23 @@ export const generateCloudinarySignature = (folderName: FolderType) => {
 
   return { signature, timestamp, upload_preset, folder };
 };
+
+type CloudinaryDestroyer = (
+  publicId: string,
+  resourceType: "video" | "image" | "raw"
+) => Promise<boolean>;
+
+export const destroyAssetFromCloudinary: CloudinaryDestroyer = async (
+  publicId,
+  resourceType
+) => {
+  try {
+    await cloudinary.uploader.destroy(publicId, {
+      invalidate: true,
+      resource_type: resourceType,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+};

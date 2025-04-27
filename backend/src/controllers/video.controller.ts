@@ -5,6 +5,7 @@ import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean, extractTagsAndKeywords } from "../utils/stringUtils.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
 import { generatePublicId } from "../utils/crypto.js";
+import { destroyAssetFromCloudinary } from "../services/cloudinary.js";
 
 export const getAllVideos: Controller = async (req, res) => {
   const page = Number(req.query.page as string) || 1;
@@ -191,11 +192,11 @@ export const getVideoByPublicId: Controller = async (req, res) => {
 
   // Increment Video View
   if (req.user)
-  await Video.findByIdAndUpdate(
-    video[0]._id,
-    { $inc: { views: 1 } },
-    { new: true }
-  );
+    await Video.findByIdAndUpdate(
+      video[0]._id,
+      { $inc: { views: 1 } },
+      { new: true }
+    );
 
   // Final Response
   return res.status(HTTP_STATUS.OK).json(
@@ -259,7 +260,7 @@ export const deleteVideo: Controller = async (req, res) => {
   const { videoPublicId } = req.params;
 
   // Video Deletion
-  const video = await Video.findOneAndDelete({
+  const video = await Video.findOne({
     publicId: videoPublicId,
     owner: req.user?._id,
   });
@@ -270,6 +271,26 @@ export const deleteVideo: Controller = async (req, res) => {
       message: RESPONSE_MESSAGE.VIDEO.NOT_FOUND,
     });
   }
+
+  // Delete Video and Thumbnail from cloudinary
+  const destroyVideo = await destroyAssetFromCloudinary(
+    video.videoFile.public_id,
+    "video"
+  );
+  const destroyThumbnail = await destroyAssetFromCloudinary(
+    video.thumbnail.public_id,
+    "image"
+  );
+
+  if (!destroyVideo && !destroyThumbnail) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "Unable to destroy assets from Cloudinary",
+    });
+  }
+
+  // Delete video document from DB
+  await Video.findByIdAndDelete(video._id);
 
   // Final Response
   return res.status(HTTP_STATUS.OK).json(
@@ -322,7 +343,7 @@ export const uploadVideo: Controller = async (req, res) => {
     nsfw,
     videoFile: {
       url: video.secure_url,
-      asset_id: video.asset_id,
+      public_id: video.public_id,
       duration: video.duration,
       height: video.height,
       width: video.width,
@@ -334,7 +355,7 @@ export const uploadVideo: Controller = async (req, res) => {
     },
     thumbnail: {
       url: thumbnail.secure_url,
-      asset_id: thumbnail.asset_id,
+      public_id: thumbnail.public_id,
       format: thumbnail.format,
       bytes: thumbnail.bytes,
       height: thumbnail.height,
@@ -344,7 +365,12 @@ export const uploadVideo: Controller = async (req, res) => {
     owner: req?.user?._id,
   });
 
+  // If any error occurs while creating video document
   if (!createVideo) {
+    // Delete Video and Thumbnail from cloudinary
+    await destroyAssetFromCloudinary(video.public_id, "video");
+    await destroyAssetFromCloudinary(thumbnail.public_id, "image");
+
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.VIDEO.CREATE_FAILURE,
