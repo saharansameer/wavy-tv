@@ -24,8 +24,8 @@ enum Category {
 
 interface VideoFileData {
   url: string;
-  publicId: string;
-  duration: Date;
+  asset_id: string;
+  duration: number;
   height: number;
   width: number;
   frame_rate: number;
@@ -37,8 +37,8 @@ interface VideoFileData {
 
 const videoFileSubSchema = new Schema({
   url: String,
-  publicId: String,
-  duration: Date,
+  asset_id: String,
+  duration: Number,
   height: Number,
   width: Number,
   frame_rate: Number,
@@ -50,7 +50,7 @@ const videoFileSubSchema = new Schema({
 
 interface ThumbnailData {
   url: string;
-  publicId: string;
+  asset_id: string;
   format: string;
   bytes: number;
   height: number;
@@ -59,7 +59,7 @@ interface ThumbnailData {
 
 const thumbnailSubSchema = new Schema({
   url: String,
-  publicId: String,
+  asset_id: String,
   format: String,
   bytes: Number,
   height: Number,

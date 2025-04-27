@@ -189,6 +189,14 @@ export const getVideoByPublicId: Controller = async (req, res) => {
     });
   }
 
+  // Increment Video View
+  if (req.user)
+  await Video.findByIdAndUpdate(
+    video[0]._id,
+    { $inc: { views: 1 } },
+    { new: true }
+  );
+
   // Final Response
   return res.status(HTTP_STATUS.OK).json(
     new ApiResponse({
@@ -313,7 +321,7 @@ export const uploadVideo: Controller = async (req, res) => {
     category,
     nsfw,
     videoFile: {
-      url: video.url,
+      url: video.secure_url,
       asset_id: video.asset_id,
       duration: video.duration,
       height: video.height,
@@ -325,7 +333,7 @@ export const uploadVideo: Controller = async (req, res) => {
       is_audio: video.is_audio,
     },
     thumbnail: {
-      url: thumbnail.url,
+      url: thumbnail.secure_url,
       asset_id: thumbnail.asset_id,
       format: thumbnail.format,
       bytes: thumbnail.bytes,
