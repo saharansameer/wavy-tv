@@ -1,27 +1,9 @@
 import { UserAvatar } from "@/components";
 import { Dot } from "lucide-react";
-import { formatDistanceToNowStrict } from "date-fns";
 import { Link } from "react-router-dom";
+import { getVideoViews, getVideoTimestamp } from "@/hooks/useVideo";
 
 export function VideoCard({ video }) {
-  const getViews = (views: number) => {
-    if (views < 999) {
-      return String(views);
-    }
-
-    if (views > 999 && views < 999999) {
-      return String(`${views / 1000}k`);
-    }
-
-    if (views > 999999 && views < 9999999) {
-      return String(`${views / 1000000}M`);
-    }
-  };
-
-  const getDate = (timestamp: Date) => {
-    return formatDistanceToNowStrict(new Date(timestamp), { addSuffix: true });
-  };
-
   return (
     <div className="w-80 h-[268px] flex flex-col gap-y-2">
       <Link to={`/v/${video.publicId}`}>
@@ -53,9 +35,9 @@ export function VideoCard({ video }) {
           </Link>
 
           <div className="flex flex-row text-[#252525] dark:text-[#e1e1e1]">
-            <div className="text-sm">{getViews(video.views)} views</div>
+            <div className="text-sm">{getVideoViews(video.views)} views</div>
             <Dot />
-            <div className="text-sm">{getDate(video.createdAt)}</div>
+            <div className="text-sm">{getVideoTimestamp(video.createdAt)}</div>
           </div>
         </div>
       </div>
