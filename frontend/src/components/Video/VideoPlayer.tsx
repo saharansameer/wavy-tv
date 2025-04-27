@@ -11,15 +11,12 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui";
 
-interface CustomVideoPlayerProps {
+interface VideoPlayerProps {
   src: string;
   poster?: string;
 }
 
-export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
-  src,
-  poster,
-}) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, poster }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -29,6 +26,8 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
   const hideTimeoutRef = useRef<number | null>(null);
   const [isMuted, setMuted] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const togglePlay = useCallback(() => {
     const video = videoRef.current;
@@ -57,6 +56,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
   const handleTimeUpdate = () => {
     const video = videoRef.current;
     if (!video || !video.duration) return;
+    setCurrentTime(video.currentTime);
     setProgress((video.currentTime / video.duration) * 100);
   };
 
@@ -94,6 +94,11 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     resetHideTimeout();
   };
 
+  const handleVideoEnd = () => {
+    setIsPlaying(false);
+    setProgress(0);
+  };
+
   useEffect(() => {
     return () => {
       if (hideTimeoutRef.current !== null) {
@@ -102,10 +107,27 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     };
   }, []);
 
+  const handleLoadedMetadata = () => {
+    const video = videoRef.current;
+    if (video) {
+      setDuration(video.duration);
+    }
+  };
+
+  const formatTime = (sec: number) => {
+    const minutes = Math.floor(sec / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = Math.floor(sec % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
+
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[290px] md:h-[580px] aspect-square md:aspect-video bg-black mx-auto"
+      className="relative w-full max-w-5xl aspect-video bg-black mx-auto"
       onMouseMove={handleInteraction}
       onTouchStart={handleInteraction}
     >
@@ -113,22 +135,30 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         ref={videoRef}
         src={src}
         poster={poster}
-        className="w-full h-full"
+        className="w-full h-full object-cover bg-background"
         onClick={togglePlay}
         onTimeUpdate={handleTimeUpdate}
         onWaiting={() => setIsBuffering(true)}
         onPlaying={() => setIsBuffering(false)}
+        onEnded={handleVideoEnd}
+        onLoadedMetadata={handleLoadedMetadata}
+        playsInline
+        webkit-playsinline
+        muted
+        controls={false}
+        preload="metadata"
       />
 
+      {/* Buffering Overlay */}
       {isBuffering && (
-        <div className="absolute inset-0 flex items-center justify-center z-10  bg-opacity-40">
+        <div className="absolute inset-0 flex items-center justify-center z-10 bg-opacity-40">
           <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
       {/* Bottom controls */}
       {showControls && (
-        <div className="absolute bottom-0 left-0 right-0 bg-opacity-60 px-2 py-1 flex flex-col space-y-2">
+        <div className="absolute bottom-0 left-0 right-0 bg-opacity-60 px-[1px] pb-2 flex flex-col space-y-2 bg-[#252525]/15">
           <input
             type="range"
             min={0}
@@ -139,13 +169,13 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
               "w-full accent-primary h-[4px] rounded-full cursor-pointer transition-all ease-in-out"
             }
           />
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between ">
             <div className="flex items-center space-x-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => seek(-5)}
-                className="p-1"
+                className=" text-white"
               >
                 <RotateCcw />
               </Button>
@@ -153,7 +183,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={togglePlay}
-                className="p-1"
+                className=" text-white"
               >
                 {isPlaying ? <Pause /> : <Play />}
               </Button>
@@ -161,7 +191,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={() => seek(5)}
-                className="p-1"
+                className=" text-white"
               >
                 <RotateCw />
               </Button>
@@ -174,16 +204,23 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                     setMuted(videoRef.current?.muted);
                   }
                 }}
-                className="p-1"
+                className=" text-white"
               >
                 {isMuted ? <VolumeX /> : <Volume2 />}
               </Button>
             </div>
+
+            {/* Duration */}
+            <div className="font-semibold text-sm px-2 text-white select-none">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </div>
+
+            {/* Minimize/Maximize */}
             <Button
               variant="ghost"
               size="icon"
               onClick={toggleFullscreen}
-              className="p-1"
+              className="hidden md:inline-flex text-white"
             >
               {isFullscreen ? <Minimize2 /> : <Fullscreen />}
             </Button>

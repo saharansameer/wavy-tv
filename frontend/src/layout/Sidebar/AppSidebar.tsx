@@ -158,7 +158,7 @@ export function AppSidebar() {
                       src={authUser.avatar as string}
                       alt={authUser.username}
                     />{" "}
-                    <p className="w-40 text-base truncate">
+                    <p className="w-40 text-base font-semibold truncate">
                       {authUser.username}
                     </p>
                     <ChevronUp className="ml-auto" />
