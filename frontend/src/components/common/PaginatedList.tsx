@@ -11,23 +11,24 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui";
+import { LoadingOverlay } from "./Loading";
 
 interface PaginatedListProps {
   queryKey: [string];
-  queryFn: QueryFunction;
+  queryFn: InfiniteQueryFunction;
   renderItem: (item: any) => React.ReactNode;
-  mainDivCN?: string;
-  docDivCN?: string;
-  pageDivCN?: string;
+  mainDivCn?: string;
+  docDivCn?: string;
+  pageDivCn?: string;
 }
 
 export function PaginatedList({
   queryKey,
   queryFn,
   renderItem,
-  mainDivCN,
-  docDivCN,
-  pageDivCN,
+  mainDivCn,
+  docDivCn,
+  pageDivCn,
 }: PaginatedListProps) {
   const [currPage, setCurrPage] = React.useState(1);
 
@@ -60,24 +61,28 @@ export function PaginatedList({
   }
 
   if (isFetching || isFetchingNextPage || isLoading) {
-    return <div>Fetching...</div>;
+    return (
+      <>
+        <LoadingOverlay />
+      </>
+    );
   }
 
   return (
     <div
       className={
-        mainDivCN || "flex flex-col justify-between w-full h-full px-5 py-5"
+        mainDivCn || "flex flex-col justify-between w-full h-full px-5 py-5"
       }
     >
       <div
         className={
-          docDivCN || "flex flex-wrap justify-center gap-x-20 gap-y-10"
+          docDivCn || "flex flex-wrap justify-center gap-x-20 gap-y-10"
         }
       >
         {data?.pages?.[currPage - 1]?.docs.map((item: any) => renderItem(item))}
       </div>
 
-      <div className={pageDivCN || "pt-10"}>
+      <div className={pageDivCn || "pt-10"}>
         <Pagination>
           <PaginationContent>
             <PaginationItem>

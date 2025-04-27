@@ -14,7 +14,7 @@ declare global {
     totalPages: number;
   }
 
-  type QueryFunction = (
+  type InfiniteQueryFunction = (
     context: QueryFunctionContext<readonly [string], number>
   ) => Promise<PaginatedResponse>;
 }

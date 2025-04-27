@@ -63,6 +63,7 @@ export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
 
     checkAuth();
   }, [
+    authorized,
     setAuthorized,
     authenticated,
     setAuthenticated,
@@ -73,7 +74,7 @@ export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
 
   if (waiting) return <>{skeleton}</>;
 
-  if (!authorized && !isAuthOverlayOpen) {
+  if (!authenticated && !isAuthOverlayOpen) {
     return <Navigate to={"/"} />;
   }
 
