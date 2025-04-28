@@ -1,6 +1,6 @@
 import { formatDistanceToNowStrict } from "date-fns";
 
-export const useFormatNumber = (number: number) => {
+export const getFormatNumber = (number: number) => {
   if (number < 1000) {
     return String(number);
   }
@@ -30,6 +30,6 @@ export const useFormatNumber = (number: number) => {
   }
 };
 
-export const useFormatTimestamp = (timestamp: Date) => {
+export const getFormatTimestamp = (timestamp: Date) => {
   return formatDistanceToNowStrict(new Date(timestamp), { addSuffix: true });
 };

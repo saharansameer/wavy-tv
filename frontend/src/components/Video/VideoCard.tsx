@@ -1,7 +1,7 @@
 import { UserAvatar } from "@/components";
 import { Dot } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getVideoViews, getVideoTimestamp } from "@/hooks/useVideo";
+import { getFormatNumber, getFormatTimestamp } from "@/utils/formatUtils";
 
 export function VideoCard({ video }) {
   return (
@@ -35,9 +35,9 @@ export function VideoCard({ video }) {
           </Link>
 
           <div className="flex flex-row text-secondary">
-            <div className="text-sm">{getVideoViews(video.views)} views</div>
+            <div className="text-sm">{getFormatNumber(video.views)} views</div>
             <Dot />
-            <div className="text-sm">{getVideoTimestamp(video.createdAt)}</div>
+            <div className="text-sm">{getFormatTimestamp(video.createdAt)}</div>
           </div>
         </div>
       </div>

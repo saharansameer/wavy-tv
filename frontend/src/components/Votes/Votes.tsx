@@ -3,8 +3,9 @@ import axios from "axios";
 import { ArrowBigUp, ArrowBigDown } from "lucide-react";
 import { Button } from "@/components/ui";
 import useAuthStore from "@/app/store/authStore";
-import { Auth } from "@/pages";
 import { updatePersistData } from "@/utils/reactQueryUtils";
+import { getFormatNumber } from "@/utils/formatUtils";
+import { generateNewToken } from "@/utils/generateToken";
 
 interface VotesParams {
   entity: string;
@@ -14,6 +15,11 @@ interface VotesParams {
   downvotes: number;
 }
 
+const arrowStyle = {
+  width: "20px",
+  height: "20px",
+};
+
 export function Votes({
   entity,
   entityPublicId,
@@ -21,7 +27,8 @@ export function Votes({
   upvotes,
   downvotes,
 }: VotesParams) {
-  const { authenticated, authorized, setAuthorized } = useAuthStore();
+  const { authenticated, setAuthorized, tokenExpiry, setTokenExpiry } =
+    useAuthStore();
   const [upvoteCount, setUpvoteCount] = React.useState(upvotes);
   const [downvoteCount, setDownvoteCount] = React.useState(downvotes);
   const [currVote, setCurrVote] = React.useState(currUserVoteType);
@@ -40,12 +47,14 @@ export function Votes({
   // Upvote Button OnClick Handler
   const upvoteOnClickHandler = async () => {
     // Check Auth
-    if (!authorized) {
-      setAuthorized(false);
-    }
-
     if (!authenticated) {
       return;
+    }
+
+    const now = Date.now();
+    if (tokenExpiry < now) {
+      setAuthorized(await generateNewToken());
+      setTokenExpiry(now + 2 * 60 * 1000);
     }
 
     // Send Request on Server
@@ -75,12 +84,14 @@ export function Votes({
   // Downvote Button OnClick Handler
   const downvoteOnClickHandler = async () => {
     // Check Auth
-    if (!authorized) {
-      setAuthorized(false);
-    }
-
     if (!authenticated) {
       return;
+    }
+
+    const now = Date.now();
+    if (tokenExpiry < now) {
+      setAuthorized(await generateNewToken());
+      setTokenExpiry(now + 2 * 60 * 1000);
     }
 
     // Send Request on Server
@@ -108,24 +119,27 @@ export function Votes({
   };
 
   return (
-    <div className="flex flex-row gap-x-2">
-      <Auth>
-        <div></div>
-      </Auth>
-      <Button
-        onClick={upvoteOnClickHandler}
-        variant={currVote === "UPVOTE" ? "default" : "ghost"}
-      >
-        <ArrowBigUp />
-      </Button>
-      <div>{upvoteCount}</div>
-      <Button
-        onClick={downvoteOnClickHandler}
-        variant={currVote === "DOWNVOTE" ? "default" : "ghost"}
-      >
-        <ArrowBigDown />
-      </Button>
-      <div>{downvoteCount}</div>
+    <div className="flex flex-row gap-x-3">
+      <div>
+        <Button
+          onClick={upvoteOnClickHandler}
+          variant={currVote === "UPVOTE" ? "default" : "outline"}
+          className="w-16 h-7 px-2 shadow-xs"
+        >
+          <ArrowBigUp style={arrowStyle} />
+          {getFormatNumber(upvoteCount)}
+        </Button>
+      </div>
+      <div>
+        <Button
+          onClick={downvoteOnClickHandler}
+          variant={currVote === "DOWNVOTE" ? "default" : "outline"}
+          className="w-16 h-7 px-2 shadow-xs"
+        >
+          <ArrowBigDown style={arrowStyle} />
+          {getFormatNumber(downvoteCount)}
+        </Button>
+      </div>
     </div>
   );
 }
