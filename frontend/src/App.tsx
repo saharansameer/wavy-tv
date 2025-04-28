@@ -1,12 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar, Header } from "@/layout";
-import { AuthOverlay } from "@/pages";
+import { AppSidebar, Header, AuthOverlay } from "@/layout";
 
 function App() {
   return (
     <div className="bg-background">
-      <div className="w-full py-2 px-2 bg-background dark:bg-background sticky top-0 z-20"   >
+      <div className="w-full py-2 px-2 bg-background dark:bg-background sticky top-0 z-20">
         <Header />
       </div>
 

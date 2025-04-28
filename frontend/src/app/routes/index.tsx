@@ -4,7 +4,8 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import App from "@/App";
-import { Auth, Home, VideoFeed, PostFeed } from "@/pages";
+import { Auth } from "@/layout";
+import { Home, VideoFeed, PostFeed } from "@/pages";
 import { VideoForm, NotFound, Video } from "@/components";
 
 const router = createBrowserRouter(
