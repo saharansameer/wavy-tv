@@ -6,6 +6,7 @@ import { trimAndClean, extractTagsAndKeywords } from "../utils/stringUtils.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
 import { generatePublicId } from "../utils/crypto.js";
 import { destroyAssetFromCloudinary } from "../services/cloudinary.js";
+import { Types } from "mongoose";
 
 export const getAllVideos: Controller = async (req, res) => {
   const page = Number(req.query.page as string) || 1;
@@ -80,7 +81,11 @@ export const getVideoByPublicId: Controller = async (req, res) => {
   const { videoPublicId } = req.params;
 
   // Verify logged-in User and Extract user info
+  let userObjectId = null;
   const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
+  if (userInfo?._id && Types.ObjectId.isValid(userInfo._id)) {
+    userObjectId = new Types.ObjectId(String(userInfo._id));
+  }
 
   // Fetch video by publicId
   const video = await Video.aggregate([
@@ -161,11 +166,15 @@ export const getVideoByPublicId: Controller = async (req, res) => {
         },
         currUserVoteType: {
           $cond: {
-            if: { $in: [userInfo?._id, "$upvotes.votedBy"] },
+            if: {
+              $in: [userObjectId, "$upvotes.votedBy"],
+            },
             then: "UPVOTE",
             else: {
               $cond: {
-                if: { $in: [userInfo?._id, "$downvotes.votedBy"] },
+                if: {
+                  $in: [userObjectId, "$downvotes.votedBy"],
+                },
                 then: "DOWNVOTE",
                 else: null,
               },
@@ -191,12 +200,11 @@ export const getVideoByPublicId: Controller = async (req, res) => {
   }
 
   // Increment Video View
-  if (req.user)
-    await Video.findByIdAndUpdate(
-      video[0]._id,
-      { $inc: { views: 1 } },
-      { new: true }
-    );
+  await Video.findByIdAndUpdate(
+    video[0]._id,
+    { $inc: { views: 1 } },
+    { new: true }
+  );
 
   // Final Response
   return res.status(HTTP_STATUS.OK).json(

@@ -5,6 +5,7 @@ import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { generatePublicId } from "../utils/crypto.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
+import { Types } from "mongoose";
 
 export const createPost: Controller = async (req, res) => {
   const { content } = req.body;
@@ -113,7 +114,11 @@ export const getPostByPublicId: Controller = async (req, res) => {
   const { postPublicId } = req.params;
 
   // Verify logged-in User and Extract user info
+  let userObjectId = null;
   const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
+  if (userInfo?._id && Types.ObjectId.isValid(userInfo._id)) {
+    userObjectId = new Types.ObjectId(String(userInfo._id));
+  }
 
   // Find Post and Owner Details
   const post = await Post.aggregate([
@@ -189,11 +194,15 @@ export const getPostByPublicId: Controller = async (req, res) => {
         },
         currUserVoteType: {
           $cond: {
-            if: { $in: [userInfo._id, "$upvotes.votedBy"] },
+            if: {
+              $in: [userObjectId, "$upvotes.votedBy"],
+            },
             then: "UPVOTE",
             else: {
               $cond: {
-                if: { $in: [userInfo._id, "$downvotes.votedBy"] },
+                if: {
+                  $in: [userObjectId, "$downvotes.votedBy"],
+                },
                 then: "DOWNVOTE",
                 else: null,
               },

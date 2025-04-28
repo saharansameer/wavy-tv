@@ -289,7 +289,11 @@ export const getEntityComments: Controller = async (req, res) => {
   }
 
   // Verify logged-in User and Extract user info
+  let userObjectId = null;
   const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
+  if (userInfo?._id && Types.ObjectId.isValid(userInfo._id)) {
+    userObjectId = new Types.ObjectId(String(userInfo._id));
+  }
 
   // Aggregate Query
   const commentsAggregateQuery = Comment.aggregate([
@@ -365,11 +369,11 @@ export const getEntityComments: Controller = async (req, res) => {
         },
         currUserVoteType: {
           $cond: {
-            if: { $in: [userInfo._id, "$upvotes.votedBy"] },
+            if: { $in: [userObjectId, "$upvotes.votedBy"] },
             then: "UPVOTE",
             else: {
               $cond: {
-                if: { $in: [userInfo._id, "$downvotes.votedBy"] },
+                if: { $in: [userObjectId, "$downvotes.votedBy"] },
                 then: "DOWNVOTE",
                 else: null,
               },
