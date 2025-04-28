@@ -2,9 +2,10 @@ import React from "react";
 import axios from "axios";
 import useAuthStore from "@/app/store/authStore";
 import { Navigate } from "react-router-dom";
+import { LoadingOverlay } from "@/components";
 
 interface AuthProps {
-  skeleton: React.ReactNode;
+  skeleton?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -72,7 +73,7 @@ export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
     setAuthOverlayOpen,
   ]);
 
-  if (waiting) return <>{skeleton}</>;
+  if (waiting) return <>{skeleton || <LoadingOverlay />}</>;
 
   if (!authenticated && !isAuthOverlayOpen) {
     return <Navigate to={"/"} />;
