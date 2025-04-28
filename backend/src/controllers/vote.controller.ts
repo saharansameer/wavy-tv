@@ -280,14 +280,16 @@ export const togglePostVotes: Controller = async (req, res) => {
 };
 
 export const toggleCommentVotes: Controller = async (req, res) => {
-  const commentId = req.query.commentId as string;
+  /* commentPublicId - It is not publicId, it is mongodb's ObjectId, 
+  Adjusted names with frontend convention (only for comment) */
+  const commentPublicId = req.query.commentPublicId as string;
   const toggle = req.query.toggle as string;
 
   // Validation Check for Query Params and Toggle Type
-  validateQueryParams("comment", commentId, toggle);
+  validateQueryParams("comment", commentPublicId, toggle);
 
   // Fetch Comment by id
-  const comment = await Comment.findById(commentId);
+  const comment = await Comment.findById(commentPublicId);
 
   // What If Comment does not exist
   if (!comment) {
@@ -302,7 +304,7 @@ export const toggleCommentVotes: Controller = async (req, res) => {
     // Toggle Upvote and Send Response Accordingly
     return toggleEntityUpvote(
       "comment",
-      String(commentId),
+      String(commentPublicId),
       String(req?.user?._id),
       res
     );
@@ -311,7 +313,7 @@ export const toggleCommentVotes: Controller = async (req, res) => {
     // Toggle Downvote and Send Response Accordingly
     return toggleEntityDownvote(
       "comment",
-      String(commentId),
+      String(commentPublicId),
       String(req?.user?._id),
       res
     );

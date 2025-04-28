@@ -13,14 +13,14 @@ const router = Router();
 // Check User Auth
 router.use(checkAuth);
 
-// POST - Toggle Upvote and Downvote on Video
-router.route("/video").post(asyncHandler(toggleVideoVotes));
+// GET - Toggle Upvote and Downvote on Video
+router.route("/video").get(asyncHandler(toggleVideoVotes));
 
-// POST - Toggle Upvote and Downvote on Post
-router.route("/post").post(asyncHandler(togglePostVotes));
+// GET - Toggle Upvote and Downvote on Post
+router.route("/post").get(asyncHandler(togglePostVotes));
 
-// POST - Toggle Upvote and Downvote on Comment
-router.route("/comment").post(asyncHandler(toggleCommentVotes));
+// GET - Toggle Upvote and Downvote on Comment
+router.route("/comment").get(asyncHandler(toggleCommentVotes));
 
 // Error Handler
 router.use(errorHandler);
