@@ -62,5 +62,20 @@ export const videoFormSchema = z.object({
   nsfw: z.boolean().default(false),
 });
 
+export const videoEditFormSchema = videoFormSchema.extend({
+  video: z.union([z.undefined(), z.instanceof(File)]).optional(),
+  thumbnail: z
+    .instanceof(File, { message: "Thumbnail is required" })
+    .refine(
+      (file) => ["image/jpeg", "image/jpg", "image/png"].includes(file.type),
+      {
+        message: "Only JPG, JPEG, or PNG images are allowed",
+      }
+    )
+    .optional(),
+});
+
 // Infer the type from the schema
 export type VideoFormSchemaType = z.input<typeof videoFormSchema>;
+
+export type VideoEditFormSchemaType = z.input<typeof videoEditFormSchema>;

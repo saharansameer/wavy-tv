@@ -4,13 +4,18 @@ import {
   VideoPlayer,
   UserAvatar,
   ScrollToTop,
-  Votes,
+  VoteButtons,
+  AlertOverlay,
+  DrawerOverlay,
+  VideoForm,
 } from "@/components";
-import { Dot } from "lucide-react";
+import { Button } from "@/components/ui";
+import { Dot, Pencil, Trash2 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { getFormatNumber, getFormatTimestamp } from "@/utils/formatUtils";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import useAuthStore from "@/app/store/authStore";
 
 const getVideoByPublicId = async (publicId: string) => {
   const response = await axios.get(`/api/v1/video/${publicId}`);
@@ -23,6 +28,7 @@ export function Video() {
     queryKey: ["video", publicId],
     queryFn: () => getVideoByPublicId(publicId as string),
   });
+  const { authUser } = useAuthStore();
 
   if (isLoading || isFetching)
     return (
@@ -64,14 +70,49 @@ export function Video() {
 
       <VideoPlayer src={data.videoFile.url} poster={data.thumbnail.url} />
 
-      <div className="py-2">
-        <Votes
-          entity={"video"}
-          entityPublicId={publicId as string}
-          currUserVoteType={data.currUserVoteType}
-          upvotes={data.upvotes}
-          downvotes={data.downvotes}
-        />
+      <div className="flex justify-between items-center py-2">
+        {/* Buttons - Upvote and Downvote */}
+        <div>
+          <VoteButtons
+            entity={"video"}
+            entityPublicId={publicId as string}
+            currUserVoteType={data.currUserVoteType}
+            upvotes={data.upvotes}
+            downvotes={data.downvotes}
+          />
+        </div>
+
+        {/* Options - Edit and Delete */}
+        {data.owner.username === authUser.username && (
+          <div className="flex gap-x-4">
+            {/* Edit Button */}
+            <DrawerOverlay
+              trigger={
+                <Button variant={"outline"} className="w-10 h-7 shadow-xs">
+                  <Pencil />
+                </Button>
+              }
+              form={
+                <VideoForm
+                  mode={"patch"}
+                  videoPublicId={publicId}
+                  data={data}
+                />
+              }
+              title={"Modify Video Details"}
+            />
+            {/* Delete Button */}
+            <AlertOverlay
+              trigger={
+                <Button variant={"destructive"} className="w-10 h-7 shadow-xs">
+                  <Trash2 />
+                </Button>
+              }
+              entityType={"video"}
+              entityId={data.publicId}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

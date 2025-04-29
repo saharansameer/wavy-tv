@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { InputWithLabel, Button, Label, Switch } from "@/components/ui";
 import {
@@ -18,13 +19,35 @@ import {
 import { uploadToCloudinary } from "@/utils/cloudinary";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { videoFormSchema, VideoFormSchemaType } from "@/app/schema";
+import {
+  videoEditFormSchema,
+  VideoEditFormSchemaType,
+  videoFormSchema,
+  VideoFormSchemaType,
+} from "@/app/schema";
 import axios from "axios";
 import useAuthStore from "@/app/store/authStore";
+import { generateNewToken } from "@/utils/generateToken";
+import { updatePersistData } from "@/utils/reactQueryUtils";
 
-export function VideoForm() {
+interface VideoFormProps {
+  mode: "post" | "patch";
+  videoPublicId?: string;
+  data?: any;
+  onClose?: () => void;
+}
+
+export function VideoForm({
+  mode = "post",
+  videoPublicId,
+  data,
+  onClose,
+}: VideoFormProps) {
+  const isEditMode: boolean = mode === "patch";
+  const schema = isEditMode ? videoEditFormSchema : videoFormSchema;
   const [progressPercent, setProgressPercent] = React.useState(0);
-  const { setAuthorized, tokenExpiry, authenticated } = useAuthStore();
+  const { setAuthorized, tokenExpiry, authenticated, setTokenExpiry } =
+    useAuthStore();
 
   const {
     register,
@@ -32,15 +55,23 @@ export function VideoForm() {
     reset,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<VideoFormSchemaType>({
-    resolver: zodResolver(videoFormSchema),
+  } = useForm<VideoFormSchemaType | VideoEditFormSchemaType>({
+    resolver: zodResolver(schema),
     mode: "onChange",
-    reValidateMode: "onChange",
-    defaultValues: {
-      publishStatus: "PUBLIC",
-      category: "GENERAL",
-      nsfw: false,
-    },
+    reValidateMode: "onSubmit",
+    defaultValues: isEditMode
+      ? {
+          title: data.title,
+          description: data.description || "",
+          publishStatus: data.publishStatus,
+          category: data.category,
+          nsfw: data.nsfw,
+        }
+      : {
+          publishStatus: "PUBLIC",
+          category: "GENERAL",
+          nsfw: false,
+        },
   });
 
   React.useEffect(() => {
@@ -53,7 +84,9 @@ export function VideoForm() {
     }
   }, [progressPercent, isSubmitting]);
 
-  const onSubmitHandler: SubmitHandler<VideoFormSchemaType> = async (data) => {
+  const onSubmitHandler: SubmitHandler<
+    VideoFormSchemaType | VideoEditFormSchemaType
+  > = async (data) => {
     try {
       // Check authentication first
       if (!authenticated) {
@@ -76,15 +109,58 @@ export function VideoForm() {
         nsfw,
       } = data;
 
+      // Edit Mode Form - Start
+      if (isEditMode) {
+        // Check Auth (Edit Mode)
+        const now = Date.now();
+        if (tokenExpiry < now) {
+          setAuthorized(await generateNewToken());
+          setTokenExpiry(now + 2 * 60 * 1000);
+        }
+
+        // New Thumbnail Data (Only If user wants to update it)
+        let thumbnailUploadRes = null;
+        if (thumbnail) {
+          thumbnailUploadRes = await uploadToCloudinary({
+            file: thumbnail,
+            folder: "thumbnails",
+          });
+        }
+
+        // Video Patch Request
+        await axios.patch(`/api/v1/video/${videoPublicId}`, {
+          title,
+          description,
+          thumbnail: thumbnailUploadRes,
+          publishStatus,
+          category,
+          nsfw,
+        });
+
+        // Refresh Video's details in persisted storage
+        await updatePersistData(["video", videoPublicId as string], {
+          title,
+          description,
+          publishStatus,
+          category,
+          nsfw,
+        });
+
+        onClose?.();
+        return;
+      }
+
+      // Edit Mode Form Logic - End
+
       // Video Upload Response (from Cloudinary)
       const videoUploadRes = await uploadToCloudinary({
-        file: video,
+        file: video as File,
         folder: "videos",
       });
 
       // Thumbnail Upload Response (from Cloudinary)
       const thumbnailUploadRes = await uploadToCloudinary({
-        file: thumbnail,
+        file: thumbnail as File,
         folder: "thumbnails",
       });
 
@@ -106,7 +182,7 @@ export function VideoForm() {
     reset();
   };
 
-  if (isSubmitting) {
+  if (isSubmitting && !isEditMode) {
     return <UploadProgressOverlay progress={progressPercent} />;
   }
 
@@ -115,6 +191,7 @@ export function VideoForm() {
       onSubmit={handleSubmit(onSubmitHandler)}
       className="flex flex-col gap-10 px-3 md:px-10 pb-7 pt-3"
     >
+      {/* Title */}
       <div>
         <InputWithLabel
           type="text"
@@ -126,6 +203,7 @@ export function VideoForm() {
         {errors.title && <ErrorMessage text={`${errors.title.message}`} />}
       </div>
 
+      {/* Description */}
       <div className="flex flex-col gap-2">
         <Controller
           name="description"
@@ -148,26 +226,32 @@ export function VideoForm() {
         )}
       </div>
 
-      <div className="flex flex-col gap-2 select-none">
-        <Controller
-          control={control}
-          name="video"
-          render={({ field }) => (
-            <>
-              <Label>Video</Label>
-              <FileInput
-                id={"video-file-input"}
-                value={field.value}
-                onChange={field.onChange}
-                accept="video/*"
-                maxFileSize={100}
-              />
-            </>
-          )}
-        />
-        {errors.video && <ErrorMessage text={`${errors.video.message}`} />}
-      </div>
+      {/* Video File */}
+      {isEditMode ? (
+        <></>
+      ) : (
+        <div className="flex flex-col gap-2 select-none">
+          <Controller
+            control={control}
+            name="video"
+            render={({ field }) => (
+              <>
+                <Label>Video</Label>
+                <FileInput
+                  id={"video-file-input"}
+                  value={field.value as File}
+                  onChange={field.onChange}
+                  accept="video/*"
+                  maxFileSize={100}
+                />
+              </>
+            )}
+          />
+          {errors.video && <ErrorMessage text={`${errors.video.message}`} />}
+        </div>
+      )}
 
+      {/* Thumbnail */}
       <div className="flex flex-col gap-2 select-none">
         <Controller
           control={control}
@@ -177,7 +261,7 @@ export function VideoForm() {
               <Label>Thumbnail</Label>
               <FileInput
                 id={"thumbnail-file-input"}
-                value={field.value}
+                value={field.value as File}
                 onChange={field.onChange}
                 accept="image/jpeg, image/jpg, image/png"
                 maxFileSize={10}
@@ -191,6 +275,7 @@ export function VideoForm() {
         )}
       </div>
 
+      {/* Publish Status */}
       <div className="flex flex-col gap-2">
         <Controller
           control={control}
@@ -217,6 +302,7 @@ export function VideoForm() {
         )}
       </div>
 
+      {/* Category */}
       <div className="flex flex-col gap-2">
         <Controller
           control={control}
@@ -264,6 +350,7 @@ export function VideoForm() {
         )}
       </div>
 
+      {/* NSFW */}
       <div className="flex flex-col gap-1">
         <Label>Mark as NSFW</Label>
         <div className="flex items-center gap-1">
@@ -282,12 +369,13 @@ export function VideoForm() {
         </div>
       </div>
 
+      {/* Submit Button */}
       <Button
         type="submit"
         className={`cursor-pointer max-w-sm sm:max-w-3xs font-semibold`}
         disabled={isSubmitting}
       >
-        Submit
+        {isEditMode ? "Save Changes" : "Submit"}
       </Button>
     </form>
   );

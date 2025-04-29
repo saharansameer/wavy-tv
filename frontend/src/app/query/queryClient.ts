@@ -6,7 +6,7 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 10,
       gcTime: 1000 * 60 * 1,
-      retry: 1,
+      retry: false,
     },
   },
 });
