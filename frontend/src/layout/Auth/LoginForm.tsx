@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema, LoginFormSchemaType } from "@/app/schema";
 import axios from "axios";
 import useAuthStore from "@/app/store/authStore";
+import { queryClient } from "@/app/query/queryClient";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -35,10 +36,14 @@ export function LoginForm() {
   const onSubmitHandler: SubmitHandler<LoginFormSchemaType> = async (data) => {
     try {
       const { email, password } = data;
-      const loginResponse = await axios.post("/api/v1/auth/login", {
-        email,
-        password,
-      });
+      const loginResponse = await axios.post(
+        "/api/v1/auth/login",
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
 
       // Set Auth User Data
       const user = loginResponse.data.data;
@@ -46,6 +51,7 @@ export function LoginForm() {
       setAuthenticated(true);
       setAuthorized(true);
       setAuthOverlayOpen(false);
+      await queryClient.invalidateQueries();
     } catch (error) {
       console.error("Login Form Error:", error);
     }

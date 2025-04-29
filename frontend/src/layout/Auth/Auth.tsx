@@ -41,7 +41,7 @@ export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
 
       // Generate new tokens
       axios
-        .get("/api/v1/auth/token/new")
+        .get("/api/v1/auth/token/new", { withCredentials: true })
         .then((res) => {
           if (res.data.status === 200) {
             setAuthorized(true);
