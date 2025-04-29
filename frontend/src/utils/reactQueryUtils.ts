@@ -41,3 +41,7 @@ export const updatePersistData = async (queryKey: string[], newData: any) => {
     console.error("updatePersistData Error:", error);
   }
 };
+
+export const setQueriesInvalid = async () => {
+  await queryClient.invalidateQueries();
+};

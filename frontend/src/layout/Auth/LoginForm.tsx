@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema, LoginFormSchemaType } from "@/app/schema";
 import axios from "axios";
 import useAuthStore from "@/app/store/authStore";
-import { queryClient } from "@/app/query/queryClient";
+import { setQueriesInvalid } from "@/utils/reactQueryUtils";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -51,7 +51,7 @@ export function LoginForm() {
       setAuthenticated(true);
       setAuthorized(true);
       setAuthOverlayOpen(false);
-      await queryClient.invalidateQueries();
+      await setQueriesInvalid();
     } catch (error) {
       console.error("Login Form Error:", error);
     }

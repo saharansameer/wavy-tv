@@ -1,12 +1,12 @@
 import axios from "axios";
-import { queryClient } from "@/app/query/queryClient";
 import { generateNewToken } from "@/utils/generateToken";
+import { setQueriesInvalid } from "@/utils/reactQueryUtils";
 
 export const useLogout = async () => {
   try {
     await generateNewToken();
     await axios.get("/api/v1/auth/logout");
-    await queryClient.invalidateQueries();
+    await setQueriesInvalid();
     localStorage.removeItem("auth");
     window.location.reload();
   } catch {
