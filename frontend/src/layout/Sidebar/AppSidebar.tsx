@@ -3,13 +3,13 @@ import {
   History,
   Upload,
   PencilLine,
-  User2,
+  CircleUserRound,
   ChevronUp,
   SquarePlay,
   Rss,
-  ArrowBigUpDash,
-  ArrowBigDownDash,
-  MessageSquareText,
+  ClockFading,
+  UserRoundCheck,
+  UserRound,
   Home,
 } from "lucide-react";
 import {
@@ -32,7 +32,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui";
 import { UserAvatar } from "@/components";
 import { Link } from "react-router-dom";
 import useAuthStore from "@/app/store/authStore";
@@ -106,24 +105,24 @@ export function AppSidebar() {
 
   const groupTwoItems = [
     {
+      title: "Profile",
+      url: "/u/:username",
+      icon: CircleUserRound,
+    },
+    {
+      title: "Following",
+      url: "/feed",
+      icon: UserRoundCheck,
+    },
+    {
+      title: "Activity",
+      url: "/activity",
+      icon: ClockFading,
+    },
+    {
       title: "Watch History",
-      url: "/watchhistory",
+      url: "/history",
       icon: History,
-    },
-    {
-      title: "Upvotes",
-      url: "/upvotes",
-      icon: ArrowBigUpDash,
-    },
-    {
-      title: "Downvotes",
-      url: "/downvotes",
-      icon: ArrowBigDownDash,
-    },
-    {
-      title: "Comments",
-      url: "/comments",
-      icon: MessageSquareText,
     },
   ];
 
@@ -149,7 +148,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <DropdownMenu>
               {authenticated ? (
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger asChild className="shadow-xs">
                   <SidebarMenuButton
                     variant={"outline"}
                     className="cursor-pointer"
@@ -175,7 +174,7 @@ export function AppSidebar() {
                     }
                   }}
                 >
-                  <User2 style={{ height: "22px", width: "22px" }} />
+                  <UserRound style={{ height: "22px", width: "22px" }} />
                   <span>Login \ Signup</span>
                 </SidebarMenuButton>
               )}
@@ -184,24 +183,14 @@ export function AppSidebar() {
                 side="top"
                 className="w-44 md:w-60 cursor-pointer"
               >
-                <DropdownMenuItem>
-                  <Button variant={"ghost"} className="h-5 p-0 w-full">
-                    Profile
-                  </Button>
+                <DropdownMenuItem className="cursor-pointer">
+                  Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Button variant={"ghost"} className="h-5 p-0 w-full">
-                    Settings
-                  </Button>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Button
-                    variant={"ghost"}
-                    className="h-5 p-0 w-full"
-                    onClick={useLogout}
-                  >
-                    Log out
-                  </Button>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={useLogout}
+                >
+                  Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
