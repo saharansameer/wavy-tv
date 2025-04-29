@@ -12,7 +12,7 @@ export function SearchButton({
       className={`cursor-pointer bg-primary h-10 px-3 md:px-4 ${className}`}
       {...props}
     >
-      <Search style={{ width: "22px", height: "22px" }} />
+      <Search style={{ width: "22px", height: "22px", color: "white" }} />
     </button>
   );
 }

@@ -7,7 +7,7 @@ import { updatePersistData } from "@/utils/reactQueryUtils";
 import { getFormatNumber } from "@/utils/formatUtils";
 import { generateNewToken } from "@/utils/generateToken";
 
-interface VotesParams {
+interface VoteButtonsParams {
   entity: string;
   entityPublicId: string;
   currUserVoteType: "UPVOTE" | "DOWNVOTE" | null;
@@ -20,13 +20,13 @@ const arrowStyle = {
   height: "20px",
 };
 
-export function Votes({
+export function VoteButtons({
   entity,
   entityPublicId,
   currUserVoteType,
   upvotes,
   downvotes,
-}: VotesParams) {
+}: VoteButtonsParams) {
   const { authenticated, setAuthorized, tokenExpiry, setTokenExpiry } =
     useAuthStore();
   const [upvoteCount, setUpvoteCount] = React.useState(upvotes);

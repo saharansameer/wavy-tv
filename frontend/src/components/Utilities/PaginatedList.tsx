@@ -11,7 +11,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui";
-import { LoadingOverlay } from "./Loading";
+import { LoadingOverlay } from "../Overlays/Loading";
 
 interface PaginatedListProps {
   queryKey: [string];

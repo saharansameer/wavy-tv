@@ -52,7 +52,7 @@ export function SearchBar() {
       />
       {isSearchOpen && (
         <div className="absolute top-0 left-0 w-full z-50 pl-10 md:hidden">
-          <div className="backdrop-blur-sm bg-background px-4 py-3 shadow-md">
+          <div className="backdrop-blur-sm bg-background px-4 py-3">
             <div className="relative gap-2">
               <SearchInput
                 type="search"
@@ -76,7 +76,7 @@ export function SearchBar() {
                 }}
                 className="p-[1px] absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer md:hidden bg-primary rounded-full"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 text-white" />
               </button>
             </div>
           </div>
