@@ -218,13 +218,14 @@ export const getVideoByPublicId: Controller = async (req, res) => {
 
 export const updateVideoDetails: Controller = async (req, res) => {
   const { videoPublicId } = req.params;
-  const { title, description, publishStatus, category } = req.body;
+  const { title, description, thumbnail, publishStatus, category, nsfw } =
+    req.body;
 
   // Remove extra spaces from title
   const trimmedTitle = trimAndClean(title || "");
 
   // Check all fields (i.e title, description, publishStatus) are provided
-  if (!trimmedTitle || !description || !publishStatus || !category) {
+  if (!trimmedTitle || !publishStatus || !category || nsfw === undefined) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -234,18 +235,48 @@ export const updateVideoDetails: Controller = async (req, res) => {
   // Extract relevant tags and keywords from Title and Description
   const tags = extractTagsAndKeywords(trimmedTitle, description);
 
-  // Update Video Details (i.e title, description, publishStatus)
+  // New Details of Video
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const newDetails: Record<string, any> = {
+    title: trimmedTitle,
+    description: description || "",
+    publishStatus,
+    category,
+    tags,
+    nsfw,
+  };
+
+  // Add new thumbnail details (if recieved any)
+  if (thumbnail) {
+    newDetails.thumbnail = {
+      url: thumbnail.secure_url,
+      public_id: thumbnail.public_id,
+      format: thumbnail.format,
+      bytes: thumbnail.bytes,
+      height: thumbnail.height,
+      width: thumbnail.width,
+    };
+
+    /* User provided thumbnail in new details, 
+    So delete the old thumbnail from cloud */
+    const existingVideo = await Video.findOne({
+      publicId: videoPublicId,
+      owner: req.user?._id,
+    });
+    destroyAssetFromCloudinary(
+      existingVideo?.thumbnail.public_id as string,
+      "image"
+    );
+  }
+
+  // Update Video Details in Database
   const video = await Video.findOneAndUpdate(
     { publicId: videoPublicId, owner: req.user?._id },
     {
-      title: trimmedTitle,
-      description,
-      publishStatus,
-      category,
-      tags,
+      ...newDetails,
     },
     { new: true, runValidators: true }
-  ).select("publicId title description publishStatus category tags");
+  );
 
   if (!video) {
     throw new ApiError({
@@ -259,7 +290,6 @@ export const updateVideoDetails: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.VIDEO.UPDATE_SUCCESS,
-      data: video,
     })
   );
 };

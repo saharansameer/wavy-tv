@@ -1,10 +1,13 @@
-export const SIZE_LIMIT = "1mb";
+import { NODE_ENV } from "../config/env.js";
 
+const isProduction = String(NODE_ENV) === "PRODUCTION";
 export const cookiesOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: "none" as const,
+  secure: isProduction ? true : false,
+  sameSite: isProduction ? ("none" as const) : ("lax" as const),
 };
+
+export const SIZE_LIMIT = "1mb";
 
 export const HTTP_STATUS = {
   OK: 200,
@@ -57,6 +60,8 @@ export const RESPONSE_MESSAGE = {
     FETCH_SUCCESS: "Video fetched successfully",
     UPDATE_SUCCESS: "Video details updated successfully",
     DELETE_SUCCESS: "Video deleted successfully",
+    CREATE_SUCCESS: "Video doc created successfully",
+    CREATE_FAILURE: "Failed to create Video doc",
   },
   FOLLOW: {
     FOLLOWING: "Followed successfully",
