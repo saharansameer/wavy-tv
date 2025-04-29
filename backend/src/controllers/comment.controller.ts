@@ -130,16 +130,8 @@ export const addCommentOnPost: Controller = async (req, res) => {
 };
 
 export const addReplyComment: Controller = async (req, res) => {
-  const commentId = req.query.commentId as string;
+  const { commentId } = req.params;
   const { content } = req.body;
-
-  // Check for valid query params
-  if (!commentId) {
-    throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: `?commentId=<> : ${RESPONSE_MESSAGE.COMMON.ALL_QUERY_PARAMS_REQUIRED}`,
-    });
-  }
 
   // Remove extra space and Check if comment's content is valid
   const trimmedContent = trimAndClean(content || "");
@@ -186,16 +178,8 @@ export const addReplyComment: Controller = async (req, res) => {
 };
 
 export const updateCommentById: Controller = async (req, res) => {
-  const commentId = req.query.commentId as string;
+  const { commentId } = req.params;
   const { content } = req.body;
-
-  // Check for valid query params
-  if (!commentId) {
-    throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: `?commentId=<> : ${RESPONSE_MESSAGE.COMMON.ALL_QUERY_PARAMS_REQUIRED}`,
-    });
-  }
 
   // Remove extra space and Check if comment's content is valid
   const trimmedContent = trimAndClean(content || "");
@@ -231,15 +215,7 @@ export const updateCommentById: Controller = async (req, res) => {
 };
 
 export const deleteCommentById: Controller = async (req, res) => {
-  const commentId = req.query.commentId as string;
-
-  // Check for valid query params
-  if (!commentId) {
-    throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: `?commentId=<> : ${RESPONSE_MESSAGE.COMMON.ALL_QUERY_PARAMS_REQUIRED}`,
-    });
-  }
+  const { commentId } = req.params;
 
   // Delete Comment
   const comment = await Comment.findOneAndDelete({

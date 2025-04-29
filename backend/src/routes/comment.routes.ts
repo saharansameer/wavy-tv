@@ -26,13 +26,13 @@ router.route("/video").post(asyncHandler(addCommentOnVideo));
 router.route("/post").post(asyncHandler(addCommentOnPost));
 
 // POST - Add Reply Comment on comment
-router.route("/reply").post(asyncHandler(addReplyComment));
+router.route("/reply/:commentId").post(asyncHandler(addReplyComment));
 
 // PATCH - Update Comment by id
-router.route("/update").patch(asyncHandler(updateCommentById));
+router.route("/update/:commentId").patch(asyncHandler(updateCommentById));
 
 // DELETE - Delete Comment by id
-router.route("/delete").delete(asyncHandler(deleteCommentById));
+router.route("/delete/:commentId").delete(asyncHandler(deleteCommentById));
 
 // Error Handler
 router.use(errorHandler);
