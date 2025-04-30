@@ -41,7 +41,7 @@ export function PostCard({ post, solo = false }: PostCardProps) {
   };
 
   return (
-    <div className="flex flex-col min-h-48 w-xs sm:w-md lg:w-xl gap-y-2">
+    <div className="flex flex-col w-xs sm:w-md lg:w-xl gap-y-2">
       <div className="flex flex-col">
         <div className="flex flex-row items-center select-none">
           <UserAvatar
@@ -60,7 +60,9 @@ export function PostCard({ post, solo = false }: PostCardProps) {
       </div>
       <div className="flex flex-col gap-y-10">
         {/* Content */}
-        <div className={`${solo ? "" : "relative"} px-2 py-1 rounded-sm`}>
+        <div
+          className={`${solo ? "" : "relative"} px-2 py-1 rounded-sm`}
+        >
           <div
             ref={contentRef}
             className={`${solo ? "" : "line-clamp-3 leading-normal"}`}

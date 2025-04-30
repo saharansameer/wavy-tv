@@ -21,9 +21,6 @@ export const updatePersistData = async (queryKey: string[], newData: any) => {
     );
 
     if (!assetQuery || !assetQuery.state.data) {
-      console.error(
-        "useUpdatePersistData: No 'video' query found in persisted client"
-      );
       return false;
     }
 

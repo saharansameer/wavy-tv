@@ -13,8 +13,6 @@ interface AuthUser {
 }
 
 interface AuthType {
-  authorized: boolean;
-  setAuthorized: (value: boolean) => void;
   authenticated: boolean;
   setAuthenticated: (value: boolean) => void;
   tokenExpiry: number;
@@ -27,8 +25,6 @@ interface AuthType {
 }
 
 const authStore: StateCreator<AuthType> = (set, get) => ({
-  authorized: false,
-  setAuthorized: (authorized: boolean) => set({ authorized }),
   authenticated: false,
   setAuthenticated: (authenticated: boolean) => set({ authenticated }),
   tokenExpiry: 0,
