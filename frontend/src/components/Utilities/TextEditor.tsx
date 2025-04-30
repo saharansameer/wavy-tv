@@ -6,7 +6,6 @@ interface TextEditorProps {
   onChange: (value: string) => void;
   className?: string;
   placeholder?: string;
-  rows?: number;
 }
 
 export function TextEditor({
@@ -14,9 +13,22 @@ export function TextEditor({
   onChange,
   className,
   placeholder = "",
-  rows = 10,
 }: TextEditorProps) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  // Adjusts the textarea height based on its scrollHeight
+  const adjustHeight = React.useCallback(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, []);
+
+  // Ensure height is adjusted whenever the value changes
+  React.useLayoutEffect(() => {
+    adjustHeight();
+  }, [value, adjustHeight]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
@@ -24,12 +36,11 @@ export function TextEditor({
       const textarea = textareaRef.current!;
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      // insert two line‑breaks for “enter spacing”
+      // insert a single line-break (auto-resize will handle spacing)
       const updated = value.slice(0, start) + "\n" + value.slice(end);
       onChange(updated);
-      // move cursor between those two breaks
       requestAnimationFrame(() => {
-        textarea.selectionStart = textarea.selectionEnd = start + 2;
+        textarea.selectionStart = textarea.selectionEnd = start + 1;
       });
     }
   };
@@ -41,8 +52,8 @@ export function TextEditor({
       onChange={(e) => onChange(e.target.value)}
       onKeyDown={handleKeyDown}
       placeholder={placeholder}
-      rows={rows}
-      className={`resize-none ${className}`}
+      className={`resize-none overflow-hidden ${className}`}
+      style={{ height: "auto" }}
     />
   );
 }
