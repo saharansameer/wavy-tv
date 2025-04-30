@@ -2,13 +2,12 @@ import React from "react";
 import axios from "axios";
 import { ArrowBigUp, ArrowBigDown } from "lucide-react";
 import { Button } from "@/components/ui";
-import useAuthStore from "@/app/store/authStore";
 import { updatePersistData } from "@/utils/reactQueryUtils";
 import { getFormatNumber } from "@/utils/formatUtils";
-import { generateNewToken } from "@/utils/generateToken";
+import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 
 interface VoteButtonsParams {
-  entity: string;
+  entity: "video" | "post" | "comment";
   entityPublicId: string;
   currUserVoteType: "UPVOTE" | "DOWNVOTE" | null;
   upvotes: number;
@@ -27,8 +26,6 @@ export function VoteButtons({
   upvotes,
   downvotes,
 }: VoteButtonsParams) {
-  const { authenticated, setAuthorized, tokenExpiry, setTokenExpiry } =
-    useAuthStore();
   const [upvoteCount, setUpvoteCount] = React.useState(upvotes);
   const [downvoteCount, setDownvoteCount] = React.useState(downvotes);
   const [currVote, setCurrVote] = React.useState(currUserVoteType);
@@ -47,15 +44,7 @@ export function VoteButtons({
   // Upvote Button OnClick Handler
   const upvoteOnClickHandler = async () => {
     // Check Auth
-    if (!authenticated) {
-      return;
-    }
-
-    const now = Date.now();
-    if (tokenExpiry < now) {
-      setAuthorized(await generateNewToken());
-      setTokenExpiry(now + 2 * 60 * 1000);
-    }
+    if (!(await verifyAndGenerateNewToken())) return;
 
     // Send Request on Server
     await axios.get(
@@ -84,15 +73,7 @@ export function VoteButtons({
   // Downvote Button OnClick Handler
   const downvoteOnClickHandler = async () => {
     // Check Auth
-    if (!authenticated) {
-      return;
-    }
-
-    const now = Date.now();
-    if (tokenExpiry < now) {
-      setAuthorized(await generateNewToken());
-      setTokenExpiry(now + 2 * 60 * 1000);
-    }
+    if (!(await verifyAndGenerateNewToken())) return;
 
     // Send Request on Server
     await axios.get(

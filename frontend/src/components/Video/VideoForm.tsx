@@ -26,12 +26,11 @@ import {
   VideoFormSchemaType,
 } from "@/app/schema";
 import axios from "axios";
-import useAuthStore from "@/app/store/authStore";
-import { generateNewToken } from "@/utils/generateToken";
+import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { updatePersistData } from "@/utils/reactQueryUtils";
 
 interface VideoFormProps {
-  mode: "post" | "patch";
+  mode?: "post" | "patch";
   videoPublicId?: string;
   data?: any;
   onClose?: () => void;
@@ -46,8 +45,6 @@ export function VideoForm({
   const isEditMode: boolean = mode === "patch";
   const schema = isEditMode ? videoEditFormSchema : videoFormSchema;
   const [progressPercent, setProgressPercent] = React.useState(0);
-  const { setAuthorized, tokenExpiry, authenticated, setTokenExpiry } =
-    useAuthStore();
 
   const {
     register,
@@ -88,15 +85,8 @@ export function VideoForm({
     VideoFormSchemaType | VideoEditFormSchemaType
   > = async (data) => {
     try {
-      // Check authentication first
-      if (!authenticated) {
-        return;
-      }
-
-      // Check authorization before form submission
-      if (tokenExpiry < Date.now()) {
-        setAuthorized(false);
-      }
+      // Check Auth
+      if (!(await verifyAndGenerateNewToken())) return;
 
       // Video Form Data
       const {
@@ -112,11 +102,7 @@ export function VideoForm({
       // Edit Mode Form - Start
       if (isEditMode) {
         // Check Auth (Edit Mode)
-        const now = Date.now();
-        if (tokenExpiry < now) {
-          setAuthorized(await generateNewToken());
-          setTokenExpiry(now + 2 * 60 * 1000);
-        }
+        if (!(await verifyAndGenerateNewToken())) return;
 
         // New Thumbnail Data (Only If user wants to update it)
         let thumbnailUploadRes = null;

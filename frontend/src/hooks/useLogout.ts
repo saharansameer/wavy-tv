@@ -1,10 +1,10 @@
 import axios from "axios";
-import { generateNewToken } from "@/utils/generateToken";
+import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { setQueriesInvalid } from "@/utils/reactQueryUtils";
 
 export const useLogout = async () => {
   try {
-    await generateNewToken();
+    await verifyAndGenerateNewToken();
     await axios.get("/api/v1/auth/logout");
     await setQueriesInvalid();
     localStorage.removeItem("auth");

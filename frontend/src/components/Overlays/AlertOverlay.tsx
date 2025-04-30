@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import axios from "axios";
-import { generateNewToken } from "@/utils/generateToken";
+import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { setQueriesInvalid } from "@/utils/reactQueryUtils";
 
 const entities = {
@@ -56,7 +56,7 @@ export function AlertOverlay({
   const { title, description, deleteReq } = entities[entityType];
 
   const onContinueClickHandler = async () => {
-    await generateNewToken();
+    await verifyAndGenerateNewToken();
     await axios.delete(`${deleteReq}/${entityId}`);
     await setQueriesInvalid();
   };

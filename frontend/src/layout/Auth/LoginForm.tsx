@@ -19,7 +19,7 @@ import { setQueriesInvalid } from "@/utils/reactQueryUtils";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = React.useState(false);
-  const { setAuthenticated, setAuthorized, setAuthOverlayOpen, setAuthUser } =
+  const { setAuthenticated, setAuthOverlayOpen, setAuthUser, setTokenExpiry } =
     useAuthStore();
 
   const {
@@ -49,7 +49,7 @@ export function LoginForm() {
       const user = loginResponse.data.data;
       setAuthUser(user);
       setAuthenticated(true);
-      setAuthorized(true);
+      setTokenExpiry(Date.now() + 2 * 60 * 1000);
       setAuthOverlayOpen(false);
       await setQueriesInvalid();
     } catch (error) {
