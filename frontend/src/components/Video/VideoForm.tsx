@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { InputWithLabel, Button, Label, Switch } from "@/components/ui";
 import {

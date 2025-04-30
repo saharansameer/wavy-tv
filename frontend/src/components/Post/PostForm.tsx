@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postFormSchema, PostFormSchemaType } from "@/app/schema";
@@ -10,7 +8,6 @@ import {
   AuthUser,
 } from "@/components";
 import { Button } from "@/components/ui";
-import useAuthStore from "@/app/store/authStore";
 import axios from "axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 
@@ -28,7 +25,6 @@ export function PostForm({
   onClose,
 }: ContentFormProps) {
   const isEditMode = mode === "patch";
-  const { authUser } = useAuthStore();
 
   const {
     handleSubmit,
@@ -73,14 +69,16 @@ export function PostForm({
   }
 
   return (
-    <div className="w-full flex flex-col gap-y-4 px-3 md:px-10 pb-7 pt-3">
+    <div
+      className={`w-full flex flex-col gap-y-4 px-3 md:px-10 pb-7 pt-3 ${isEditMode ? "items-center" : ""}`}
+    >
       {!isEditMode && <AuthUser />}
 
       <form
         onSubmit={handleSubmit(onSubmitHandler)}
-        className="flex flex-col gap-y-5 max-w-xl"
+        className={`w-full flex flex-col gap-y-5 max-w-xl ${isEditMode ? "items-center" : ""}`}
       >
-        <div>
+        <div className="w-full">
           <Controller
             control={control}
             name="content"

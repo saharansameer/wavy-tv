@@ -2,10 +2,14 @@ import { UserAvatar } from "@/components";
 import { Link } from "react-router-dom";
 import useAuthStore from "@/app/store/authStore";
 
-export function AuthUser() {
+interface AuthUserProps {
+  className?: string;
+}
+
+export function AuthUser({ className }: AuthUserProps) {
   const { authUser } = useAuthStore();
   return (
-    <div className="flex flex-row items-center select-none">
+    <div className={className || "flex flex-row items-center select-none"}>
       <UserAvatar
         src={authUser.avatar}
         alt={authUser.username}
