@@ -11,7 +11,7 @@ import {
 } from "@/components";
 import { Button } from "@/components/ui";
 import { Dot, Pencil, Trash2 } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getFormatNumber, getFormatTimestamp } from "@/utils/formatUtils";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -45,6 +45,7 @@ export function Video() {
     <div className="w-full max-w-5xl mx-auto px-1">
       <ScrollToTop />
       <div className="flex flex-col">
+        {/* Avatar, Username, Timestamp, Views */}
         <div className="flex flex-row items-center select-none">
           <UserAvatar
             src={data.owner.avatar}
@@ -52,7 +53,7 @@ export function Video() {
             className={"size-8"}
           />
           <div className="text-lg font-semibold pl-3 hover:underline cursor-pointer">
-            {data.owner.username}
+            <Link to={`/u/${data.owner.username}`}>{data.owner.username}</Link>
           </div>
           <Dot className="pt-1 text-secondary" />
           <div className="text-sm text-secondary">
@@ -63,6 +64,7 @@ export function Video() {
             {getFormatNumber(data.views)} views
           </div>
         </div>
+        {/* Video Title */}
         <div className="py-1 text-2xl font-bold line-clamp-3 leading-tight">
           {data.title}
         </div>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { PaginatedList, VideoCard } from "@/components";
 
-const getVideos: QueryFunction = async ({ pageParam }) => {
+const getVideos: InfiniteQueryFunction = async ({ pageParam }) => {
   const response = await axios.get(`/api/v1/video?page=${pageParam}&limit=12`);
   return response.data.data;
 };

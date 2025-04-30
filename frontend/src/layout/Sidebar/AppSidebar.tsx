@@ -80,12 +80,12 @@ export function AppSidebar() {
     },
     {
       title: "Video Feed",
-      url: "/vf",
+      url: "/v/feed",
       icon: SquarePlay,
     },
     {
       title: "Post Feed",
-      url: "/pf",
+      url: "/p/feed",
       icon: Rss,
     },
   ];
@@ -93,12 +93,12 @@ export function AppSidebar() {
   const groupOneItems = [
     {
       title: "Upload Video",
-      url: "/upload",
+      url: "/v/new",
       icon: Upload,
     },
     {
       title: "Create Post",
-      url: "/create",
+      url: "/p/new",
       icon: PencilLine,
     },
   ];
@@ -106,7 +106,7 @@ export function AppSidebar() {
   const groupTwoItems = [
     {
       title: "Profile",
-      url: "/u/:username",
+      url: `/u/${authUser.username}`,
       icon: CircleUserRound,
     },
     {

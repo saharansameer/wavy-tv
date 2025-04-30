@@ -9,7 +9,8 @@ export function VideoCard({ video }) {
       <Link to={`/v/${video.publicId}`}>
         <img
           src={video?.thumbnail.url}
-          className={`w-full h-48 rounded-sm cursor-pointer hover:rounded-xl transition-all duration-500 ease-in-out  ${video.nsfw ? "blur-xs" : ""}`}
+          className={`w-full h-48 rounded-sm cursor-pointer hover:rounded-xl 
+          transition-all duration-500 ease-in-out  ${video.nsfw ? "blur-xs" : ""}`}
         />
       </Link>
 

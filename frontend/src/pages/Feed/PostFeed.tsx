@@ -13,7 +13,7 @@ export function PostFeed() {
         queryKey={["posts"]}
         queryFn={getPosts}
         renderItem={(post) => <PostCard key={post.publicId} post={post} />}
-        docDivCn={"flex flex-col items-center"}
+        docDivCn={"flex flex-col items-center gap-y-15"}
       />
     </>
   );
