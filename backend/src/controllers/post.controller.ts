@@ -236,3 +236,141 @@ export const getPostByPublicId: Controller = async (req, res) => {
     })
   );
 };
+
+export const getAllPosts: Controller = async (req, res) => {
+  const page = Number(req.query.page as string) || 1;
+  const limit = Number(req.query.limit as string) || 10;
+
+  // Verify logged-in User and Extract user info
+  let userObjectId = null;
+  const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
+  if (userInfo?._id && Types.ObjectId.isValid(userInfo._id)) {
+    userObjectId = new Types.ObjectId(String(userInfo._id));
+  }
+
+  // Aggregate Query
+  const postAggregateQuery = Post.aggregate([
+    {
+      $match: {},
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              fullName: 1,
+              username: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "votes",
+        localField: "_id",
+        foreignField: "post",
+        as: "upvotes",
+        pipeline: [
+          {
+            $match: {
+              vote: "UPVOTE",
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              votedBy: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "votes",
+        localField: "_id",
+        foreignField: "post",
+        as: "downvotes",
+        pipeline: [
+          {
+            $match: {
+              vote: "DOWNVOTE",
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              votedBy: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner",
+        },
+        currUserVoteType: {
+          $cond: {
+            if: {
+              $in: [userObjectId, "$upvotes.votedBy"],
+            },
+            then: "UPVOTE",
+            else: {
+              $cond: {
+                if: {
+                  $in: [userObjectId, "$downvotes.votedBy"],
+                },
+                then: "DOWNVOTE",
+                else: null,
+              },
+            },
+          },
+        },
+        upvotes: {
+          $size: "$upvotes",
+        },
+        downvotes: {
+          $size: "$downvotes",
+        },
+      },
+    },
+  ]);
+
+  // Paginate Options
+  const options = {
+    page,
+    limit,
+  };
+
+  // Paginated Response
+  const paginatedPosts = await Post.aggregatePaginate(
+    postAggregateQuery,
+    options
+  );
+
+  // What If aggregation pipeline or pagination fails
+  if (paginatedPosts.totalDocs === 0) {
+    throw new ApiError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message:
+        "Unable to retrieve posts, aggregation pipeline or pagination failure",
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.POST.FETCH_SUCCESS,
+      data: paginatedPosts,
+    })
+  );
+};

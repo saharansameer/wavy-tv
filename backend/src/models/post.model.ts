@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { AggregatePaginateModel, Document, Schema } from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 interface PostDocument extends Document {
   publicId: string;
   content: string;
   owner: Schema.Types.ObjectId;
-  nsfw: boolean;
 }
 
 const postSchema = new Schema(
@@ -22,19 +22,21 @@ const postSchema = new Schema(
         /[a-zA-Z0-9]/,
         "Content can not be empty and must contain a valid letter",
       ],
-      maxlength: [1000, "Title should not exceed 1000 characters"],
+      maxlength: [2000, "Post content should not exceed 2000 characters"],
     },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    nsfw: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );
 
-export const Post = mongoose.model<PostDocument>("Post", postSchema);
+// Aggregate Paginate v2
+postSchema.plugin(mongooseAggregatePaginate);
+
+export const Post = mongoose.model<
+  PostDocument,
+  AggregatePaginateModel<PostDocument>
+>("Post", postSchema);

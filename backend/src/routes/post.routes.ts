@@ -7,12 +7,17 @@ import {
   updatePost,
   deletePost,
   getPostByPublicId,
+  getAllPosts,
 } from "../controllers/post.controller.js";
 
 const router = Router();
 
+// GET - Fetch All Posts
 // POST - Create new post
-router.route("/").post(checkAuth, asyncHandler(createPost));
+router
+  .route("/")
+  .get(asyncHandler(getAllPosts))
+  .post(checkAuth, asyncHandler(createPost));
 
 // GET - Fetch Post by publicId
 // PATCH - Update Post
