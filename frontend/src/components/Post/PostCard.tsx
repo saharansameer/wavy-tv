@@ -1,5 +1,10 @@
 import React from "react";
-import { VoteButtons, UserAvatar, TextLinkify, Dropdown } from "@/components";
+import {
+  VoteButtons,
+  UserAvatar,
+  TextLinkify,
+  Dropdown,
+} from "@/components";
 import { Button } from "@/components/ui";
 import { Dot, MessageSquareText } from "lucide-react";
 import { getFormatTimestamp } from "@/utils/formatUtils";
@@ -44,8 +49,8 @@ export function PostCard({ post, solo = false }: PostCardProps) {
 
   return (
     <div className="flex flex-col w-xs sm:w-md lg:w-xl gap-y-2">
+      {/*Avatar, Username, Timestamp*/}
       <div className="flex flex-row items-center justify-between select-none">
-        {/*Avatar, Username, Timestamp*/}
         <div className="flex flex-row items-center">
           <UserAvatar
             src={post.owner.avatar}
@@ -66,8 +71,9 @@ export function PostCard({ post, solo = false }: PostCardProps) {
           <Dropdown data={post} entity={"post"} />
         )}
       </div>
+
+      {/* Content and Buttons */}
       <div className="flex flex-col gap-y-10">
-        {/* Content */}
         <div className={`${solo ? "" : "relative"} px-2 py-1 rounded-sm`}>
           <div
             ref={contentRef}
@@ -111,6 +117,7 @@ export function PostCard({ post, solo = false }: PostCardProps) {
           )}
         </div>
       </div>
+
     </div>
   );
 }

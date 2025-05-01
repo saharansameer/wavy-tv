@@ -32,6 +32,7 @@ export function Dropdown({ data, entity }: DropdownProps) {
           trigger={
             <DropdownMenuItem
               onSelect={(e) => {
+                document.body.removeAttribute("style");
                 e.preventDefault();
               }}
             >
@@ -44,7 +45,13 @@ export function Dropdown({ data, entity }: DropdownProps) {
             isPost ? (
               <PostForm mode="patch" data={data} postPublicId={data.publicId} />
             ) : (
-              <CommentForm mode="patch" data={data} commentId={data._id} />
+              <CommentForm
+                mode="patch"
+                data={data}
+                commentId={data._id}
+                entity={entity}
+                entityPublicId={data._id}
+              />
             )
           }
         />
@@ -53,6 +60,7 @@ export function Dropdown({ data, entity }: DropdownProps) {
           trigger={
             <DropdownMenuItem
               onSelect={(e) => {
+                document.body.removeAttribute("style");
                 e.preventDefault();
               }}
             >
@@ -61,7 +69,7 @@ export function Dropdown({ data, entity }: DropdownProps) {
           }
           entityType={entity}
           entityId={isPost ? data.publicId : data._id}
-          toast={"post-delete"}
+          toast={isPost ? "post-delete" : "comment-delete"}
         />
       </DropdownMenuContent>
     </DropdownMenu>

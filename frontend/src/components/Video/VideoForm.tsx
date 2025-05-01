@@ -52,7 +52,7 @@ export function VideoForm({
     handleSubmit,
     reset,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isLoading },
   } = useForm<VideoFormSchemaType | VideoEditFormSchemaType>({
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -171,7 +171,8 @@ export function VideoForm({
     reset();
   };
 
-  if (isSubmitting && !isEditMode) {
+
+  if ((isSubmitting || isLoading) && !isEditMode) {
     return <UploadProgressOverlay progress={progressPercent} />;
   }
 

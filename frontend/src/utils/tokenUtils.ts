@@ -15,6 +15,8 @@ export const verifyAndGenerateNewToken = async () => {
       setTokenExpiry(now + 2 * 60 * 1000);
       return true;
     } catch {
+      await axios.get("/api/v1/auth/token/delete", { withCredentials: true });
+      window.location.reload();
       return false;
     }
   }

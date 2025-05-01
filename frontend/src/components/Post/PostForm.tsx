@@ -32,7 +32,7 @@ export function PostForm({
     handleSubmit,
     reset,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isLoading },
   } = useForm<PostFormSchemaType>({
     resolver: zodResolver(postFormSchema),
     mode: "onChange",
@@ -71,7 +71,7 @@ export function PostForm({
     reset();
   };
 
-  if (isSubmitting && !isEditMode) {
+  if (isSubmitting || isLoading) {
     return <LoadingOverlay />;
   }
 

@@ -14,12 +14,12 @@ import { Button } from "@/components/ui";
 import { LoadingOverlay } from "../Overlays/Loading";
 
 interface PaginatedListProps {
-  queryKey: [string];
+  queryKey: string[];
   queryFn: InfiniteQueryFunction;
   renderItem: (item: any) => React.ReactNode;
-  mainDivCn?: string;
-  docDivCn?: string;
-  pageDivCn?: string;
+  mainDivCn?: string | null;
+  docDivCn?: string | null;
+  pageDivCn?: string | null;
 }
 
 export function PaginatedList({
@@ -68,12 +68,17 @@ export function PaginatedList({
     );
   }
 
+  if (data?.pages?.[0]?.totalDocs === 0) {
+    return <></>;
+  }
+
   return (
     <div
       className={
         mainDivCn || "flex flex-col justify-between w-full h-full px-5 py-5"
       }
     >
+      {/* Items */}
       <div
         className={
           docDivCn || "flex flex-wrap justify-center gap-x-20 gap-y-10"
@@ -82,6 +87,7 @@ export function PaginatedList({
         {data?.pages?.[currPage - 1]?.docs.map((item: any) => renderItem(item))}
       </div>
 
+      {/* Pagination */}
       <div className={pageDivCn || "pt-10"}>
         <Pagination>
           <PaginationContent>

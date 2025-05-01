@@ -42,3 +42,7 @@ export const updatePersistData = async (queryKey: string[], newData: any) => {
 export const setQueriesInvalid = async () => {
   await queryClient.invalidateQueries();
 };
+
+export const setQueryInvalid = async ({ queryKey }: { queryKey: string[] }) => {
+  await queryClient.invalidateQueries({ queryKey, refetchType: "active" });
+};
