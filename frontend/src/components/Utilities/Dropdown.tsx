@@ -1,4 +1,3 @@
-import React from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,6 +61,7 @@ export function Dropdown({ data, entity }: DropdownProps) {
           }
           entityType={entity}
           entityId={isPost ? data.publicId : data._id}
+          toast={"post-delete"}
         />
       </DropdownMenuContent>
     </DropdownMenu>

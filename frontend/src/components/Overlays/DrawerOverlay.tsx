@@ -24,11 +24,18 @@ export function DrawerOverlay({ trigger, title, form }: DrawerOverlayProps) {
       <DrawerContent>
         <div className="px-2 mx-auto w-full max-w-5xl h-full overflow-scroll overflow-y-auto">
           <DrawerHeader className="text-center">
-            <DrawerTitle>{<AuthUser className="flex justify-center" />}</DrawerTitle>
+            <DrawerTitle>
+              {<AuthUser className="flex justify-center" />}
+            </DrawerTitle>
             <DrawerDescription>{title}</DrawerDescription>
           </DrawerHeader>
           {React.isValidElement(form)
-            ? React.cloneElement(form, { onClose: () => setOpen(false) })
+            ? React.cloneElement(form, {
+                onClose: () => {
+                  setOpen(false);
+                  document.body.removeAttribute("style");
+                },
+              })
             : form}
         </div>
       </DrawerContent>

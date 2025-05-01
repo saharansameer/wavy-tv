@@ -28,6 +28,7 @@ import axios from "axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { updatePersistData } from "@/utils/reactQueryUtils";
 import { AuthUser } from "@/components";
+import { showToast } from "@/utils/toast";
 
 interface VideoFormProps {
   mode?: "post" | "patch";
@@ -133,6 +134,7 @@ export function VideoForm({
         });
 
         onClose?.();
+        showToast("video-edit");
         return;
       }
 
@@ -165,6 +167,7 @@ export function VideoForm({
     }
 
     setProgressPercent(0);
+    showToast("video-create");
     reset();
   };
 

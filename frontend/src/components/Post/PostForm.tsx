@@ -10,6 +10,8 @@ import {
 import { Button } from "@/components/ui";
 import axios from "axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
+import { setQueriesInvalid } from "@/utils/reactQueryUtils";
+import { showToast } from "@/utils/toast";
 
 interface ContentFormProps {
   mode?: "post" | "patch";
@@ -51,7 +53,10 @@ export function PostForm({
 
         // Send 'PATCH' request for Modifying Post
         await axios.patch(`/api/v1/post/${postPublicId}`, { content });
+
+        await setQueriesInvalid();
         onClose?.();
+        showToast("post-edit");
         return;
       }
 
@@ -61,6 +66,8 @@ export function PostForm({
       console.log("Post Form Error:", error);
     }
 
+    await setQueriesInvalid();
+    showToast("post-create");
     reset();
   };
 

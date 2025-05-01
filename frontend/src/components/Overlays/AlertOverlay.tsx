@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { setQueriesInvalid } from "@/utils/reactQueryUtils";
+import { showToast, ToastType } from "@/utils/toast";
 
 const entities = {
   user: {
@@ -46,17 +47,20 @@ interface AlertOverlayProps {
   trigger: React.ReactNode;
   entityType: EntityType;
   entityId: string;
+  toast: ToastType;
 }
 
 export function AlertOverlay({
   trigger,
   entityType,
   entityId,
+  toast,
 }: AlertOverlayProps) {
   const { title, description, deleteReq } = entities[entityType];
 
   const onContinueClickHandler = async () => {
     await verifyAndGenerateNewToken();
+    showToast(toast);
     await axios.delete(`${deleteReq}/${entityId}`);
     await setQueriesInvalid();
   };
