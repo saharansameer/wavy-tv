@@ -130,8 +130,21 @@ export const addCommentOnPost: Controller = async (req, res) => {
 };
 
 export const addReplyComment: Controller = async (req, res) => {
-  const { commentId } = req.params;
+  /* commentPublicId - It is not publicId, it is mongodb's ObjectId, 
+  Adjusted names with frontend convention (only for comment) */
+  const commentPublicId = req.query.commentPublicId as string;
   const { content } = req.body;
+
+  // Check for valid query params
+  if (!commentPublicId) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: `?commentPublicId=<> : ${RESPONSE_MESSAGE.COMMON.ALL_QUERY_PARAMS_REQUIRED}`,
+    });
+  }
+
+  // Comment Id
+  const commentId = commentPublicId;
 
   // Remove extra space and Check if comment's content is valid
   const trimmedContent = trimAndClean(content || "");
@@ -243,7 +256,7 @@ export const getEntityComments: Controller = async (req, res) => {
   const page = Number(req.query.page as string) || 1;
   const limit = Number(req.query.limit as string) || 10;
 
-  // The term "entity" refers to 'video' or 'post' or 'comment'
+  // The term "entity" refers to 'video' or 'post'
   const entity = req.query.entity as string;
   const entityId = req.query.entityId as string;
 
@@ -256,7 +269,7 @@ export const getEntityComments: Controller = async (req, res) => {
   }
 
   // Check for invalid entity type
-  if (!["video", "post", "parentComment"].includes(entity)) {
+  if (!["video", "post"].includes(entity)) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message:
@@ -277,6 +290,9 @@ export const getEntityComments: Controller = async (req, res) => {
       $match: {
         [entity]: new Types.ObjectId(String(entityId)),
       },
+    },
+    {
+      $sort: { createdAt: -1 },
     },
     {
       $lookup: {
@@ -339,6 +355,40 @@ export const getEntityComments: Controller = async (req, res) => {
       },
     },
     {
+      $lookup: {
+        from: "comments",
+        localField: "_id",
+        foreignField: "parentComment",
+        as: "replies",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    fullName: 1,
+                    username: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
       $addFields: {
         owner: {
           $first: "$owner",
@@ -362,6 +412,7 @@ export const getEntityComments: Controller = async (req, res) => {
         downvotes: {
           $size: "$downvotes",
         },
+        hasReplies: { $gt: [{ $size: "$replies" }, 0] },
       },
     },
   ]);

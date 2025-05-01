@@ -26,7 +26,7 @@ router.route("/video").post(asyncHandler(addCommentOnVideo));
 router.route("/post").post(asyncHandler(addCommentOnPost));
 
 // POST - Add Reply Comment on comment
-router.route("/reply/:commentId").post(asyncHandler(addReplyComment));
+router.route("/comment").post(asyncHandler(addReplyComment));
 
 // PATCH - Update Comment by id
 router.route("/update/:commentId").patch(asyncHandler(updateCommentById));
