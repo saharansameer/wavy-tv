@@ -1,4 +1,3 @@
-import React from "react";
 import {
   LoadingOverlay,
   VideoPlayer,
@@ -8,6 +7,7 @@ import {
   AlertOverlay,
   DrawerOverlay,
   VideoForm,
+  EntityComments,
 } from "@/components";
 import { Button } from "@/components/ui";
 import { Dot, Pencil, Trash2 } from "lucide-react";
@@ -112,10 +112,21 @@ export function Video() {
               }
               entityType={"video"}
               entityId={data.publicId}
+              toast="video-delete"
             />
           </div>
         )}
       </div>
+
+      <div className="mt-6 border-t border-gray-300" />
+
+      {/* Comments */}
+
+      <EntityComments
+        entity={"video"}
+        entityId={data._id}
+        entityPublicId={data.publicId}
+      />
     </div>
   );
 }
