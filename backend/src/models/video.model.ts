@@ -102,7 +102,7 @@ const videoSchema = new Schema(
     description: {
       type: String,
       default: "",
-      maxlength: [10000, "Description should not exceed 10000 characters"],
+      maxlength: [5000, "Description should not exceed 5000 characters"],
     },
     views: {
       type: Number,

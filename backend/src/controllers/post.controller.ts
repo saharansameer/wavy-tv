@@ -254,6 +254,9 @@ export const getAllPosts: Controller = async (req, res) => {
       $match: {},
     },
     {
+      $sort: { createdAt: -1 },
+    },
+    {
       $lookup: {
         from: "users",
         localField: "owner",

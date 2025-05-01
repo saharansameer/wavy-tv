@@ -20,6 +20,9 @@ export const getAllVideos: Controller = async (req, res) => {
       },
     },
     {
+      $sort: { createdAt: -1 },
+    },
+    {
       $lookup: {
         from: "users",
         localField: "owner",
