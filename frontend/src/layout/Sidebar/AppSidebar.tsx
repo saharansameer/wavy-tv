@@ -183,9 +183,12 @@ export function AppSidebar() {
                 side="top"
                 className="w-44 md:w-60 cursor-pointer"
               >
-                <DropdownMenuItem className="cursor-pointer">
-                  Settings
-                </DropdownMenuItem>
+                <Link to={"/settings"}>
+                  <DropdownMenuItem className="cursor-pointer">
+                    Settings
+                  </DropdownMenuItem>
+                </Link>
+
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={useLogout}

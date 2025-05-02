@@ -6,24 +6,68 @@ import {
 import App from "@/App";
 import { Auth } from "@/layout";
 import { Home, VideoFeed, PostFeed } from "@/pages";
-import { VideoForm, NotFound, Video } from "@/components";
+import {
+  NotFound,
+  Video,
+  VideoForm,
+  Post,
+  PostForm,
+  UserProfile,
+  Settings,
+} from "@/components";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
+      {/* Default Route */}
       <Route path="/" element={<Home />} />
-      <Route path="/vf" element={<VideoFeed />} />
-      <Route path="/pf" element={<PostFeed />} />
+      <Route path="*" element={<NotFound />} />
+
+      {/* User Routes */}
+      <Route path="/u">
+        <Route path="" element={<NotFound />} />
+        <Route path=":username" element={<UserProfile />} />
+      </Route>
+
+      {/* Settings Routes */}
       <Route
-        path="/upload"
+        path="/settings"
         element={
           <Auth>
-            <VideoForm />
+            <Settings />
           </Auth>
         }
       />
-      <Route path="/v/:publicId" element={<Video />} />
-      <Route path="*" element={<NotFound />} />
+
+      {/* Video Routes */}
+      <Route path="/v">
+        <Route path="" element={<NotFound />} />
+        <Route path="feed" element={<VideoFeed />} />
+        <Route path=":publicId" element={<Video />} />
+        <Route
+          path="new"
+          element={
+            <Auth>
+              <VideoForm />
+            </Auth>
+          }
+        />
+      </Route>
+
+      {/* Post Routes */}
+      <Route path="/p">
+        <Route path="" element={<NotFound />} />
+        <Route path="feed" element={<PostFeed />} />
+        <Route path=":publicId" element={<Post />} />
+        <Route
+          path="new"
+          element={
+            <Auth>
+              <PostForm />
+            </Auth>
+          }
+        />
+      </Route>
     </Route>
   )
 );
