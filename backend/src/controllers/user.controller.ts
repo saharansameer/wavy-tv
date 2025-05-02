@@ -135,10 +135,10 @@ export const updateUserEmail: Controller = async (req, res) => {
 };
 
 export const updateUserPassword: Controller = async (req, res) => {
-  const { oldPassword, newPassword, confirmNewPassword } = req.body;
+  const { currPassword, newPassword, confirmNewPassword } = req.body;
 
   // Check for required fields
-  if (!oldPassword || !newPassword || !confirmNewPassword) {
+  if (!currPassword || !newPassword || !confirmNewPassword) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -154,7 +154,7 @@ export const updateUserPassword: Controller = async (req, res) => {
   }
 
   // What if old Password and new Password are same
-  if (oldPassword === newPassword) {
+  if (currPassword === newPassword) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: "New password must be different from the old password.",
@@ -172,7 +172,7 @@ export const updateUserPassword: Controller = async (req, res) => {
   }
 
   // Validate existing password
-  const validatePassword = await user.isPasswordCorrect(oldPassword);
+  const validatePassword = await user.isPasswordCorrect(currPassword);
 
   if (!validatePassword) {
     throw new ApiError({
@@ -221,24 +221,10 @@ export const toggleCreatorMode: Controller = async (req, res) => {
 };
 
 export const updateUserPreferences: Controller = async (req, res) => {
-  const {
-    theme,
-    nsfwContent,
-    publishStatus,
-    category,
-    saveSearchHistory,
-    saveWatchHistory,
-  } = req.body;
+  const { theme, nsfwContent, publishStatus, category } = req.body;
 
   // Check If recieved all preferences in req body
-  if (
-    !theme ||
-    !nsfwContent ||
-    !publishStatus ||
-    !category ||
-    !saveSearchHistory ||
-    !saveWatchHistory
-  ) {
+  if (!theme || !nsfwContent || !publishStatus || !category) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -254,8 +240,6 @@ export const updateUserPreferences: Controller = async (req, res) => {
         nsfwContent,
         publishStatus,
         category,
-        saveSearchHistory,
-        saveWatchHistory,
       },
     },
     { new: true, runValidators: true }
@@ -279,19 +263,17 @@ export const updateUserPreferences: Controller = async (req, res) => {
 };
 
 export const toggleSearchAndWatchHistory: Controller = async (req, res) => {
-  // Toggle User's Search and Watch History Preferences
+  const { saveSearchHistory, saveWatchHistory } = req.body;
+
+  // Toggle User's Search and Watch History
   const user = await User.findByIdAndUpdate(
-    req?.user?._id,
-    [
-      {
-        $set: {
-          isSearchHistorySaved: { $not: "$isSearchHistorySaved" },
-          isWatchHistorySaved: { $not: "$isWatchHistorySaved" },
-        },
-      },
-    ],
+    req.user?._id,
+    {
+      "preferences.saveSearchHistory": saveSearchHistory,
+      "preferences.saveWatchHistory": saveWatchHistory,
+    },
     { new: true, runValidators: true }
-  ).select("-_id fulName username isSearchHistorySaved isWatchHistorySaved");
+  );
 
   if (!user) {
     throw new ApiError({
@@ -305,7 +287,7 @@ export const toggleSearchAndWatchHistory: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
-      data: user,
+      data: unpackUserData(user),
     })
   );
 };
