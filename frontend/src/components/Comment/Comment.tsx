@@ -89,7 +89,8 @@ export function Comment({ comment, asChild = false }: CommentProps) {
         <div className="relative px-2 py-1 rounded-sm">
           <div
             ref={contentRef}
-            className="leading-normal transition-[max-height] duration-300 ease-in-out overflow-hidden"
+            className="leading-normal transition-[max-height] 
+            duration-300 ease-in-out overflow-hidden whitespace-pre-line"
             style={
               isExpanded
                 ? { maxHeight: contentRef.current?.scrollHeight }

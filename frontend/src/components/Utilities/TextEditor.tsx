@@ -30,27 +30,11 @@ export function TextEditor({
     adjustHeight();
   }, [value, adjustHeight]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const textarea = textareaRef.current!;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      // insert a single line-break (auto-resize will handle spacing)
-      const updated = value.slice(0, start) + "\n" + value.slice(end);
-      onChange(updated);
-      requestAnimationFrame(() => {
-        textarea.selectionStart = textarea.selectionEnd = start + 1;
-      });
-    }
-  };
-
   return (
     <Textarea
       ref={textareaRef}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      onKeyDown={handleKeyDown}
       placeholder={placeholder}
       className={`resize-none overflow-hidden ${className}`}
       style={{ height: "auto" }}

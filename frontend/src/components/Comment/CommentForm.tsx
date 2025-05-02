@@ -12,7 +12,7 @@ import useAuthStore from "@/app/store/authStore";
 import axios from "axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { showToast } from "@/utils/toast";
-import { setQueriesInvalid, setQueryInvalid } from "@/utils/reactQueryUtils";
+import { setQueryInvalid } from "@/utils/reactQueryUtils";
 import { useParams } from "react-router-dom";
 
 interface CommentFormProps {
@@ -45,7 +45,9 @@ export function CommentForm({
     resolver: zodResolver(commentFormSchema),
     mode: "onChange",
     reValidateMode: "onSubmit",
-    defaultValues: isEditMode ? { content: data.content } : {},
+    defaultValues: {
+      content: isEditMode ? data.content : "",
+    },
   });
 
   // Form Submit Handler
