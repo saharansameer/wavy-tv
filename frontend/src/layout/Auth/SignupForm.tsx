@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button, Input, Label, TabsContent } from "@/components/ui";
-import { ErrorMessage } from "@/components";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { ErrorMessage, LoaderSpin } from "@/components";
+import { Eye, EyeOff } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupFormSchema, SignupFormSchemaType } from "@/app/schema";
@@ -165,12 +165,8 @@ export function SignupForm() {
           </CardContent>
           <div className="py-4"></div>
           <CardFooter className="space-y-1">
-            <Button className="cursor-pointer">
-              {isSubmitting ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                "Submit"
-              )}
+            <Button type="submit" className="cursor-pointer">
+              {isSubmitting ? <LoaderSpin /> : "Submit"}
             </Button>
           </CardFooter>
         </form>

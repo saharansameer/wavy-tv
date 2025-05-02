@@ -8,8 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button, Input, Label, TabsContent } from "@/components/ui";
-import { ErrorMessage, PasswordInput } from "@/components";
-import { Loader2 } from "lucide-react";
+import { ErrorMessage, PasswordInput, LoaderSpin } from "@/components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema, LoginFormSchemaType } from "@/app/schema";
@@ -99,11 +98,7 @@ export function LoginForm() {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                "Submit"
-              )}
+              {isSubmitting ? <LoaderSpin /> : "Submit"}
             </Button>
           </CardFooter>
         </form>

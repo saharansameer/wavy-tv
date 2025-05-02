@@ -39,6 +39,7 @@ function Button({
   className,
   variant,
   size,
+  type = "button",
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
@@ -54,6 +55,7 @@ function Button({
         buttonVariants({ variant, size, className }),
         "cursor-pointer"
       )}
+      type={type}
       {...props}
     />
   );

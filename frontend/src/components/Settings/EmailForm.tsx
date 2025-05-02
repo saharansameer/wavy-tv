@@ -1,6 +1,5 @@
 import { Input, Label, CardContent, Button } from "@/components/ui";
-import { SettingComponentProps } from "./Settings";
-import { PasswordInput, ErrorMessage } from "@/components";
+import { PasswordInput, ErrorMessage, LoaderSpin } from "@/components";
 import { showToast } from "@/utils/toast";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { emailFormSchema, EmailFormSchemaType } from "@/app/schema";
@@ -16,7 +15,7 @@ export function EmailForm({ isActive, user }: SettingComponentProps) {
     handleSubmit,
     reset,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setError,
   } = useForm<EmailFormSchemaType>({
     resolver: zodResolver(emailFormSchema),
@@ -29,7 +28,7 @@ export function EmailForm({ isActive, user }: SettingComponentProps) {
       // Check Auth
       if (!(await verifyAndGenerateNewToken())) return;
 
-      // Form Data
+      // Email Form Data
       const { email, newEmail, password } = data;
 
       // PATCH request
@@ -54,7 +53,13 @@ export function EmailForm({ isActive, user }: SettingComponentProps) {
 
   return (
     <CardContent>
-      <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-2">
+      <form
+        onSubmit={handleSubmit(onSubmitHandler)}
+        className={`space-y-2 overflow-hidden 
+        transition-[max-height,opacity] duration-1000 ease-initial
+        ${isActive ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}
+        `}
+      >
         <div className="space-y-2">
           <Label>Email</Label>
           <Input
@@ -63,7 +68,7 @@ export function EmailForm({ isActive, user }: SettingComponentProps) {
             {...register("email")}
           ></Input>
         </div>
-        <fieldset disabled={!isActive} hidden={!isActive} className="space-y-5">
+        <fieldset disabled={!isActive} className="space-y-5">
           <div className="space-y-2">
             <Label>New Email</Label>
             <Input
@@ -83,7 +88,7 @@ export function EmailForm({ isActive, user }: SettingComponentProps) {
             )}
           </div>
           <Button type="submit" className="font-semibold">
-            Save
+            {isSubmitting ? <LoaderSpin /> : "Save"}
           </Button>
         </fieldset>
       </form>
