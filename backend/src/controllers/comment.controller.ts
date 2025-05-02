@@ -4,7 +4,6 @@ import { Comment } from "../models/comment.model.js";
 import { Video } from "../models/video.model.js";
 import { Post } from "../models/post.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
-import { trimAndClean } from "../utils/stringUtils.js";
 import { Types } from "mongoose";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
 
@@ -20,9 +19,7 @@ export const addCommentOnVideo: Controller = async (req, res) => {
     });
   }
 
-  // Remove extra space and Check if comment's content is valid
-  const trimmedContent = trimAndClean(content || "");
-  if (!trimmedContent) {
+  if (!content) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -51,7 +48,7 @@ export const addCommentOnVideo: Controller = async (req, res) => {
 
   // Create Comment for Video
   const comment = await Comment.create({
-    content: trimmedContent,
+    content: content,
     owner: req?.user?._id,
     video: video._id,
   });
@@ -85,9 +82,7 @@ export const addCommentOnPost: Controller = async (req, res) => {
     });
   }
 
-  // Remove extra space and Check if comment's content is valid
-  const trimmedContent = trimAndClean(content || "");
-  if (!trimmedContent) {
+  if (!content) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -107,7 +102,7 @@ export const addCommentOnPost: Controller = async (req, res) => {
 
   // Create Comment for Post
   const comment = await Comment.create({
-    content: trimmedContent,
+    content: content,
     owner: req?.user?._id,
     post: post._id,
   });
@@ -146,9 +141,7 @@ export const addReplyComment: Controller = async (req, res) => {
   // Comment Id
   const commentId = commentPublicId;
 
-  // Remove extra space and Check if comment's content is valid
-  const trimmedContent = trimAndClean(content || "");
-  if (!trimmedContent) {
+  if (!content) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -168,7 +161,7 @@ export const addReplyComment: Controller = async (req, res) => {
 
   // Create Reply comment for Comment
   const replyComment = await Comment.create({
-    content: trimmedContent,
+    content: content,
     owner: req?.user?._id,
     parentComment: commentId,
   });
@@ -194,9 +187,7 @@ export const updateCommentById: Controller = async (req, res) => {
   const { commentId } = req.params;
   const { content } = req.body;
 
-  // Remove extra space and Check if comment's content is valid
-  const trimmedContent = trimAndClean(content || "");
-  if (!trimmedContent) {
+  if (!content) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -206,7 +197,7 @@ export const updateCommentById: Controller = async (req, res) => {
   // Update Comment Content
   const comment = await Comment.findOneAndUpdate(
     { _id: commentId, owner: req?.user?._id },
-    { content: trimmedContent },
+    { content: content },
     { new: true, runValidators: true }
   );
 
