@@ -43,6 +43,8 @@ interface UserPreferences {
   nsfwContent: NsfwType;
   publishStatus: PublishStatus;
   category: Category;
+  saveSearchHistory: boolean;
+  saveWatchHistory: boolean;
 }
 
 interface UserDocument extends Document {
@@ -58,8 +60,6 @@ interface UserDocument extends Document {
   coverImagePublicId?: string;
   refreshToken: string;
   searchHistory: string[];
-  isSearchHistorySaved: boolean;
-  isWatchHistorySaved: boolean;
   savedPlaylists: Schema.Types.ObjectId[];
   watchLater: Schema.Types.ObjectId;
   favourites: Schema.Types.ObjectId;
@@ -114,6 +114,12 @@ const preferenceSubSchema = new Schema({
   category: {
     type: String,
     enum: Object.values(Category),
+  },
+  saveSearchHistory: {
+    type: Boolean,
+  },
+  saveWatchHistory: {
+    type: Boolean,
   },
 });
 
@@ -189,14 +195,6 @@ const userSchema = new Schema(
       type: [String],
       default: [],
     },
-    isSearchHistorySaved: {
-      type: Boolean,
-      default: true,
-    },
-    isWatchHistorySaved: {
-      type: Boolean,
-      default: true,
-    },
     savedPlaylists: {
       type: [Schema.Types.ObjectId],
       ref: "Playlist",
@@ -240,6 +238,8 @@ const userSchema = new Schema(
         nsfwContent: NsfwType.BLUR,
         publishStatus: PublishStatus.PUBLIC,
         category: Category.GENERAL,
+        saveSearchHistory: true,
+        saveWatchHistory: true,
       },
     },
   },

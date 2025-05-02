@@ -12,6 +12,7 @@ import jwt from "jsonwebtoken";
 import { REFRESH_TOKEN_SECRET } from "../config/env.js";
 import { Playlist } from "../models/playlist.model.js";
 import { generatePublicId } from "../utils/crypto.js";
+import { unpackUserData } from "../utils/authUtils.js";
 
 async function generateTokens(userId: Types.ObjectId): Promise<TokenPayload> {
   try {
@@ -160,15 +161,7 @@ export const loginUser: Controller = async (req, res) => {
       new ApiResponse({
         status: HTTP_STATUS.OK,
         message: RESPONSE_MESSAGE.AUTH.LOGIN_SUCCESS,
-        data: {
-          theme: user.preferences.theme,
-          nsfwContent: user.preferences.nsfwContent,
-          publishStatus: user.preferences.publishStatus,
-          category: user.preferences.category,
-          fullName: user.fullName,
-          username: user.username,
-          avatar: user.avatar,
-        },
+        data: unpackUserData(user),
       })
     );
 };

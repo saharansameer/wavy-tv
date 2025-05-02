@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { extractTagsAndKeywords } from "../utils/stringUtils.js";
+import { unpackUserData } from "../utils/authUtils.js";
 
 export const getCurrentUser: Controller = async (req, res) => {
   // Get User Details
@@ -23,7 +24,7 @@ export const getCurrentUser: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.USER.FETCH_DETAILS_SUCCESS,
-      data: user,
+      data: unpackUserData(user),
     })
   );
 };
@@ -78,10 +79,10 @@ export const updateUserNames: Controller = async (req, res) => {
 };
 
 export const updateUserEmail: Controller = async (req, res) => {
-  const { currentEmail, newEmail } = req.body;
+  const { currEmail, newEmail, password } = req.body;
 
   // Check for required fields
-  if (!currentEmail || !newEmail) {
+  if (!currEmail || !newEmail || !password) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -89,33 +90,46 @@ export const updateUserEmail: Controller = async (req, res) => {
   }
 
   // What if current Email and new Email are same
-  if (currentEmail === newEmail) {
+  if (currEmail === newEmail) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: "New email must be different from the current email.",
     });
   }
 
-  // Update User Email
-  const user = await User.findByIdAndUpdate(
-    req.user?._id,
-    { email: newEmail, "lastModified.email": new Date() },
-    { new: true, runValidators: true }
-  ).select("-_id email username fullName");
+  // Find User
+  const user = await User.findById(req.user?._id);
 
   if (!user) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
+      message: RESPONSE_MESSAGE.USER.NOT_AUTHORIZED,
     });
   }
+
+  // Check if password is correct
+  const validatePassword = await user.isPasswordCorrect(password);
+
+  if (!validatePassword) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.AUTH.INCORRECT_PASSWORD,
+    });
+  }
+
+  // Update User Email
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    { email: newEmail, "lastModified.email": new Date() },
+    { new: true, runValidators: true }
+  ).select("-password -refreshToken");
 
   // Final Response
   return res.status(HTTP_STATUS.OK).json(
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
-      data: user,
+      data: unpackUserData(updatedUser),
     })
   );
 };
@@ -207,10 +221,24 @@ export const toggleCreatorMode: Controller = async (req, res) => {
 };
 
 export const updateUserPreferences: Controller = async (req, res) => {
-  const { theme, nsfwContent, publishStatus, category } = req.body;
+  const {
+    theme,
+    nsfwContent,
+    publishStatus,
+    category,
+    saveSearchHistory,
+    saveWatchHistory,
+  } = req.body;
 
   // Check If recieved all preferences in req body
-  if (!theme || !nsfwContent || !publishStatus || !category) {
+  if (
+    !theme ||
+    !nsfwContent ||
+    !publishStatus ||
+    !category ||
+    !saveSearchHistory ||
+    !saveWatchHistory
+  ) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -226,6 +254,8 @@ export const updateUserPreferences: Controller = async (req, res) => {
         nsfwContent,
         publishStatus,
         category,
+        saveSearchHistory,
+        saveWatchHistory,
       },
     },
     { new: true, runValidators: true }
@@ -243,7 +273,7 @@ export const updateUserPreferences: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
-      data: user,
+      data: unpackUserData(user),
     })
   );
 };
