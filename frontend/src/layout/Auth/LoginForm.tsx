@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button, Input, Label, TabsContent } from "@/components/ui";
-import { ErrorMessage } from "@/components";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { ErrorMessage, PasswordInput } from "@/components";
+import { Loader2 } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema, LoginFormSchemaType } from "@/app/schema";
@@ -18,7 +18,6 @@ import useAuthStore from "@/app/store/authStore";
 import { setQueriesInvalid } from "@/utils/reactQueryUtils";
 
 export function LoginForm() {
-  const [showPassword, setShowPassword] = React.useState(false);
   const { setAuthenticated, setAuthOverlayOpen, setAuthUser, setTokenExpiry } =
     useAuthStore();
 
@@ -27,6 +26,7 @@ export function LoginForm() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
+    setError,
   } = useForm<LoginFormSchemaType>({
     resolver: zodResolver(loginFormSchema),
     mode: "onChange",
@@ -52,11 +52,13 @@ export function LoginForm() {
       setTokenExpiry(Date.now() + 2 * 60 * 1000);
       setAuthOverlayOpen(false);
       await setQueriesInvalid();
-    } catch (error) {
-      console.error("Login Form Error:", error);
+      reset();
+    } catch {
+      setError("root", {
+        type: "manual",
+        message: "Invalid Email or Password",
+      });
     }
-
-    reset();
   };
 
   return (
@@ -70,6 +72,7 @@ export function LoginForm() {
         <form onSubmit={handleSubmit(onSubmitHandler)}>
           <CardContent className="space-y-7">
             <div className="space-y-1">
+              {errors.root && <ErrorMessage text={`${errors.root.message}`} />}
               <Label htmlFor="login-email">Email</Label>
               <Input
                 type="email"
@@ -82,22 +85,8 @@ export function LoginForm() {
               )}
             </div>
             <div className="space-y-1">
-              <Label htmlFor="login-password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="login-password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  {...register("password")}
-                />
-                <Button
-                  className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
-                  variant={"ghost"}
-                  onClick={() => setShowPassword((prev) => !prev)}
-                >
-                  {showPassword ? <EyeOff /> : <Eye />}
-                </Button>
-              </div>
+              <Label>Password</Label>
+              <PasswordInput {...register("password")} />
               {errors.password && (
                 <ErrorMessage text={`${errors.password.message}`} />
               )}
