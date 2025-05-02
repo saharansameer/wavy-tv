@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import axios from "axios";
 
-export function PasswordForm({ isActive, user }: SettingComponentProps) {
+export function PasswordForm({ isActive }: SettingComponentProps) {
   const {
     handleSubmit,
     reset,
@@ -39,8 +39,7 @@ export function PasswordForm({ isActive, user }: SettingComponentProps) {
 
       showToast("user-password-change");
       reset();
-    } catch (error) {
-      console.error("Password Form Error:", error);
+    } catch {
       setError("currPassword", {
         type: "manual",
         message: "Incorrect password",

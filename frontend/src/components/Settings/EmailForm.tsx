@@ -8,8 +8,8 @@ import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import axios from "axios";
 import useAuthStore from "@/app/store/authStore";
 
-export function EmailForm({ isActive, user }: SettingComponentProps) {
-  const { setAuthUser } = useAuthStore();
+export function EmailForm({ isActive }: SettingComponentProps) {
+  const { setAuthUser, authUser } = useAuthStore();
 
   const {
     handleSubmit,
@@ -64,11 +64,11 @@ export function EmailForm({ isActive, user }: SettingComponentProps) {
           <Label>Email</Label>
           <Input
             disabled={true}
-            value={user.email}
+            value={authUser.email}
             {...register("email")}
           ></Input>
         </div>
-        <fieldset disabled={!isActive} className="space-y-5">
+        <fieldset disabled={!isActive} className="space-y-5 px-1">
           <div className="space-y-2">
             <Label>New Email</Label>
             <Input
