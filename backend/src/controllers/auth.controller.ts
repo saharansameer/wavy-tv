@@ -163,6 +163,8 @@ export const loginUser: Controller = async (req, res) => {
         data: {
           theme: user.preferences.theme,
           nsfwContent: user.preferences.nsfwContent,
+          publishStatus: user.preferences.publishStatus,
+          category: user.preferences.category,
           fullName: user.fullName,
           username: user.username,
           avatar: user.avatar,

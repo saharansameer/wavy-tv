@@ -1,5 +1,6 @@
 import { create, StateCreator } from "zustand";
 import { devtools, persist, createJSONStorage } from "zustand/middleware";
+import { CategoryType, PublishStatusType } from "../schema";
 
 type ThemeType = "dark" | "light" | "system";
 type NsfwContentType = "SHOW" | "HIDE" | "BLUR";
@@ -7,6 +8,8 @@ type NsfwContentType = "SHOW" | "HIDE" | "BLUR";
 interface AuthUser {
   theme: ThemeType;
   nsfwContent: NsfwContentType;
+  publishStatus: PublishStatusType;
+  category: CategoryType;
   fullName: string;
   username: string;
   avatar: string;
@@ -35,6 +38,8 @@ const authStore: StateCreator<AuthType> = (set, get) => ({
   authUser: {
     theme: "system",
     nsfwContent: "BLUR",
+    publishStatus: "PUBLIC",
+    category: "GENERAL",
     fullName: "",
     username: "",
     avatar: "",
