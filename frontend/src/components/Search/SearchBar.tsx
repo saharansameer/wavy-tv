@@ -50,38 +50,44 @@ export function SearchBar() {
         className={"rounded-full md:hidden"}
         onClick={() => setIsSearchOpen(true)}
       />
-      {isSearchOpen && (
-        <div className="absolute top-0 left-0 w-full z-50 pl-10 md:hidden">
-          <div className="backdrop-blur-sm bg-background px-4 py-3">
-            <div className="relative gap-2">
-              <SearchInput
-                type="search"
-                placeholder="Search..."
-                className="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                ref={mobileInputRef}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    mobileInputRef.current?.blur();
-                  }
-                }}
-              />
-
-              <button
-                onClick={() => {
-                  setIsSearchOpen(false);
-                  setInputText("");
-                }}
-                className="p-[1px] absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer md:hidden bg-primary rounded-full"
-              >
-                <X className="w-5 h-5 text-white" />
-              </button>
-            </div>
+      {/* On Mobile Screens */}
+      <div
+        className={`
+        absolute top-0 left-7 z-50 md:hidden
+        overflow-hidden
+        transition-all duration-500 ease-in-out
+        ${isSearchOpen ? "w-[calc(100%-25px)] opacity-100" : "w-0 translate-x-full opacity-0"}
+        `}
+      >
+        <div className="backdrop-blur-sm bg-background px-4 py-3 w-full">
+          <div className="relative flex items-center gap-2">
+            <SearchInput
+              type="search"
+              placeholder="Search..."
+              className="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              ref={mobileInputRef}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  mobileInputRef.current?.blur();
+                }
+              }}
+            />
+            <button
+              onClick={() => {
+                setIsSearchOpen(false);
+                setInputText("");
+              }}
+              className="p-[1px] absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer bg-primary rounded-full transition-opacity duration-200"
+              style={{ opacity: isSearchOpen ? 1 : 0 }}
+            >
+              <X className="w-5 h-5 text-white" />
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

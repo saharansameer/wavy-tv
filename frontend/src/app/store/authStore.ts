@@ -5,14 +5,17 @@ import { CategoryType, PublishStatusType } from "../schema";
 type ThemeType = "dark" | "light" | "system";
 type NsfwContentType = "SHOW" | "HIDE" | "BLUR";
 
-interface AuthUser {
+export interface AuthUser {
   theme: ThemeType;
   nsfwContent: NsfwContentType;
   publishStatus: PublishStatusType;
   category: CategoryType;
+  saveSearchHistory: boolean;
+  saveWatchHistory: boolean;
   fullName: string;
   username: string;
   avatar: string;
+  email: string;
 }
 
 interface AuthType {
@@ -40,9 +43,12 @@ const authStore: StateCreator<AuthType> = (set, get) => ({
     nsfwContent: "BLUR",
     publishStatus: "PUBLIC",
     category: "GENERAL",
+    saveSearchHistory: true,
+    saveWatchHistory: true,
     fullName: "",
     username: "",
     avatar: "",
+    email: "",
   },
   setAuthUser: (authUser: AuthUser) => set({ authUser }),
   setTheme: (theme: ThemeType) =>

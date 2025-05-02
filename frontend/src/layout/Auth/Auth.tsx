@@ -22,9 +22,8 @@ export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
 
   React.useEffect(() => {
     (async () => {
-      if (await verifyAndGenerateNewToken()) {
-        setWaiting(false);
-      }
+      await verifyAndGenerateNewToken();
+      setWaiting(false);
     })();
   }, [
     authenticated,
@@ -34,11 +33,11 @@ export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
     setAuthOverlayOpen,
   ]);
 
-  if (waiting) return <>{skeleton || <LoadingOverlay />}</>;
-
   if (!authenticated && !isAuthOverlayOpen) {
     return <Navigate to={"/"} />;
   }
+
+  if (waiting) return <>{skeleton || <LoadingOverlay />}</>;
 
   return <>{children}</>;
 };
