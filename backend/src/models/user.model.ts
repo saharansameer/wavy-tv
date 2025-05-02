@@ -8,6 +8,7 @@ import {
   REFRESH_TOKEN_EXPIRY,
 } from "../config/env.js";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import { PublishStatus, Category } from "./video.model.js";
 
 interface Social {
   socialName: string;
@@ -40,6 +41,8 @@ enum NsfwType {
 interface UserPreferences {
   theme: ThemeType;
   nsfwContent: NsfwType;
+  publishStatus: PublishStatus;
+  category: Category;
 }
 
 interface UserDocument extends Document {
@@ -103,6 +106,14 @@ const preferenceSubSchema = new Schema({
   nsfwContent: {
     type: String,
     enum: Object.values(NsfwType),
+  },
+  publishStatus: {
+    type: String,
+    enum: Object.values(PublishStatus),
+  },
+  category: {
+    type: String,
+    enum: Object.values(Category),
   },
 });
 
@@ -227,6 +238,8 @@ const userSchema = new Schema(
       default: {
         theme: ThemeType.SYSTEM,
         nsfwContent: NsfwType.BLUR,
+        publishStatus: PublishStatus.PUBLIC,
+        category: Category.GENERAL,
       },
     },
   },

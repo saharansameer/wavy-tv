@@ -1,13 +1,13 @@
 import { Schema, model, Document, AggregatePaginateModel } from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
-enum PublishStatus {
+export enum PublishStatus {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
   UNLISTED = "UNLISTED",
 }
 
-enum Category {
+export enum Category {
   GENERAL = "GENERAL",
   ENTERTAINMENT = "ENTERTAINMENT",
   GAMING = "GAMING",

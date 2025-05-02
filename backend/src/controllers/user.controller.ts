@@ -207,10 +207,10 @@ export const toggleCreatorMode: Controller = async (req, res) => {
 };
 
 export const updateUserPreferences: Controller = async (req, res) => {
-  const { theme, nsfwContent } = req.body;
+  const { theme, nsfwContent, publishStatus, category } = req.body;
 
   // Check If recieved all preferences in req body
-  if (!theme || !nsfwContent) {
+  if (!theme || !nsfwContent || !publishStatus || !category) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -224,10 +224,12 @@ export const updateUserPreferences: Controller = async (req, res) => {
       preferences: {
         theme,
         nsfwContent,
+        publishStatus,
+        category,
       },
     },
     { new: true, runValidators: true }
-  ).select("-_id fullName username preferences");
+  );
 
   if (!user) {
     throw new ApiError({
