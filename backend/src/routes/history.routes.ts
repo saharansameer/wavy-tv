@@ -19,13 +19,13 @@ router.use(checkAuth);
 router.route("/").get(asyncHandler(getWatchHistory));
 
 // DELETE - Delete Watch History
-router.route("/clear/watch").delete(asyncHandler(deleteWatchHistory));
+router.route("/clear").delete(asyncHandler(deleteWatchHistory));
 
 // POST - Add Video to Watch History
-router.route("/watch/add").post(asyncHandler(addVideoToWatchHistory));
+router.route("/add").post(asyncHandler(addVideoToWatchHistory));
 
 // POST - Remove Video from Watch History
-router.route("/watch/remove").post(asyncHandler(removeVideoFromWatchHistory));
+router.route("/remove").post(asyncHandler(removeVideoFromWatchHistory));
 
 // PATCH - Delete (Clear) User's Search History
 router.route("/clear/search").patch(asyncHandler(deleteSearchHistory));

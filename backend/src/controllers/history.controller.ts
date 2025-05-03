@@ -13,8 +13,11 @@ export const getWatchHistory: Controller = async (req, res) => {
   const watchHistoryAggregateQuery = History.aggregate([
     {
       $match: {
-        user: req?.user?._id,
+        user: new Types.ObjectId(String(req?.user?._id)),
       },
+    },
+    {
+      $sort: { createdAt: -1 },
     },
     {
       $lookup: {
@@ -23,11 +26,6 @@ export const getWatchHistory: Controller = async (req, res) => {
         foreignField: "_id",
         as: "video",
         pipeline: [
-          {
-            $project: {
-              videoFile: 0,
-            },
-          },
           {
             $lookup: {
               from: "users",
@@ -53,6 +51,13 @@ export const getWatchHistory: Controller = async (req, res) => {
             },
           },
         ],
+      },
+    },
+    {
+      $addFields: {
+        video: {
+          $first: "$video",
+        },
       },
     },
   ]);
@@ -90,7 +95,7 @@ export const getWatchHistory: Controller = async (req, res) => {
 
 export const deleteWatchHistory: Controller = async (req, res) => {
   // type RangeType = 0 | 1 | 24 | 168 | 720 | 2160
-  const range = Number(req.query.range as string) || 1;
+  const range = (req.query.range as string) || "1";
 
   // Check for valid query params
   if (!range) {
@@ -101,9 +106,9 @@ export const deleteWatchHistory: Controller = async (req, res) => {
   }
 
   // Delete lifetime Watch History
-  if (range === 0) {
+  if (range === "0") {
     const deleteAllWatchHistory = await History.deleteMany({
-      user: req?.user?._id,
+      user: new Types.ObjectId(req?.user?._id),
     });
 
     if (!deleteAllWatchHistory) {
@@ -124,11 +129,11 @@ export const deleteWatchHistory: Controller = async (req, res) => {
 
   // Delete Watch History by time range
   const now = new Date();
-  const cutoffDate = new Date(now.getTime() - range * 60 * 60 * 1000);
+  const cutoffDate = new Date(now.getTime() - Number(range) * 60 * 60 * 1000);
 
   const deleteWatchHistory = await History.deleteMany({
-    user: req?.user?._id,
-    createdAt: cutoffDate,
+    user: new Types.ObjectId(req?.user?._id),
+    createdAt: { $gte: cutoffDate },
   });
 
   if (!deleteWatchHistory) {
