@@ -7,6 +7,7 @@ interface ExpandableFieldProps {
   maxLines?: number;
   showMoreText?: string;
   showLessText?: string;
+  userBio?: boolean;
 }
 
 export function ExpandableField({
@@ -14,6 +15,7 @@ export function ExpandableField({
   maxLines = 3,
   showMoreText = "show more",
   showLessText = "show less",
+  userBio = false,
 }: ExpandableFieldProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isClamped, setIsClamped] = React.useState(false);
@@ -45,7 +47,9 @@ export function ExpandableField({
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
   return (
-    <div className={`relative px-2 py-1 rounded-sm`}>
+    <div
+      className={`relative rounded-sm ${userBio ? "px-0 py-1" : "px-2 py-1"}`}
+    >
       <div
         ref={contentRef}
         className="leading-normal transition-[max-height] duration-300 
@@ -62,12 +66,14 @@ export function ExpandableField({
       {isClamped && (
         <>
           {!isExpanded && (
-            <div className="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-accent to-transparent pointer-events-none rounded-b-sm" />
+            <div
+              className={`absolute bottom-0 left-0 w-full ${userBio ? "h-5" : "h-6"} bg-gradient-to-t from-accent to-transparent pointer-events-none rounded-b-sm`}
+            />
           )}
           <Button
             variant="link"
             onClick={toggleExpand}
-            className="absolute bottom-0 translate-y-6 left-2 p-0"
+            className={`absolute bottom-0 translate-y-6 p-0 ${userBio ? "left-0" : "left-2"}`}
           >
             {isExpanded ? showLessText : showMoreText}
           </Button>
