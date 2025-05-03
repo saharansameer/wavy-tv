@@ -66,6 +66,14 @@ const toasts = {
     title: "Preferences Updated",
     description: "Your preferences have been saved.",
   },
+  "user-history-toggle": {
+    title: "History Preference Updated",
+    description: "Your history preference have been saved.",
+  },
+  "user-history-delete": {
+    title: "Watch History Deleted",
+    description: "Your watch history have been deleted successfully.",
+  },
 };
 
 export type ToastType = keyof typeof toasts;

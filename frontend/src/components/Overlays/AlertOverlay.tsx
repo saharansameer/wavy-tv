@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import axios from "axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
-import { setQueriesInvalid } from "@/utils/reactQueryUtils";
+import { setQueriesInvalid, setQueryInvalid } from "@/utils/reactQueryUtils";
 import { showToast, ToastType } from "@/utils/toast";
 
 const entities = {
@@ -39,6 +39,12 @@ const entities = {
       "This action cannot be undone. This will permanently delete the comment.",
     deleteReq: "/api/v1/comment/delete",
   },
+  history: {
+    title: "Delete Watch History ?",
+    description:
+      "This action cannot be undone. This will permanently delete your watch history.",
+    deleteReq: "/api/v1/history/clear?range=0",
+  },
 };
 
 type EntityType = keyof typeof entities;
@@ -46,7 +52,7 @@ type EntityType = keyof typeof entities;
 interface AlertOverlayProps {
   trigger: React.ReactNode;
   entityType: EntityType;
-  entityId: string;
+  entityId?: string;
   toast: ToastType;
 }
 
@@ -61,6 +67,11 @@ export function AlertOverlay({
   const onContinueClickHandler = async () => {
     await verifyAndGenerateNewToken();
     showToast(toast);
+    if (entityType === "history") {
+      await axios.delete(`${deleteReq}`);
+      await setQueryInvalid({ queryKey: ["watchhistory"] });
+      return;
+    }
     await axios.delete(`${deleteReq}/${entityId}`);
     await setQueriesInvalid();
   };
