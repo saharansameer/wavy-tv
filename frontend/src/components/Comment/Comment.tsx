@@ -3,8 +3,8 @@ import {
   UserAvatar,
   Dropdown,
   VoteButtons,
-  TextLinkify,
   CommentForm,
+  ExpandableField,
 } from "@/components";
 import { Button } from "@/components/ui";
 import { getFormatTimestamp } from "@/utils/formatUtils";
@@ -19,38 +19,8 @@ interface CommentProps {
 
 export function Comment({ comment, asChild = false }: CommentProps) {
   const { authUser, authenticated } = useAuthStore();
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const [isClamped, setIsClamped] = React.useState(false);
-  const [isExpanded, setIsExpanded] = React.useState(false);
   const [showReplies, setShowReplies] = React.useState(false);
   const [replyForm, setReplyForm] = React.useState(false);
-
-  // Line Clamp Logic
-  React.useEffect(() => {
-    const el = contentRef.current;
-    if (!el) return;
-
-    const checkClamp = () => {
-      if (!isExpanded) {
-        setIsClamped(el.scrollHeight > el.clientHeight);
-      }
-    };
-
-    // initial check (on mount)
-    checkClamp();
-
-    // re-check on window resize
-    window.addEventListener("resize", checkClamp);
-
-    return () => {
-      window.removeEventListener("resize", checkClamp);
-    };
-  }, [comment.content, contentRef]);
-
-  // Toggle expand/collapse
-  const readMoreHandler = () => {
-    setIsExpanded((prev) => !prev);
-  };
 
   // Toggle replies visibility
   const toggleReplies = () => {
@@ -58,7 +28,7 @@ export function Comment({ comment, asChild = false }: CommentProps) {
   };
 
   return (
-    <div>
+    <div className="border-b-2 rounded-sm p-2">
       {/*Avatar, Username, Timestamp*/}
       <div className="flex flex-row items-center justify-between select-none gap-y-2">
         <div className="flex flex-row items-center">
@@ -86,37 +56,7 @@ export function Comment({ comment, asChild = false }: CommentProps) {
 
       {/* Content */}
       <div className="flex flex-col w-xs sm:w-sm lg:w-lg gap-y-7">
-        <div className="relative px-2 py-1 rounded-sm">
-          <div
-            ref={contentRef}
-            className="leading-normal transition-[max-height] 
-            duration-300 ease-in-out overflow-hidden whitespace-pre-line"
-            style={
-              isExpanded
-                ? { maxHeight: contentRef.current?.scrollHeight }
-                : { maxHeight: "4.5em" }
-            }
-          >
-            <TextLinkify text={comment.content} />
-          </div>
-
-          {isClamped && (
-            <>
-              {" "}
-              {/* Wrap to support conditional gradient */}
-              {!isExpanded && (
-                <div className="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-accent to-transparent pointer-events-none rounded-b-sm" />
-              )}
-              <Button
-                variant="link"
-                onClick={readMoreHandler}
-                className="absolute bottom-0 translate-y-6 left-2 p-0"
-              >
-                {isExpanded ? "show less" : "show more"}
-              </Button>
-            </>
-          )}
-        </div>
+        <ExpandableField text={comment.content} />
 
         {/* Buttons */}
         <div className="flex justify-between">
