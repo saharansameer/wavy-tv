@@ -33,7 +33,8 @@ export const videoFormSchema = z.object({
   description: z
     .string()
     .max(5000, "Description must be at most 5000 characters")
-    .optional(),
+    .optional()
+    .or(z.literal("")),
   video: z
     .instanceof(File, { message: "Video is required" })
     .refine(
