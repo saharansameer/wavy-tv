@@ -1,11 +1,16 @@
 import { UserAvatar } from "@/components";
-import { Dot } from "lucide-react";
+import { Dot, Clock, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   getFormatNumber,
   getFormatTimestamp,
   getFormatDuration,
 } from "@/utils/formatUtils";
+
+const iconStyle = {
+  width: "16px",
+  height: "16px",
+};
 
 export function VideoCard({ video }) {
   return (
@@ -14,8 +19,7 @@ export function VideoCard({ video }) {
         <Link to={`/v/${video.publicId}`}>
           <img
             src={video?.thumbnail.url}
-            className={`w-full h-48 rounded-sm cursor-pointer hover:rounded-xl 
-          transition-all duration-300 ease-in-out ${video.nsfw ? "blur-xs" : ""}`}
+            className={`w-full h-48 rounded-sm cursor-pointer object-cover hover:scale-105 transition-transform duration-300 ${video.nsfw ? "blur-xs" : ""}`}
           />
         </Link>
         <div
@@ -47,9 +51,11 @@ export function VideoCard({ video }) {
             </div>
           </Link>
 
-          <div className="flex flex-row text-secondary">
+          <div className="flex flex-row items-center gap-x-1 text-secondary">
+            <Eye style={iconStyle} />
             <div className="text-sm">{getFormatNumber(video.views)} views</div>
             <Dot />
+            <Clock style={iconStyle} />
             <div className="text-sm">{getFormatTimestamp(video.createdAt)}</div>
           </div>
         </div>

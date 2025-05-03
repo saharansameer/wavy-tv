@@ -99,7 +99,7 @@ export function CommentForm({
 
   return (
     <div
-      className={`w-full flex flex-col gap-y-2 px-4 ${isEditMode ? "items-center" : ""}`}
+      className={`w-full flex flex-col gap-y-2 p-4 ${isEditMode ? "items-center" : ""}`}
     >
       {!isEditMode && <AuthUser />}
 

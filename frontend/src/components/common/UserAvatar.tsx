@@ -5,13 +5,24 @@ interface UserAvatarProps {
   alt: string;
   title?: string;
   className?: string;
+  scale?: boolean;
 }
 
-export function UserAvatar({ src, alt, title, className }: UserAvatarProps) {
+export function UserAvatar({
+  src,
+  alt,
+  title,
+  className,
+  scale,
+}: UserAvatarProps) {
   return (
     <Avatar className={className || ""}>
       <AvatarImage src={src} alt={`${alt}`} title={`@${title}`} />
-      <AvatarFallback>{alt.split("")[0].toUpperCase()}</AvatarFallback>
+      <AvatarFallback
+        className={scale ? "scale-200 font-semibold" : "font-semibold"}
+      >
+        {alt.split("")[0].toUpperCase()}
+      </AvatarFallback>
     </Avatar>
   );
 }

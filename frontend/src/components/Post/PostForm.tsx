@@ -6,6 +6,7 @@ import {
   LoadingOverlay,
   ErrorMessage,
   AuthUser,
+  ScrollToTop,
 } from "@/components";
 import { Button } from "@/components/ui";
 import axios from "axios";
@@ -77,8 +78,9 @@ export function PostForm({
 
   return (
     <div
-      className={`w-full flex flex-col gap-y-4 px-3 md:px-10 pb-7 pt-3 ${isEditMode ? "items-center" : ""}`}
+      className={`w-full max-w-xl flex flex-col gap-y-4 px-3 md:px-10 pb-7 pt-3 ${isEditMode ? "items-center" : ""}`}
     >
+      <ScrollToTop />
       {!isEditMode && <AuthUser />}
 
       <form
