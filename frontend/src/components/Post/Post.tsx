@@ -2,7 +2,12 @@ import axios from "axios";
 import { PostCard } from "./PostCard";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingOverlay, ScrollToTop, EntityComments } from "@/components";
+import {
+  LoadingOverlay,
+  ScrollToTop,
+  EntityComments,
+  Separator,
+} from "@/components";
 
 const getPostByPublicId = async (publicId: string) => {
   const response = await axios.get(`/api/v1/post/${publicId}`);
@@ -31,7 +36,7 @@ export function Post() {
       <ScrollToTop />
       <PostCard post={data} solo={true} />
 
-      <div className="mt-6 border-t border-gray-300" />
+      <Separator label="Comments" />
 
       {/* Comments */}
       <EntityComments

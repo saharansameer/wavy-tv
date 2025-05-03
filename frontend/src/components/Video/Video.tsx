@@ -1,3 +1,4 @@
+import React from "react";
 import {
   LoadingOverlay,
   VideoPlayer,
@@ -8,6 +9,8 @@ import {
   DrawerOverlay,
   VideoForm,
   EntityComments,
+  Separator,
+  TextLinkify,
 } from "@/components";
 import { Button } from "@/components/ui";
 import { Dot, Pencil, Trash2 } from "lucide-react";
@@ -41,6 +44,20 @@ export function Video() {
     queryFn: () =>
       getVideoByPublicId(publicId as string, authUser.saveWatchHistory),
   });
+
+  // Descripton Config
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isClamped, setIsClamped] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = contentRef.current;
+    if (el && el.scrollHeight > el.clientHeight) {
+      setIsClamped(true);
+    }
+  }, [data?.description]);
+
+  const readMoreHandler = () => setIsExpanded((prev) => !prev);
 
   if (isLoading || isFetching)
     return (
@@ -130,7 +147,48 @@ export function Video() {
         )}
       </div>
 
-      <div className="mt-6 border-t border-gray-300" />
+      {/* Description */}
+      {data.description && (
+        <div className="flex flex-col w-full pb-4">
+          <Separator label="Description" />
+
+          <div className="relative px-2 py-1 rounded-sm">
+            <div
+              ref={contentRef}
+              className="leading-normal transition-[max-height] duration-300 
+              ease-in-out overflow-hidden whitespace-pre-line"
+              style={
+                isExpanded
+                  ? { maxHeight: contentRef.current?.scrollHeight }
+                  : { maxHeight: "4.5em" }
+              }
+            >
+              <TextLinkify text={data.description} />
+            </div>
+
+            {isClamped && (
+              <>
+                {!isExpanded && (
+                  <div
+                    className="absolute bottom-0 left-0 w-full h-6 
+                    bg-gradient-to-t from-accent to-transparent
+                    pointer-events-none rounded-b-sm"
+                  />
+                )}
+                <Button
+                  variant="link"
+                  onClick={readMoreHandler}
+                  className="absolute bottom-0 translate-y-6 left-2 p-0"
+                >
+                  {isExpanded ? "show less" : "show more"}
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Separator label="Comments" />
 
       {/* Comments */}
 
