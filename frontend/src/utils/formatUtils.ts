@@ -33,3 +33,21 @@ export const getFormatNumber = (number: number) => {
 export const getFormatTimestamp = (timestamp: Date) => {
   return formatDistanceToNowStrict(new Date(timestamp), { addSuffix: true });
 };
+
+export const getFormatDuration = (sec: number) => {
+  const minutes = Math.floor((sec % 3600) / 60)
+    .toString()
+    .padStart(2, "0");
+  const seconds = Math.floor(sec % 60)
+    .toString()
+    .padStart(2, "0");
+
+  if (sec >= 3600) {
+    const hours = Math.floor(sec / 3600)
+      .toString()
+      .padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  return `${minutes}:${seconds}`;
+};

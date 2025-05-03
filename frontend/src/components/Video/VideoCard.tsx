@@ -1,18 +1,30 @@
 import { UserAvatar } from "@/components";
 import { Dot } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getFormatNumber, getFormatTimestamp } from "@/utils/formatUtils";
+import {
+  getFormatNumber,
+  getFormatTimestamp,
+  getFormatDuration,
+} from "@/utils/formatUtils";
 
 export function VideoCard({ video }) {
   return (
     <div className="w-80 h-[268px] flex flex-col gap-y-2">
-      <Link to={`/v/${video.publicId}`}>
-        <img
-          src={video?.thumbnail.url}
-          className={`w-full h-48 rounded-sm cursor-pointer hover:rounded-xl 
-          transition-all duration-500 ease-in-out  ${video.nsfw ? "blur-xs" : ""}`}
-        />
-      </Link>
+      <div className="relative">
+        <Link to={`/v/${video.publicId}`}>
+          <img
+            src={video?.thumbnail.url}
+            className={`w-full h-48 rounded-sm cursor-pointer hover:rounded-xl 
+          transition-all duration-300 ease-in-out ${video.nsfw ? "blur-xs" : ""}`}
+          />
+        </Link>
+        <div
+          className="absolute right-1 bottom-1 select-none text-sm font-semibold
+        text-[#fff] bg-[#141414] opacity-80 px-1 rounded-xs"
+        >
+          {getFormatDuration(video.videoFile.duration)}
+        </div>
+      </div>
 
       <div className="flex flex-row">
         <div className="pt-1">

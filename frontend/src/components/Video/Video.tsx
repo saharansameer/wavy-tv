@@ -16,19 +16,31 @@ import { getFormatNumber, getFormatTimestamp } from "@/utils/formatUtils";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import useAuthStore from "@/app/store/authStore";
+import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 
-const getVideoByPublicId = async (publicId: string) => {
+const getVideoByPublicId = async (publicId: string, addToWatch: boolean) => {
+  // Get video details
   const response = await axios.get(`/api/v1/video/${publicId}`);
-  return response.data.data[0];
+  const video = response.data.data[0];
+
+  // Add Video to watch history
+  if (addToWatch) {
+    if (await verifyAndGenerateNewToken()) {
+      await axios.post(`/api/v1/history/add?videoId=${video._id}`);
+    }
+  }
+
+  return video;
 };
 
 export function Video() {
+  const { authUser } = useAuthStore();
   const { publicId } = useParams();
   const { data, isFetching, isLoading, isError, error } = useQuery({
     queryKey: ["video", publicId],
-    queryFn: () => getVideoByPublicId(publicId as string),
+    queryFn: () =>
+      getVideoByPublicId(publicId as string, authUser.saveWatchHistory),
   });
-  const { authUser } = useAuthStore();
 
   if (isLoading || isFetching)
     return (

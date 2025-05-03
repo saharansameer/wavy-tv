@@ -10,6 +10,7 @@ import {
   RotateCw,
 } from "lucide-react";
 import { Button } from "@/components/ui";
+import { getFormatDuration } from "@/utils/formatUtils";
 
 interface VideoPlayerProps {
   src: string;
@@ -114,16 +115,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, poster }) => {
     }
   };
 
-  const formatTime = (sec: number) => {
-    const minutes = Math.floor(sec / 60)
-      .toString()
-      .padStart(2, "0");
-    const seconds = Math.floor(sec % 60)
-      .toString()
-      .padStart(2, "0");
-    return `${minutes}:${seconds}`;
-  };
-
   return (
     <div
       ref={containerRef}
@@ -208,7 +199,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, poster }) => {
 
             {/* Duration */}
             <div className="font-semibold text-sm px-2 text-white select-none">
-              {formatTime(currentTime)} / {formatTime(duration)}
+              {getFormatDuration(currentTime)} / {getFormatDuration(duration)}
             </div>
 
             {/* Minimize/Maximize */}
