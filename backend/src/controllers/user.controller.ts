@@ -5,6 +5,120 @@ import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
 import { extractTagsAndKeywords } from "../utils/stringUtils.js";
 import { unpackUserData } from "../utils/authUtils.js";
+import { getLoggedInUserInfo } from "../utils/authUtils.js";
+import { Types } from "mongoose";
+
+export const getUserByUsername: Controller = async (req, res) => {
+  const { username } = req.params;
+
+  if (!username) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.COMMON.ALL_QUERY_PARAMS_REQUIRED,
+    });
+  }
+
+  // Verify logged-in User and Extract user info
+  let userObjectId = null;
+  const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
+  if (userInfo?._id && Types.ObjectId.isValid(userInfo._id)) {
+    userObjectId = new Types.ObjectId(String(userInfo._id));
+  }
+
+  // Find user by username
+  const user = await User.aggregate([
+    {
+      $match: {
+        username: username,
+      },
+    },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "channel",
+        as: "followers",
+        pipeline: [
+          {
+            $project: {
+              _id: 0,
+              follower: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "follower",
+        as: "following",
+        pipeline: [
+          {
+            $project: {
+              _id: 0,
+              channel: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        followers: {
+          $size: "$followers",
+        },
+        following: {
+          $size: "$following",
+        },
+        isOwnProfile: {
+          $cond: {
+            if: { $eq: [userObjectId, "$_id"] },
+            then: true,
+            else: false,
+          },
+        },
+        isFollower: {
+          $cond: {
+            if: { $in: [userObjectId, "$followers.follower"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullName: 1,
+        username: 1,
+        about: 1,
+        avatar: 1,
+        coverImage: 1,
+        followers: 1,
+        following: 1,
+        isOwnProfile: 1,
+        isFollower: 1,
+      },
+    },
+  ]);
+
+  if (user.length === 0) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.USER.NOT_FOUND,
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.USER.FETCH_DETAILS_SUCCESS,
+      data: user[0],
+    })
+  );
+};
 
 export const getCurrentUser: Controller = async (req, res) => {
   // Get User Details
@@ -29,9 +143,9 @@ export const getCurrentUser: Controller = async (req, res) => {
   );
 };
 
-export const updateUserNames: Controller = async (req, res) => {
+export const updateUserInfo: Controller = async (req, res) => {
   // User new details (i.e fullName and username)
-  const { fullName, username } = req.body;
+  const { fullName, username, about } = req.body;
 
   // Remove Extra Spaces
   const trimmedFullName = trimAndClean(fullName || "");
@@ -52,14 +166,13 @@ export const updateUserNames: Controller = async (req, res) => {
       $set: {
         fullName: trimmedFullName,
         username: trimmedUsername,
-        "lastModified.fullName": new Date(),
-        "lastModified.username": new Date(),
+        about: about || "",
         "tags.0": trimmedFullName,
         "tags.1": trimmedUsername,
       },
     },
     { new: true, runValidators: true }
-  ).select("-_id fullName username");
+  );
 
   if (!user) {
     throw new ApiError({
@@ -73,7 +186,11 @@ export const updateUserNames: Controller = async (req, res) => {
     new ApiResponse({
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
-      data: user,
+      data: {
+        fullName: user.fullName,
+        username: user.username,
+        about: user.about,
+      },
     })
   );
 };

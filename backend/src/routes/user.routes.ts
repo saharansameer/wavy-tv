@@ -3,8 +3,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 import { errorHandler } from "../middlewares/error.middleware.js";
 import {
+  getUserByUsername,
   getCurrentUser,
-  updateUserNames,
+  updateUserInfo,
   updateUserEmail,
   updateUserPassword,
   toggleCreatorMode,
@@ -16,16 +17,19 @@ import { authRateLimiter } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+// GET - Ger User by username
+router.route("/:username").get(asyncHandler(getUserByUsername));
+
 // Check User Auth
 router.use(checkAuth);
 
 // GET - Get User details
 router.route("/").get(asyncHandler(getCurrentUser));
 
-// PATCH - Update User names (i.e fullName and username)
+// PATCH - Update User Info (i.e fullName, username, about)
 router
-  .route("/update/names")
-  .patch(authRateLimiter, asyncHandler(updateUserNames));
+  .route("/update/info")
+  .patch(authRateLimiter, asyncHandler(updateUserInfo));
 
 // PATCH - Update User email
 router
