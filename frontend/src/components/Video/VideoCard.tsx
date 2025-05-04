@@ -35,7 +35,7 @@ export function VideoCard({ video }) {
           <UserAvatar
             className={"size-10"}
             src={video.owner.avatar}
-            alt={video.owner.fullName}
+            altText={video.owner.fullName}
             title={video.owner.username}
           />
         </div>

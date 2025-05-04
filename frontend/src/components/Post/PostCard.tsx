@@ -49,7 +49,7 @@ export function PostCard({ post, solo = false }: PostCardProps) {
         <div className="flex flex-row items-center">
           <UserAvatar
             src={post.owner.avatar}
-            alt={post.owner.username}
+            altText={post.owner.username}
             className={"size-8"}
           />
           <div className="text-lg font-semibold pl-3 hover:underline cursor-pointer">

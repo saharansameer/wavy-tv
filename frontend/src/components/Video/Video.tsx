@@ -64,7 +64,7 @@ export function Video() {
         <div className="flex flex-row items-center select-none">
           <UserAvatar
             src={data.owner.avatar}
-            alt={data.owner.username}
+            altText={data.owner.username}
             className={"size-8"}
           />
           <div className="text-lg font-semibold pl-3 hover:underline cursor-pointer">

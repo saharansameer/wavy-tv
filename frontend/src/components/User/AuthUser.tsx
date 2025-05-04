@@ -14,7 +14,7 @@ export function AuthUser({ className }: AuthUserProps) {
         <div className={className || "flex flex-row items-center select-none"}>
           <UserAvatar
             src={authUser.avatar}
-            alt={authUser.username}
+            altText={authUser.username}
             className={"size-8"}
           />
           <div className="text-lg font-semibold pl-3 hover:underline cursor-pointer">

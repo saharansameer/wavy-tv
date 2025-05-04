@@ -155,7 +155,7 @@ export function AppSidebar() {
                   >
                     <UserAvatar
                       src={authUser.avatar as string}
-                      alt={authUser.username}
+                      altText={authUser.username}
                     />{" "}
                     <p className="w-40 text-base font-semibold truncate">
                       {authUser.username}
