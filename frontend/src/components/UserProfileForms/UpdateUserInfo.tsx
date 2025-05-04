@@ -1,4 +1,12 @@
-import { Input, Label, Button } from "@/components/ui";
+import {
+  Input,
+  Label,
+  Button,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui";
 import { ErrorMessage, LoaderSpin, TextEditor } from "@/components";
 import { showToast } from "@/utils/toast";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -43,6 +51,18 @@ export function UpdateUserInfo({ user }: ProfileHeaderProps) {
       // Email Form Data
       const { fullName, username, about } = data;
 
+      // Check if username is available
+      if (authUser.username !== username) {
+        const exist = await axios.post("/api/v1/auth/exist", { username });
+        if (!exist.data.data.username) {
+          setError("username", {
+            type: "manual",
+            message: "Username already exist",
+          });
+          return;
+        }
+      }
+
       // PATCH request
       await axios.patch("/api/v1/user/update/info", {
         fullName,
@@ -62,61 +82,72 @@ export function UpdateUserInfo({ user }: ProfileHeaderProps) {
 
       // Navigate
       navigate(`/u/${username}`);
-    } catch (error) {
-      console.error("UpdateUserInfo Error:", error);
-      setError("username", {
+    } catch {
+      setError("root", {
         type: "manual",
-        message: "Username is already taken",
+        message: "Something went wrong",
       });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmitHandler)} className={`space-y-5`}>
-      <div className="space-y-2">
-        <Label>Full Name</Label>
-        <Input
-          type="text"
-          placeholder="Enter new email"
-          {...register("fullName")}
-        ></Input>
-        {errors.fullName && (
-          <ErrorMessage text={`${errors.fullName.message}`} />
-        )}
-      </div>
-      <div className="space-y-2">
-        <Label>Username</Label>
-        <Input
-          type="text"
-          placeholder="Enter new email"
-          {...register("username")}
-        ></Input>
-        {errors.username && (
-          <ErrorMessage text={`${errors.username.message}`} />
-        )}
-      </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-xl">User Info</CardTitle>
+        <CardDescription>
+          Update user's basic details i.e Fullname, username and about
+        </CardDescription>
+      </CardHeader>
+      <form
+        onSubmit={handleSubmit(onSubmitHandler)}
+        className={`space-y-5 px-4`}
+      >
+        {errors.root && <ErrorMessage text={`${errors.root.message}`} />}
+        <div className="space-y-2">
+          <Label>Full Name</Label>
+          <Input
+            type="text"
+            placeholder="Enter new email"
+            {...register("fullName")}
+          ></Input>
+          {errors.fullName && (
+            <ErrorMessage text={`${errors.fullName.message}`} />
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label>Username</Label>
+          <Input
+            type="text"
+            placeholder="Enter new email"
+            {...register("username")}
+          ></Input>
+          {errors.username && (
+            <ErrorMessage text={`${errors.username.message}`} />
+          )}
+        </div>
 
-      <Controller
-        control={control}
-        name="about"
-        render={({ field }) => (
-          <div className="space-y-2">
-            <Label>About</Label>
-            <TextEditor
-              onChange={field.onChange}
-              value={field.value as string}
-              placeholder="Describe yourself..."
-            />
-            {errors.fullName && (
-              <ErrorMessage text={`${errors.fullName.message}`} />
-            )}
-          </div>
-        )}
-      />
+        <Controller
+          control={control}
+          name="about"
+          render={({ field }) => (
+            <div className="space-y-2">
+              <Label>About</Label>
+              <TextEditor
+                onChange={field.onChange}
+                value={field.value as string}
+                placeholder="Describe yourself..."
+              />
+              {errors.fullName && (
+                <ErrorMessage text={`${errors.fullName.message}`} />
+              )}
+            </div>
+          )}
+        />
 
-      <Button type="submit" className="font-semibold">
-        {isSubmitting ? <LoaderSpin /> : "Save"}
-      </Button>
-    </form>
+        <Button type="submit" className="font-semibold">
+          {isSubmitting ? <LoaderSpin /> : "Save"}
+        </Button>
+      </form>
+    </Card>
   );
 }

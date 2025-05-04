@@ -31,6 +31,16 @@ export function EmailForm({ isActive }: SettingComponentProps) {
       // Email Form Data
       const { email, newEmail, password } = data;
 
+      // Check if email is available
+      const exist = await axios.post("/api/v1/auth/exist", { email: newEmail });
+      if (!exist.data.data.email) {
+        setError("newEmail", {
+          type: "manual",
+          message: "Email already exist",
+        });
+        return;
+      }
+
       // PATCH request
       const res = await axios.patch("/api/v1/user/update/email", {
         currEmail: email,
