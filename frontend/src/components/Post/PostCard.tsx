@@ -72,7 +72,7 @@ export function PostCard({ post, solo = false }: PostCardProps) {
         <div className={`${solo ? "" : "relative"} px-2 py-1 rounded-sm`}>
           <div
             ref={contentRef}
-            className={`${solo ? "" : "line-clamp-3 leading-normal"}`}
+            className={`whitespace-pre-line ${solo ? "" : "line-clamp-3 leading-normal"}`}
           >
             <TextLinkify text={post.content} />
           </div>

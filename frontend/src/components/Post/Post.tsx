@@ -7,6 +7,7 @@ import {
   ScrollToTop,
   EntityComments,
   Separator,
+  UnavailablePost,
 } from "@/components";
 
 const getPostByPublicId = async (publicId: string) => {
@@ -29,7 +30,9 @@ export function Post() {
     );
   }
 
-  if (error || isError || !data) return <div>{error?.message}</div>;
+  if (isError || error || !data) {
+    return <UnavailablePost />;
+  }
 
   return (
     <div className="min-h-48 w-xs sm:w-md lg:w-xl mx-auto px-1 py-2">

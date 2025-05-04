@@ -188,7 +188,8 @@ export function VideoForm({
 
   return (
     <div className="flex flex-col gap-5 px-3 md:px-10 pb-7 pt-3">
-      {!isEditMode && <AuthUser /> && <ScrollToTop />}
+      {!isEditMode && <AuthUser />}
+      <ScrollToTop />
       <form
         onSubmit={handleSubmit(onSubmitHandler)}
         className="flex flex-col gap-10"

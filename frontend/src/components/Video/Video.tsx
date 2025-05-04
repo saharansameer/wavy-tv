@@ -1,4 +1,3 @@
-import React from "react";
 import {
   LoadingOverlay,
   VideoPlayer,
@@ -11,6 +10,7 @@ import {
   EntityComments,
   Separator,
   ExpandableField,
+  UnavailableVideo,
 } from "@/components";
 import { Button } from "@/components/ui";
 import { Dot, Pencil, Trash2 } from "lucide-react";
@@ -53,7 +53,7 @@ export function Video() {
     );
 
   if (isError || error || !data) {
-    return <div>Video is private or does not exist</div>;
+    return <UnavailableVideo />;
   }
 
   return (
