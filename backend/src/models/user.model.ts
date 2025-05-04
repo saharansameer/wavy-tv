@@ -8,7 +8,12 @@ import {
   REFRESH_TOKEN_EXPIRY,
 } from "../config/env.js";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
-import { PublishStatus, Category } from "./video.model.js";
+import {
+  PublishStatus,
+  Category,
+  ThumbnailData as ImageData,
+  thumbnailSubSchema as imageSubSchema,
+} from "./video.model.js";
 
 interface Social {
   socialName: string;
@@ -54,10 +59,8 @@ interface UserDocument extends Document {
   password: string;
   about: string;
   socials: Social[];
-  avatar?: string;
-  avatarPublicId?: string;
-  coverImage?: string;
-  coverImagePublicId?: string;
+  avatar?: ImageData;
+  coverImage?: ImageData;
   refreshToken: string;
   searchHistory: string[];
   savedPlaylists: Schema.Types.ObjectId[];
@@ -177,16 +180,10 @@ const userSchema = new Schema(
       default: [],
     },
     avatar: {
-      type: String,
-    },
-    avatarPublicId: {
-      type: String,
+      type: imageSubSchema,
     },
     coverImage: {
-      type: String,
-    },
-    coverImagePublicId: {
-      type: String,
+      type: imageSubSchema,
     },
     refreshToken: {
       type: String,

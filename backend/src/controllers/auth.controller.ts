@@ -285,13 +285,6 @@ export const deleteTokensFromCookies: Controller = async (_req, res) => {
 export const existingEmailAndUsername: Controller = async (req, res) => {
   const { email, username } = req.body;
 
-  if (!email || !username) {
-    throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
-    });
-  }
-
   // Find users with the given email and username
   const users = await User.find({
     $or: [{ email }, { username }],

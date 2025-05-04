@@ -22,7 +22,7 @@ export const unpackUserData = (user: any) => {
     saveWatchHistory: user.preferences.saveWatchHistory,
     fullName: user.fullName,
     username: user.username,
-    avatar: user.avatar,
+    avatar: user?.avatar?.url,
     email: user.email,
   };
 };

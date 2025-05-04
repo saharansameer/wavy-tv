@@ -5,6 +5,8 @@ declare global {
   }
 
   type FolderType = "videos" | "thumbnails" | "avatars" | "coverImages";
+
+  type ImageType = "avatar" | "coverImage";
 }
 
 export {};

@@ -48,7 +48,7 @@ const videoFileSubSchema = new Schema({
   is_audio: Boolean,
 });
 
-interface ThumbnailData {
+export interface ThumbnailData {
   url: string;
   public_id: string;
   format: string;
@@ -57,7 +57,7 @@ interface ThumbnailData {
   width: number;
 }
 
-const thumbnailSubSchema = new Schema({
+export const thumbnailSubSchema = new Schema({
   url: String,
   public_id: String,
   format: String,
