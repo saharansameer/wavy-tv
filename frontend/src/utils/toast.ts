@@ -74,6 +74,24 @@ const toasts = {
     title: "Watch History Deleted",
     description: "Your watch history have been deleted successfully.",
   },
+  "user-follow-toggle": {
+    title: "Follow Status Changed",
+    description: "The follow status for this user has been updated.",
+  },
+
+  // User auth actions
+  "user-signup": {
+    title: "Account Created",
+    description: "Your account has been successfully created.",
+  },
+  "user-login": {
+    title: "Login Successful",
+    description: "You have successfully logged in.",
+  },
+  "user-logout": {
+    title: "Logged Out",
+    description: "You have been successfully logged out.",
+  },
 };
 
 export type ToastType = keyof typeof toasts;

@@ -15,6 +15,7 @@ import { loginFormSchema, LoginFormSchemaType } from "@/app/schema";
 import axios from "axios";
 import useAuthStore from "@/app/store/authStore";
 import { setQueriesInvalid } from "@/utils/reactQueryUtils";
+import { showToast } from "@/utils/toast";
 
 export function LoginForm() {
   const { setAuthenticated, setAuthOverlayOpen, setAuthUser, setTokenExpiry } =
@@ -46,11 +47,16 @@ export function LoginForm() {
 
       // Set Auth User Data
       const user = loginResponse.data.data;
+
       setAuthUser(user);
       setAuthenticated(true);
       setTokenExpiry(Date.now() + 2 * 60 * 1000);
       setAuthOverlayOpen(false);
+
+      // Show toast and set queries invalid
+      showToast("user-login");
       await setQueriesInvalid();
+
       reset();
     } catch {
       setError("root", {

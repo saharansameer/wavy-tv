@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signupFormSchema, SignupFormSchemaType } from "@/app/schema";
 import axios from "axios";
 import useAuthStore from "@/app/store/authStore";
+import { showToast } from "@/utils/toast";
 
 export function SignupForm() {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -75,18 +76,20 @@ export function SignupForm() {
       }
 
       // Signup Request
-      await axios
-        .post("/api/v1/auth/signup", {
-          fullName,
-          email,
-          username,
-          password,
-        })
-        .then(() => {
-          setAuthOverlayOpen(false);
-        });
-    } catch (error) {
-      console.error("Signup Form Error:", error);
+      await axios.post("/api/v1/auth/signup", {
+        fullName,
+        email,
+        username,
+        password,
+      });
+
+      showToast("user-signup");
+      setAuthOverlayOpen(false);
+    } catch {
+      setError("root", {
+        type: "manual",
+        message: "Something went wrong",
+      });
     }
 
     setAuthOverlayOpen(true);
@@ -103,6 +106,7 @@ export function SignupForm() {
         <form onSubmit={handleSubmit(onSubmitHandler)}>
           <CardContent className="space-y-7">
             <div className="space-y-1">
+              {errors.root && <ErrorMessage text={`${errors.root.message}`} />}
               <Label htmlFor="signup-fullname">Full Name</Label>
               <Input
                 id="signup-fullname"
