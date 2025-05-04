@@ -26,7 +26,7 @@ export const Separator: React.FC<SeparatorProps> = ({
         <>
           <span className="flex-grow border-t border-gray-200"></span>
           {label && (
-            <span className="px-4 text-sm text-gray-500 whitespace-nowrap">
+            <span className="px-4 text-sm text-primary font-semibold whitespace-nowrap">
               {label}
             </span>
           )}
@@ -36,7 +36,7 @@ export const Separator: React.FC<SeparatorProps> = ({
         <>
           <span className="border-l border-gray-200 flex-grow"></span>
           {label && (
-            <span className="py-4 text-base text-accent whitespace-nowrap rotate-90">
+            <span className="py-4 text-base text-primary font-semibold whitespace-nowrap rotate-90">
               {label}
             </span>
           )}

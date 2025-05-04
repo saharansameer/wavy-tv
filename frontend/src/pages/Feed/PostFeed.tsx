@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PaginatedList, PostCard } from "@/components";
+import { PaginatedList, PostCard, Separator, PageTitle } from "@/components";
 
 const getPosts: InfiniteQueryFunction = async ({ pageParam }) => {
   const response = await axios.get(`/api/v1/post?page=${pageParam}&limit=12`);
@@ -9,6 +9,8 @@ const getPosts: InfiniteQueryFunction = async ({ pageParam }) => {
 export function PostFeed() {
   return (
     <>
+      <PageTitle title="Post Feed" />
+      <Separator />
       <PaginatedList
         queryKey={["posts"]}
         queryFn={getPosts}
