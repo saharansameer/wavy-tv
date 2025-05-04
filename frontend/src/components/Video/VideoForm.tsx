@@ -171,7 +171,6 @@ export function VideoForm({
     reset();
   };
 
-
   if ((isSubmitting || isLoading) && !isEditMode) {
     return <UploadProgressOverlay progress={progressPercent} />;
   }

@@ -34,7 +34,7 @@ export function Comment({ comment, asChild = false }: CommentProps) {
         <div className="flex flex-row items-center">
           <UserAvatar
             src={comment.owner.avatar}
-            alt={comment.owner.username}
+            altText={comment.owner.username}
             className={"size-8"}
           />
           <div className="text-lg font-semibold pl-3 hover:underline cursor-pointer">

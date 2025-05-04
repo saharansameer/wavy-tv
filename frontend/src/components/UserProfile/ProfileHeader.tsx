@@ -13,8 +13,12 @@ export type ProfileHeaderProps = {
     fullName: string;
     username: string;
     about: string;
-    avatar: string;
-    coverImage: string;
+    avatar?: {
+      url: string;
+    };
+    coverImage?: {
+      url: string;
+    };
     followers: number;
     following: number;
     isOwnProfile: boolean;
@@ -42,7 +46,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
       <div className="h-32 sm:h-44 md:h-64 w-full overflow-hidden">
         <img
           src={
-            user.coverImage ||
+            user?.coverImage?.url ||
             "https://res.cloudinary.com/bb-cloud/image/upload/f_auto,q_auto/v1/defaults/nxah7cymd0at1iyqhraf"
           }
           alt="Profile cover"
@@ -56,8 +60,8 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         <div className="absolute -top-12 left-2 md:left-6">
           <div className="rounded-full border-4 border-white overflow-hidden h-24 w-24">
             <UserAvatar
-              src={user.avatar}
-              alt={user.fullName}
+              src={user?.avatar?.url as string}
+              altText={user.fullName}
               title={user.fullName}
               className={"w-full h-full object-cover"}
               scale={true}
