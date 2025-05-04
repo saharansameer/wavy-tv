@@ -15,8 +15,6 @@ app.use(
 );
 
 app.use(express.json({ limit: SIZE_LIMIT }));
-app.use(express.urlencoded({ extended: true, limit: SIZE_LIMIT }));
-app.use(express.static("public"));
 app.use(cookieParser());
 
 // Routes import
@@ -24,7 +22,6 @@ import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import videoRoutes from "./routes/video.routes.js";
 import followRoutes from "./routes/follow.routes.js";
-import channelRoutes from "./routes/channel.routes.js";
 import playlistRoutes from "./routes/playlist.routes.js";
 import voteRoutes from "./routes/vote.routes.js";
 import postRoutes from "./routes/post.routes.js";
@@ -38,7 +35,6 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/video", videoRoutes);
 app.use("/api/v1/follow", followRoutes);
-app.use("/api/v1/channel", channelRoutes);
 app.use("/api/v1/playlist", playlistRoutes);
 app.use("/api/v1/vote", voteRoutes);
 app.use("/api/v1/post", postRoutes);

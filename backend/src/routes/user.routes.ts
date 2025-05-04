@@ -13,7 +13,6 @@ import {
   toggleSearchAndWatchHistory,
   updateUserPofileImage,
 } from "../controllers/user.controller.js";
-import { authRateLimiter } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -27,27 +26,19 @@ router.use(checkAuth);
 router.route("/").get(asyncHandler(getCurrentUser));
 
 // PATCH - Update User Info (i.e fullName, username, about)
-router
-  .route("/update/info")
-  .patch(authRateLimiter, asyncHandler(updateUserInfo));
+router.route("/update/info").patch(asyncHandler(updateUserInfo));
 
 // PATCH - Update User's images (i.e avatar and coverImage)
 router.route("/update/image").patch(asyncHandler(updateUserPofileImage));
 
 // PATCH - Update User email
-router
-  .route("/update/email")
-  .patch(authRateLimiter, asyncHandler(updateUserEmail));
+router.route("/update/email").patch(asyncHandler(updateUserEmail));
 
 // PATCH - Update User password
-router
-  .route("/update/password")
-  .patch(authRateLimiter, asyncHandler(updateUserPassword));
+router.route("/update/password").patch(asyncHandler(updateUserPassword));
 
 // PATCH - Toggle creatorMode (i.e true or false)
-router
-  .route("/toggle/creatorMode")
-  .patch(authRateLimiter, asyncHandler(toggleCreatorMode));
+router.route("/toggle/creatorMode").patch(asyncHandler(toggleCreatorMode));
 
 // PATCH - Update User's preferences
 router.route("/update/preferences").patch(asyncHandler(updateUserPreferences));

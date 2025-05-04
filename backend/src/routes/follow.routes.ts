@@ -7,7 +7,6 @@ import {
   getFollowers,
   getFollowing,
 } from "../controllers/follow.controller.js";
-import { authRateLimiter } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -15,17 +14,13 @@ const router = Router();
 router.use(checkAuth);
 
 // POST - Toggle follow (i.e Follow or Unfollow a user)
-router.route("/:username").post(authRateLimiter, asyncHandler(toggleFollow));
+router.route("/:username").post(asyncHandler(toggleFollow));
 
 // GET - Fetch List of Followers of a user
-router
-  .route("/follower/:username")
-  .get(authRateLimiter, asyncHandler(getFollowers));
+router.route("/follower/:username").get(asyncHandler(getFollowers));
 
 // GET - Fetch List of Following of a user
-router
-  .route("/following/:username")
-  .get(authRateLimiter, asyncHandler(getFollowing));
+router.route("/following/:username").get(asyncHandler(getFollowing));
 
 // Error Handler
 router.use(errorHandler);

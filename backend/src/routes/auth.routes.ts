@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { errorHandler } from "../middlewares/error.middleware.js";
-import { checkAuth, authRateLimiter } from "../middlewares/auth.middleware.js";
+import { checkAuth } from "../middlewares/auth.middleware.js";
 import {
   registerUser,
   loginUser,
@@ -14,10 +14,10 @@ import {
 const router = Router();
 
 // POST - Register new user
-router.route("/signup").post(authRateLimiter, asyncHandler(registerUser));
+router.route("/signup").post(asyncHandler(registerUser));
 
 // POST - Login user
-router.route("/login").post(authRateLimiter, asyncHandler(loginUser));
+router.route("/login").post(asyncHandler(loginUser));
 
 // GET - Logout user
 router.route("/logout").get(checkAuth, asyncHandler(logoutUser));
