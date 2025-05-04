@@ -11,7 +11,7 @@ import {
   toggleCreatorMode,
   updateUserPreferences,
   toggleSearchAndWatchHistory,
-  updateUserAbout,
+  updateUserPofileImage,
 } from "../controllers/user.controller.js";
 import { authRateLimiter } from "../middlewares/auth.middleware.js";
 
@@ -30,6 +30,9 @@ router.route("/").get(asyncHandler(getCurrentUser));
 router
   .route("/update/info")
   .patch(authRateLimiter, asyncHandler(updateUserInfo));
+
+// PATCH - Update User's images (i.e avatar and coverImage)
+router.route("/update/image").patch(asyncHandler(updateUserPofileImage));
 
 // PATCH - Update User email
 router
@@ -53,9 +56,6 @@ router.route("/update/preferences").patch(asyncHandler(updateUserPreferences));
 router
   .route("/toggle/history")
   .patch(asyncHandler(toggleSearchAndWatchHistory));
-
-// PATCH - Update User's about (bio)
-router.route("/update/about").patch(asyncHandler(updateUserAbout));
 
 // Error Handler
 router.use(errorHandler);

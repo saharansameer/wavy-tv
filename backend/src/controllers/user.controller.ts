@@ -3,10 +3,10 @@ import ApiResponse from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean } from "../utils/stringUtils.js";
-import { extractTagsAndKeywords } from "../utils/stringUtils.js";
 import { unpackUserData } from "../utils/authUtils.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
 import { Types } from "mongoose";
+import { destroyAssetFromCloudinary } from "../services/cloudinary.js";
 
 export const getUserByUsername: Controller = async (req, res) => {
   const { username } = req.params;
@@ -160,7 +160,7 @@ export const updateUserInfo: Controller = async (req, res) => {
   }
 
   // Update User Details
-  const user = await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
@@ -174,7 +174,7 @@ export const updateUserInfo: Controller = async (req, res) => {
     { new: true, runValidators: true }
   );
 
-  if (!user) {
+  if (!updatedUser) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
@@ -187,10 +187,75 @@ export const updateUserInfo: Controller = async (req, res) => {
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
       data: {
-        fullName: user.fullName,
-        username: user.username,
-        about: user.about,
+        fullName: updatedUser.fullName,
+        username: updatedUser.username,
+        about: updatedUser.about,
       },
+    })
+  );
+};
+
+export const updateUserPofileImage: Controller = async (req, res) => {
+  // Type query as string
+  const rawType = req.query.type as string;
+
+  // Validate type query
+  if (!["avatar", "coverImage"].includes(rawType)) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: `Invalid Image Type: ${rawType}`,
+    });
+  }
+
+  // Type query as ImageType
+  const type = rawType as ImageType;
+  const { image } = req.body;
+
+  if (!image) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "Cloudinary upload chunk is required",
+    });
+  }
+
+  // Find user
+  const user = await User.findById(req.user?._id);
+
+  // Remove old avatar or coverImage from cloud
+  if (user?.[type]) {
+    await destroyAssetFromCloudinary(user?.[type].public_id, "image");
+  }
+
+  // Update user's avatar or coverImage info
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        [type]: {
+          url: image.secure_url,
+          public_id: image.public_id,
+          format: image.format,
+          bytes: image.bytes,
+          height: image.height,
+          width: image.width,
+        },
+      },
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedUser) {
+    throw new ApiError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
+    });
+  }
+
+  // Final Response
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse({
+      status: HTTP_STATUS.OK,
+      message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
     })
   );
 };
@@ -405,46 +470,6 @@ export const toggleSearchAndWatchHistory: Controller = async (req, res) => {
       status: HTTP_STATUS.OK,
       message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
       data: unpackUserData(user),
-    })
-  );
-};
-
-export const updateUserAbout: Controller = async (req, res) => {
-  const { about } = req.body;
-  // Remove extra spaces
-  const trimmedAbout = trimAndClean(about || "");
-
-  // Check if about field exist in
-  if (!trimmedAbout) {
-    throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
-    });
-  }
-
-  // Extract relevant tags and keywords from About
-  const extTags = extractTagsAndKeywords(about, "");
-  console.log(extTags);
-  // Update User's about (bio)
-  const user = await User.findByIdAndUpdate(
-    req?.user?._id,
-    { about: trimmedAbout, $push: { tags: { $each: extTags } } },
-    { new: true, runValidators: true }
-  ).select("-_id fullName username about");
-
-  if (!user) {
-    throw new ApiError({
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: RESPONSE_MESSAGE.USER.UPDATE_FAILED,
-    });
-  }
-
-  // Final Response
-  return res.status(HTTP_STATUS.OK).json(
-    new ApiResponse({
-      status: HTTP_STATUS.OK,
-      message: RESPONSE_MESSAGE.USER.UPDATE_SUCCESS,
-      data: user,
     })
   );
 };
