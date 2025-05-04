@@ -1,8 +1,8 @@
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { Post } from "../models/post.model.js";
+import { User } from "../models/user.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
-import { trimAndClean } from "../utils/stringUtils.js";
 import { generatePublicId } from "../utils/crypto.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
 import { Types } from "mongoose";
@@ -10,10 +10,7 @@ import { Types } from "mongoose";
 export const createPost: Controller = async (req, res) => {
   const { content } = req.body;
 
-  // Remove extra space and Check if content is valid
-  const trimmedContent = trimAndClean(content || "");
-
-  if (!trimmedContent) {
+  if (!content) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.COMMON.ALL_REQUIRED_FIELDS,
@@ -23,7 +20,7 @@ export const createPost: Controller = async (req, res) => {
   // Create Post
   const post = await Post.create({
     publicId: generatePublicId(),
-    content: trimmedContent,
+    content: content,
     owner: req?.user?._id,
   });
 
@@ -48,10 +45,7 @@ export const updatePost: Controller = async (req, res) => {
   const { postPublicId } = req.params;
   const { content } = req.body;
 
-  // Remove extra space and Check if content is valid
-  const trimmedContent = trimAndClean(content || "");
-
-  if (!trimmedContent) {
+  if (!content) {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,
       message: RESPONSE_MESSAGE.POST.NOT_FOUND,
@@ -64,7 +58,7 @@ export const updatePost: Controller = async (req, res) => {
       publicId: postPublicId,
       owner: req?.user?._id,
     },
-    { content: trimmedContent },
+    { content: content },
     { new: true, runValidators: true }
   ).select("-_id -owner");
 
@@ -238,8 +232,30 @@ export const getPostByPublicId: Controller = async (req, res) => {
 };
 
 export const getAllPosts: Controller = async (req, res) => {
-  const page = Number(req.query.page as string) || 1;
-  const limit = Number(req.query.limit as string) || 10;
+  const page = (req.query.page as string) || "1";
+  const limit = (req.query.limit as string) || "12";
+
+  // Get optional username filter
+  const username = (req.query.username as string) || null;
+
+  // Default match stage
+  let matchStage;
+  matchStage = {};
+
+  if (username) {
+    // Ensure user exists
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new ApiError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: RESPONSE_MESSAGE.USER.NOT_FOUND,
+      });
+    }
+    // Update match stage
+    matchStage = {
+      owner: new Types.ObjectId(String(user._id)),
+    };
+  }
 
   // Verify logged-in User and Extract user info
   let userObjectId = null;
@@ -251,7 +267,7 @@ export const getAllPosts: Controller = async (req, res) => {
   // Aggregate Query
   const postAggregateQuery = Post.aggregate([
     {
-      $match: {},
+      $match: matchStage,
     },
     {
       $sort: { createdAt: -1 },
@@ -349,8 +365,8 @@ export const getAllPosts: Controller = async (req, res) => {
 
   // Paginate Options
   const options = {
-    page,
-    limit,
+    page: Number(page),
+    limit: Number(limit),
   };
 
   // Paginated Response
@@ -359,12 +375,11 @@ export const getAllPosts: Controller = async (req, res) => {
     options
   );
 
-  // What If aggregation pipeline or pagination fails
-  if (paginatedPosts.totalDocs === 0) {
+  // Validate Page Number
+  if (paginatedPosts.page! > paginatedPosts.totalPages) {
     throw new ApiError({
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      message:
-        "Unable to retrieve posts, aggregation pipeline or pagination failure",
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.PAGINATE.INVALID_PAGE_SELECTION,
     });
   }
 

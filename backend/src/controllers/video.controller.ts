@@ -1,6 +1,7 @@
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { Video } from "../models/video.model.js";
+import { User } from "../models/user.model.js";
 import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { trimAndClean, extractTagsAndKeywords } from "../utils/stringUtils.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
@@ -9,15 +10,36 @@ import { destroyAssetFromCloudinary } from "../services/cloudinary.js";
 import { Types } from "mongoose";
 
 export const getAllVideos: Controller = async (req, res) => {
-  const page = Number(req.query.page as string) || 1;
-  const limit = Number(req.query.limit as string) || 10;
+  const page = (req.query.page as string) || "1";
+  const limit = (req.query.limit as string) || "12";
+
+  // Get optional username filter
+  const username = (req.query.username as string) || null;
+
+  // Default match stage
+  let matchStage;
+  matchStage = { publishStatus: "PUBLIC" };
+
+  if (username) {
+    // Ensure user exists
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new ApiError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: RESPONSE_MESSAGE.USER.NOT_FOUND,
+      });
+    }
+    // Update match stage
+    matchStage = {
+      publishStatus: "PUBLIC",
+      owner: new Types.ObjectId(String(user._id)),
+    };
+  }
 
   // Aggregate Query
   const videoAggregateQuery = Video.aggregate([
     {
-      $match: {
-        publishStatus: "PUBLIC",
-      },
+      $match: matchStage,
     },
     {
       $sort: { createdAt: -1 },
@@ -51,8 +73,8 @@ export const getAllVideos: Controller = async (req, res) => {
 
   // Paginate Options
   const options = {
-    page,
-    limit,
+    page: Number(page),
+    limit: Number(limit),
   };
 
   // Paginated Response
@@ -61,12 +83,11 @@ export const getAllVideos: Controller = async (req, res) => {
     options
   );
 
-  // What If aggregation pipeline or pagination fails
-  if (paginatedVideos.totalDocs === 0) {
+  // Validate Page Number
+  if (paginatedVideos.page! > paginatedVideos.totalPages) {
     throw new ApiError({
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      message:
-        "Unable to retrieve videos, aggregation pipeline or pagination failure",
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: RESPONSE_MESSAGE.PAGINATE.INVALID_PAGE_SELECTION,
     });
   }
 
