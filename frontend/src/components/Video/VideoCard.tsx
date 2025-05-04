@@ -14,7 +14,7 @@ const iconStyle = {
 
 export function VideoCard({ video }) {
   return (
-    <div className="w-80 h-[268px] flex flex-col gap-y-2">
+    <div className="w-80 min-w-80 h-[268px] flex flex-col gap-y-2 px-1 sm:px-0">
       <div className="relative">
         <Link to={`/v/${video.publicId}`}>
           <img
@@ -34,7 +34,7 @@ export function VideoCard({ video }) {
         <div className="pt-1">
           <UserAvatar
             className={"size-10"}
-            src={video.owner.avatar}
+            src={video.owner.avatar.url}
             altText={video.owner.fullName}
             title={video.owner.username}
           />

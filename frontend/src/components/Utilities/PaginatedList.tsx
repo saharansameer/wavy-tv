@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import {
@@ -11,7 +10,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui";
-import { LoadingOverlay } from "../Overlays/Loading";
+import { LoadingOverlay, ScrollToTop } from "@/components";
 
 interface PaginatedListProps {
   queryKey: string[];
@@ -78,6 +77,7 @@ export function PaginatedList({
         mainDivCn || "flex flex-col justify-between w-full h-full px-5 py-5"
       }
     >
+      <ScrollToTop />
       {/* Items */}
       <div
         className={

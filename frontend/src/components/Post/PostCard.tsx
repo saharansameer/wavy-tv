@@ -48,7 +48,7 @@ export function PostCard({ post, solo = false }: PostCardProps) {
       <div className="flex flex-row items-center justify-between select-none">
         <div className="flex flex-row items-center">
           <UserAvatar
-            src={post.owner.avatar}
+            src={post.owner.avatar.url}
             altText={post.owner.username}
             className={"size-8"}
           />

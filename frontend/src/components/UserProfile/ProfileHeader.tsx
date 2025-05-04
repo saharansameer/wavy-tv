@@ -1,12 +1,11 @@
 import axios from "axios";
-import { UserAvatar, ExpandableField } from "@/components";
+import { UserAvatar, ExpandableField, ProfileEditOverlay } from "@/components";
 import { Button } from "@/components/ui";
 import useAuthStore from "@/app/store/authStore";
 import { UserCheck, UserPlus } from "lucide-react";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { setQueryInvalid } from "@/utils/reactQueryUtils";
 import { showToast } from "@/utils/toast";
-import { ProfileEditOverlay } from "./ProfileEditOverlay";
 
 export type ProfileHeaderProps = {
   user: {
@@ -30,7 +29,7 @@ const toggleFollow = async (username: string) => {
   await axios.post(`/api/v1/follow/${username}`);
 };
 
-export default function ProfileHeader({ user }: ProfileHeaderProps) {
+export function ProfileHeader({ user }: ProfileHeaderProps) {
   const { authenticated } = useAuthStore();
   const followButtonHandler = async () => {
     if (!authenticated) return;

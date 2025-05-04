@@ -33,7 +33,7 @@ export function Comment({ comment, asChild = false }: CommentProps) {
       <div className="flex flex-row items-center justify-between select-none gap-y-2">
         <div className="flex flex-row items-center">
           <UserAvatar
-            src={comment.owner.avatar}
+            src={comment.owner.avatar.url}
             altText={comment.owner.username}
             className={"size-8"}
           />

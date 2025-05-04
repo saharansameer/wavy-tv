@@ -29,7 +29,7 @@ interface UpdateImageProps {
   label: string;
 }
 
-export default function UpdateImage({ folder, label }: UpdateImageProps) {
+export function UpdateImage({ folder, label }: UpdateImageProps) {
   const { authUser, setAuthUser } = useAuthStore();
   const [progressPercent, setProgressPercent] = React.useState(0);
 

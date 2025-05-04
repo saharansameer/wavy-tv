@@ -5,7 +5,7 @@ type ProfileMetricsProps = {
   following: number;
 };
 
-export default function ProfileMetrics({
+export function ProfileMetrics({
   followers,
   following,
 }: ProfileMetricsProps) {

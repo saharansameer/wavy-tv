@@ -1,10 +1,12 @@
 import React from "react";
-import ProfileHeader from "./ProfileHeader";
-import ProfileMetrics from "./ProfileMetrics";
-import ContentNavigation from "./ContentNavigation";
-import VideoGrid from "./VideoGrid";
-import PostsList from "./PostsList";
-import { LoadingOverlay } from "@/components";
+import {
+  LoadingOverlay,
+  ProfileHeader,
+  ProfileMetrics,
+  ContentNavigation,
+  VideoGrid,
+  PostsList,
+} from "@/components";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";

@@ -14,6 +14,7 @@ import {
   FileInput,
   TextEditor,
   UploadProgressOverlay,
+  ScrollToTop,
 } from "@/components";
 import { uploadToCloudinary } from "@/utils/cloudinary";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -26,9 +27,10 @@ import {
 } from "@/app/schema";
 import axios from "axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
-import { updatePersistData } from "@/utils/reactQueryUtils";
+import { setQueriesInvalid, updatePersistData } from "@/utils/reactQueryUtils";
 import { AuthUser } from "@/components";
 import { showToast } from "@/utils/toast";
+import { useNavigate } from "react-router-dom";
 
 interface VideoFormProps {
   mode?: "post" | "patch";
@@ -46,6 +48,7 @@ export function VideoForm({
   const isEditMode: boolean = mode === "patch";
   const schema = isEditMode ? videoEditFormSchema : videoFormSchema;
   const [progressPercent, setProgressPercent] = React.useState(0);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -53,6 +56,7 @@ export function VideoForm({
     reset,
     control,
     formState: { errors, isSubmitting, isLoading },
+    setError,
   } = useForm<VideoFormSchemaType | VideoEditFormSchemaType>({
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -162,13 +166,20 @@ export function VideoForm({
         category,
         nsfw,
       });
-    } catch (error) {
-      console.log("Video Form Error:", error);
+    } catch {
+      setError("root", {
+        type: "manual",
+        message: "Something went wrong",
+      });
     }
 
     setProgressPercent(0);
     showToast("video-create");
+
+    await setQueriesInvalid();
     reset();
+
+    navigate(`/v/feed`);
   };
 
   if ((isSubmitting || isLoading) && !isEditMode) {
@@ -177,7 +188,7 @@ export function VideoForm({
 
   return (
     <div className="flex flex-col gap-5 px-3 md:px-10 pb-7 pt-3">
-      {!isEditMode && <AuthUser />}
+      {!isEditMode && <AuthUser /> && <ScrollToTop />}
       <form
         onSubmit={handleSubmit(onSubmitHandler)}
         className="flex flex-col gap-10"
@@ -360,6 +371,9 @@ export function VideoForm({
             />
           </div>
         </div>
+
+        {/* Root Error Message */}
+        {errors.root && <ErrorMessage text={`${errors.root.message}`} />}
 
         {/* Submit Button */}
         <Button
