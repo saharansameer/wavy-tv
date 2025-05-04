@@ -7,12 +7,17 @@ import {
   getFormatDuration,
 } from "@/utils/formatUtils";
 
+interface VideoCardProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  video: any;
+}
+
 const iconStyle = {
   width: "16px",
   height: "16px",
 };
 
-export function VideoCard({ video }) {
+export function VideoCard({ video }: VideoCardProps) {
   return (
     <div className="w-80 min-w-80 h-[268px] flex flex-col gap-y-2 px-1 sm:px-0">
       <div className="relative">

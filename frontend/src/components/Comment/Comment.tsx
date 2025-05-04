@@ -13,6 +13,7 @@ import { Dot } from "lucide-react";
 import useAuthStore from "@/app/store/authStore";
 
 interface CommentProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   comment: any;
   asChild?: boolean;
 }
@@ -104,7 +105,8 @@ export function Comment({ comment, asChild = false }: CommentProps) {
         {/* Replies list */}
         {showReplies && comment.replies && (
           <div className="mt-4 ml-8 space-y-6">
-            {comment.replies.map((reply) => (
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
+            {comment.replies.map((reply: any) => (
               <Comment key={reply._id} comment={reply} asChild={true} />
             ))}
           </div>

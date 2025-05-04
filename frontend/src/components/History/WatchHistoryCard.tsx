@@ -2,7 +2,12 @@ import { Dot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getFormatNumber, getFormatDuration } from "@/utils/formatUtils";
 
-export function WatchHistoryCard({ video }) {
+interface WatchHistoryCardProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  video: any;
+}
+
+export function WatchHistoryCard({ video }: WatchHistoryCardProps) {
   return (
     <div className="w-full flex flex-row gap-x-2">
       <div className="relative min-w-60">

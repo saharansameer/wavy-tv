@@ -1,19 +1,12 @@
 import React from "react";
 import {
-  Input,
-  Label,
   Button,
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui";
-import {
-  ErrorMessage,
-  LoaderSpin,
-  FileInput,
-  UploadProgressOverlay,
-} from "@/components";
+import { ErrorMessage, FileInput, UploadProgressOverlay } from "@/components";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { imageFormSchema, ImageFormSchemaType } from "@/app/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,7 +29,6 @@ export function UpdateImage({ folder, label }: UpdateImageProps) {
   const {
     handleSubmit,
     reset,
-    register,
     control,
     formState: { errors, isSubmitting },
     setError,
@@ -82,8 +74,11 @@ export function UpdateImage({ folder, label }: UpdateImageProps) {
 
       // Show toast
       showToast("user-profile-update");
-    } catch (error) {
-      console.error("ImageFormError: ", error);
+    } catch {
+      setError("image", {
+        type: "manual",
+        message: "Something went wrong",
+      });
     }
 
     setProgressPercent(0);
@@ -134,7 +129,11 @@ export function UpdateImage({ folder, label }: UpdateImageProps) {
           )}
         />
 
-        <Button type="submit" variant={"default"} className="min-w-3xs font-semibold">
+        <Button
+          type="submit"
+          variant={"default"}
+          className="min-w-3xs font-semibold"
+        >
           Save
         </Button>
       </form>
