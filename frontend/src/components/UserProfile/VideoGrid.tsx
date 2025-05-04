@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { PaginatedList, VideoCard } from "@/components";
 import { useParams } from "react-router-dom";
 import { QueryFunctionContext } from "@tanstack/react-query";

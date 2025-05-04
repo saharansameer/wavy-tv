@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { passwordFormSchema, PasswordFormSchemaType } from "@/app/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 
 export function PasswordForm({ isActive }: SettingComponentProps) {
   const {

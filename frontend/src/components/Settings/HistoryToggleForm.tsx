@@ -5,7 +5,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { historyToggleFormSchema, HistoryToggleFormSchema } from "@/app/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import useAuthStore from "@/app/store/authStore";
 
 export function HistoryToggleForm({ isActive }: SettingComponentProps) {

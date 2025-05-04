@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { cloudinaryConfig } from "@/app/config/env";
 
 type UploadOptions = {

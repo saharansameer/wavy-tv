@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import useAuthStore from "@/app/store/authStore";
 
 export const verifyAndGenerateNewToken = async () => {

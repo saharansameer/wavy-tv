@@ -25,7 +25,7 @@ import {
   videoFormSchema,
   VideoFormSchemaType,
 } from "@/app/schema";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { setQueriesInvalid, updatePersistData } from "@/utils/reactQueryUtils";
 import { AuthUser } from "@/components";

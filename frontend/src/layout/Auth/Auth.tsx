@@ -10,14 +10,8 @@ interface AuthProps {
 }
 
 export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
-  const {
-    tokenExpiry,
-    setTokenExpiry,
-    authenticated,
-    setAuthenticated,
-    setAuthOverlayOpen,
-    isAuthOverlayOpen,
-  } = useAuthStore();
+  const { authenticated, setAuthOverlayOpen, isAuthOverlayOpen } =
+    useAuthStore();
   const [waiting, setWaiting] = React.useState(true);
 
   React.useEffect(() => {
@@ -25,15 +19,15 @@ export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
       await verifyAndGenerateNewToken();
       setWaiting(false);
     })();
-  }, [
-    authenticated,
-    setAuthenticated,
-    tokenExpiry,
-    setTokenExpiry,
-    setAuthOverlayOpen,
-  ]);
+  }, []);
 
-  if (!authenticated && !isAuthOverlayOpen) {
+  React.useEffect(() => {
+    if (!authenticated && !isAuthOverlayOpen) {
+      setAuthOverlayOpen(true);
+    }
+  }, [authenticated, isAuthOverlayOpen, setAuthOverlayOpen]);
+
+  if (!authenticated) {
     return <Navigate to={"/"} />;
   }
 

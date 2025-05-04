@@ -6,6 +6,8 @@
     "moduleResolution": "nodenext",
     "target": "ES2022",
     "lib": ["ES2022"],
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types"],
     "sourceMap": true,
     "strict": true,
     "skipLibCheck": true,
@@ -16,6 +18,6 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "src/utils/constants.ts", "src/types/**/*.d.ts" ],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

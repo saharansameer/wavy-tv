@@ -6,10 +6,11 @@ import {
   ContentNavigation,
   VideoGrid,
   PostsList,
+  NotFound,
 } from "@/components";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 
 const getUserProfile = async (username: string) => {
   const response = await axios.get(`/api/v1/user/${username}`);
@@ -35,7 +36,7 @@ export function UserProfile() {
     );
   }
 
-  if (error || isError || !data) return <div>{error?.message}</div>;
+  if (error || isError || !data) return <NotFound />;
 
   return (
     <div className="max-w-7xl mx-auto bg-background shadow-sm rounded-lg overflow-hidden">

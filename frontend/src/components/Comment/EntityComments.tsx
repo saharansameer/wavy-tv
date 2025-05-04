@@ -1,5 +1,5 @@
 import { PaginatedList, Comment, CommentForm } from "@/components";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { QueryFunctionContext } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import useAuthStore from "@/app/store/authStore";

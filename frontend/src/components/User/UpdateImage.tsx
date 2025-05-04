@@ -14,7 +14,7 @@ import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { showToast } from "@/utils/toast";
 import { setQueryInvalid } from "@/utils/reactQueryUtils";
 import { uploadToCloudinary } from "@/utils/cloudinary";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import useAuthStore from "@/app/store/authStore";
 
 interface UpdateImageProps {

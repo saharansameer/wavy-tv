@@ -13,7 +13,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { updateUserInfoSchema, UpdateUserInfoSchemaType } from "@/app/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import useAuthStore from "@/app/store/authStore";
 import { setQueryInvalid } from "@/utils/reactQueryUtils";
 import { useNavigate } from "react-router-dom";

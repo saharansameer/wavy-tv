@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { UserAvatar, ExpandableField, ProfileEditOverlay } from "@/components";
 import { Button } from "@/components/ui";
 import useAuthStore from "@/app/store/authStore";

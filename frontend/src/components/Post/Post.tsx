@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { PostCard } from "./PostCard";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";

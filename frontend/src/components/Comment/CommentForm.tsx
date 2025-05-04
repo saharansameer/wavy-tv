@@ -9,7 +9,7 @@ import {
 } from "@/components";
 import { Button } from "@/components/ui";
 import useAuthStore from "@/app/store/authStore";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { showToast } from "@/utils/toast";
 import { setQueryInvalid } from "@/utils/reactQueryUtils";

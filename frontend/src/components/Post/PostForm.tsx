@@ -9,7 +9,7 @@ import {
   ScrollToTop,
 } from "@/components";
 import { Button } from "@/components/ui";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { setQueriesInvalid } from "@/utils/reactQueryUtils";
 import { showToast } from "@/utils/toast";

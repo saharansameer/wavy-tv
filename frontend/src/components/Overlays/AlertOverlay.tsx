@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 import { setQueriesInvalid, setQueryInvalid } from "@/utils/reactQueryUtils";
 import { showToast, ToastType } from "@/utils/toast";

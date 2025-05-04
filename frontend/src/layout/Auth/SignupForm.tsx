@@ -13,7 +13,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupFormSchema, SignupFormSchemaType } from "@/app/schema";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import useAuthStore from "@/app/store/authStore";
 import { showToast } from "@/utils/toast";
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { PaginatedList, VideoCard, Separator, PageTitle } from "@/components";
 
 const getVideos: InfiniteQueryFunction = async ({ pageParam }) => {

@@ -2,6 +2,7 @@ import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
 } from "react-router-dom";
 import App from "@/App";
 import { Auth } from "@/layout";
@@ -25,13 +26,13 @@ const router = createBrowserRouter(
 
       {/* User Routes */}
       <Route path="/u">
-        <Route path="*" element={<NotFound />} />
+        <Route path="" element={<Navigate to="/" replace />} />
         <Route path=":username" element={<UserProfile />} />
       </Route>
 
       {/* Video Routes */}
       <Route path="/v">
-        <Route path="*" element={<NotFound />} />
+        <Route path="" element={<NotFound />} />
         <Route path="feed" element={<VideoFeed />} />
         <Route path=":publicId" element={<Video />} />
         <Route
@@ -46,7 +47,7 @@ const router = createBrowserRouter(
 
       {/* Post Routes */}
       <Route path="/p">
-        <Route path="*" element={<NotFound />} />
+        <Route path="" element={<NotFound />} />
         <Route path="feed" element={<PostFeed />} />
         <Route path=":publicId" element={<Post />} />
         <Route

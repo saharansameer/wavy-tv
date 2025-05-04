@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -7,8 +8,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Video, FileText, Upload, PenSquare } from "lucide-react";
+import useAuthStore from "@/app/store/authStore";
 
 export function Home() {
+  const { setAuthOverlayOpen } = useAuthStore();
+
+  React.useEffect(() => {
+    setAuthOverlayOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const categories = [
     {
       title: "Video Feed",

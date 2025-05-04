@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { PaginatedList, PostCard, Separator, PageTitle } from "@/components";
 
 const getPosts: InfiniteQueryFunction = async ({ pageParam }) => {

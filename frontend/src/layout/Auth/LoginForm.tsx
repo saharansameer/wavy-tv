@@ -11,7 +11,7 @@ import { ErrorMessage, PasswordInput, LoaderSpin } from "@/components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema, LoginFormSchemaType } from "@/app/schema";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import useAuthStore from "@/app/store/authStore";
 import { setQueriesInvalid } from "@/utils/reactQueryUtils";
 import { showToast } from "@/utils/toast";

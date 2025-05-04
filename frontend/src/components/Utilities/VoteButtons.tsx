@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import { ArrowBigUp, ArrowBigDown } from "lucide-react";
 import { Button } from "@/components/ui";
 import { updatePersistData } from "@/utils/reactQueryUtils";

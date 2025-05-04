@@ -17,7 +17,7 @@ import { Dot, Pencil, Trash2 } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import { getFormatNumber, getFormatTimestamp } from "@/utils/formatUtils";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { axios } from "@/app/config/axios";
 import useAuthStore from "@/app/store/authStore";
 import { verifyAndGenerateNewToken } from "@/utils/tokenUtils";
 

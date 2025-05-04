@@ -2,14 +2,14 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { SIZE_LIMIT } from "./utils/constants.js";
-import { FRONTEND_URL, LOCAL_HOST } from "./config/env.js";
+import { FRONTEND_URL } from "./config/env.js";
 import { undefinedRoutesHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 
 app.use(
   cors({
-    origin: [FRONTEND_URL as string, LOCAL_HOST as string],
+    origin: [FRONTEND_URL as string],
     credentials: true,
   })
 );
