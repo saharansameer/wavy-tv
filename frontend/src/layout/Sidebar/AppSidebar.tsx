@@ -7,8 +7,6 @@ import {
   ChevronUp,
   SquarePlay,
   Rss,
-  ClockFading,
-  UserRoundCheck,
   UserRound,
   Home,
 } from "lucide-react";
@@ -32,6 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui";
 import { UserAvatar } from "@/components";
 import { Link } from "react-router-dom";
 import useAuthStore from "@/app/store/authStore";
@@ -110,16 +109,6 @@ export function AppSidebar() {
       icon: CircleUserRound,
     },
     {
-      title: "Following",
-      url: "/feed",
-      icon: UserRoundCheck,
-    },
-    {
-      title: "Activity",
-      url: "/activity",
-      icon: ClockFading,
-    },
-    {
       title: "Watch History",
       url: "/history",
       icon: History,
@@ -141,10 +130,10 @@ export function AppSidebar() {
         <SidebarGroupUtil groupItems={groupOneItems} />
         <SidebarSeparator />
         <SidebarGroupUtil groupItems={groupTwoItems} />
-        <SidebarSeparator />
       </SidebarContent>
-      <SidebarFooter className="md:mb-16">
+      <SidebarFooter className="md:mb-14">
         <SidebarMenu>
+           {/* User Auth Dropdown */}
           <SidebarMenuItem>
             <DropdownMenu>
               {authenticated ? (
@@ -198,8 +187,30 @@ export function AppSidebar() {
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
+
+          {/* built by Sameer Saharan */}
+          <SidebarMenuItem>
+            <div className="flex items-center p-0">
+              <p className="text-sm text-primary">built by</p>
+              <Button variant="link" className="font-semibold py-0 px-1">
+                <Link to={"https://github.com/saharansameer"}>
+                  Sameer Saharan
+                </Link>
+              </Button>
+            </div>
+          </SidebarMenuItem>
+
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );
+}
+
+{
+  /* <Link
+to={"https://github.com/saharansameer"}
+className="text-secondary font-semibold cursor-pointer hover:underline"
+>
+@sameersaharan
+</Link> */
 }
