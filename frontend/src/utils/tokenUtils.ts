@@ -12,7 +12,7 @@ export const verifyAndGenerateNewToken = async () => {
   if (tokenExpiry < now) {
     try {
       await axios.get("/api/v1/auth/token/new", { withCredentials: true });
-      setTokenExpiry(now + 2 * 60 * 1000);
+      setTokenExpiry(now + 10 * 60 * 1000);
       return true;
     } catch {
       await axios.get("/api/v1/auth/token/delete", { withCredentials: true });

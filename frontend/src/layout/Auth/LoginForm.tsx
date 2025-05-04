@@ -49,7 +49,7 @@ export function LoginForm() {
 
       setAuthUser(user);
       setAuthenticated(true);
-      setTokenExpiry(Date.now() + 2 * 60 * 1000);
+      setTokenExpiry(Date.now() + 10 * 60 * 1000);
       setAuthOverlayOpen(false);
 
       // Show toast and set queries invalid
