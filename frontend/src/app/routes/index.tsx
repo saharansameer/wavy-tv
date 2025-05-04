@@ -14,6 +14,7 @@ import {
   PostForm,
   UserProfile,
   Settings,
+  WatchHistory,
 } from "@/components";
 
 const router = createBrowserRouter(
@@ -21,27 +22,16 @@ const router = createBrowserRouter(
     <Route path="" element={<App />}>
       {/* Default Route */}
       <Route path="/" element={<Home />} />
-      <Route path="*" element={<NotFound />} />
 
       {/* User Routes */}
       <Route path="/u">
-        <Route path="" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
         <Route path=":username" element={<UserProfile />} />
       </Route>
 
-      {/* Settings Routes */}
-      <Route
-        path="/settings"
-        element={
-          <Auth>
-            <Settings />
-          </Auth>
-        }
-      />
-
       {/* Video Routes */}
       <Route path="/v">
-        <Route path="" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
         <Route path="feed" element={<VideoFeed />} />
         <Route path=":publicId" element={<Video />} />
         <Route
@@ -56,7 +46,7 @@ const router = createBrowserRouter(
 
       {/* Post Routes */}
       <Route path="/p">
-        <Route path="" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
         <Route path="feed" element={<PostFeed />} />
         <Route path=":publicId" element={<Post />} />
         <Route
@@ -68,6 +58,25 @@ const router = createBrowserRouter(
           }
         />
       </Route>
+
+      {/* Other Routes */}
+      <Route path="*" element={<NotFound />} />
+      <Route
+        path="/settings"
+        element={
+          <Auth>
+            <Settings />
+          </Auth>
+        }
+      />
+      <Route
+        path="/history"
+        element={
+          <Auth>
+            <WatchHistory />
+          </Auth>
+        }
+      />
     </Route>
   )
 );
