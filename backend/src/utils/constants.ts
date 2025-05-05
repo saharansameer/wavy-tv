@@ -1,13 +1,22 @@
-export const SIZE_LIMIT = "1mb";
+import { NODE_ENV } from "../config/env.js";
 
-export const cookiesOptions = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none" as const,
-  domain: ".sameer.im",
-  path: "/",
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-};
+const isProduction = String(NODE_ENV) === "production";
+export const cookiesOptions = isProduction
+  ? {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none" as const,
+      domain: ".sameer.im",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    }
+  : {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax" as const,
+    };
+
+export const SIZE_LIMIT = "1mb";
 
 export const HTTP_STATUS = {
   OK: 200,
