@@ -16,6 +16,7 @@ export * from "./common/PageTitle";
 export * from "./Search/SearchBar";
 export * from "./Search/SearchButton";
 export * from "./Search/search-input";
+export * from "./Search/SearchResult";
 
 export * from "./Video/Video";
 export * from "./Video/VideoForm";
@@ -45,6 +46,7 @@ export * from "./Comment/EntityComments";
 export * from "./User/AuthUser";
 export * from "./User/UpdateImage";
 export * from "./User/UpdateUserInfo";
+export * from "./User/UserCard";
 
 export * from "./UserProfile/UserProfile";
 export * from "./UserProfile/ContentNavigation";

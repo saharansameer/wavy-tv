@@ -23,7 +23,7 @@ export function VideoCard({ video }: VideoCardProps) {
       <div className="relative">
         <Link to={`/v/${video.publicId}`}>
           <img
-            src={video?.thumbnail.url}
+            src={video?.thumbnail?.url}
             className={`w-full h-48 rounded-sm cursor-pointer object-cover hover:scale-105 transition-transform duration-300 ${video.nsfw ? "blur-xs" : ""}`}
           />
         </Link>
@@ -39,7 +39,7 @@ export function VideoCard({ video }: VideoCardProps) {
         <div className="pt-1">
           <UserAvatar
             className={"size-10"}
-            src={video.owner.avatar.url}
+            src={video.owner?.avatar?.url}
             altText={video.owner.fullName}
             title={video.owner.username}
           />

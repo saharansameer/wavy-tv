@@ -75,7 +75,7 @@ export function PaginatedList({
   return (
     <div
       className={
-        mainDivCn || "flex flex-col justify-between w-full h-full px-5 py-5"
+        mainDivCn || "flex flex-col justify-between w-full h-screen px-5 py-5"
       }
     >
       <ScrollToTop />
@@ -90,7 +90,7 @@ export function PaginatedList({
       </div>
 
       {/* Pagination */}
-      <div className={pageDivCn || "pt-40"}>
+      <div className={pageDivCn || "pt-40 pb-5"}>
         <Pagination>
           <PaginationContent>
             <PaginationItem>

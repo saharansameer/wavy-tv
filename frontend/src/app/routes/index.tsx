@@ -16,6 +16,7 @@ import {
   UserProfile,
   Settings,
   WatchHistory,
+  SearchResult,
 } from "@/components";
 
 const router = createBrowserRouter(
@@ -78,6 +79,7 @@ const router = createBrowserRouter(
           </Auth>
         }
       />
+      <Route path="/search" element={<SearchResult />} />
     </Route>
   )
 );

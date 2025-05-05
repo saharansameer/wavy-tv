@@ -13,10 +13,10 @@ export type ProfileHeaderProps = {
     username: string;
     about: string;
     avatar?: {
-      url: string;
+      url?: string;
     };
     coverImage?: {
-      url: string;
+      url?: string;
     };
     followers: number;
     following: number;

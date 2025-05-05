@@ -21,7 +21,7 @@ export function VideoGrid() {
         queryKey={[username as string, "videos"]}
         queryFn={getUserVideos}
         renderItem={(video) => <VideoCard key={video.publicId} video={video} />}
-        docDivCn={"flex flex-wrap justify-center gap-x-10 gap-y-10"}
+        docDivCn={"flex flex-wrap justify-center gap-x-20 gap-y-20"}
       />
     </>
   );

@@ -1,10 +1,12 @@
 import React from "react";
 import { SearchInput, SearchButton } from "@/components";
 import { CircleX, X } from "lucide-react";
-import useSearchStore from "@/app/store/searchStore";
+import { useNavigate } from "react-router-dom";
+import { setQueryInvalid } from "@/utils/reactQueryUtils";
 
 export function SearchBar() {
-  const { inputText, setInputText } = useSearchStore();
+  const navigate = useNavigate();
+  const [inputText, setInputText] = React.useState<string>("");
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const clearInputHandler = () => {
@@ -14,11 +16,21 @@ export function SearchBar() {
 
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const mobileInputRef = React.useRef<HTMLInputElement>(null);
+
   React.useEffect(() => {
     if (isSearchOpen) {
       mobileInputRef.current?.focus();
     }
   }, [isSearchOpen]);
+
+  const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      setQueryInvalid({ queryKey: ["search"] });
+      navigate(`/search?q=${encodeURIComponent(inputText)}`);
+      setInputText("");
+    }
+  };
 
   return (
     <div className="w-full flex flex-row items-center justify-end md:justify-center">
@@ -31,9 +43,7 @@ export function SearchBar() {
           onChange={(e) => setInputText(e.target.value)}
           ref={inputRef}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-            }
+            onKeyDownHandler(e);
           }}
         />
         <button
@@ -44,7 +54,14 @@ export function SearchBar() {
         </button>
       </div>
 
-      <SearchButton className={"hidden md:block md:rounded-e-3xl"} />
+      <SearchButton
+        className={"hidden md:block md:rounded-e-3xl"}
+        onClick={() => {
+          setQueryInvalid({ queryKey: ["search"] });
+          navigate(`/search?q=${encodeURIComponent(inputText)}`);
+          setInputText("");
+        }}
+      />
 
       <SearchButton
         className={"rounded-full md:hidden"}
@@ -69,10 +86,7 @@ export function SearchBar() {
               onChange={(e) => setInputText(e.target.value)}
               ref={mobileInputRef}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  mobileInputRef.current?.blur();
-                }
+                onKeyDownHandler(e);
               }}
             />
             <button
