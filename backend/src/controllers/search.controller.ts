@@ -47,6 +47,13 @@ const getSearchResultForVideo: SearchUtility = async (
         ],
       },
     },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner",
+        },
+      },
+    },
   ]);
 
   // Video Paginated Result
@@ -94,7 +101,6 @@ const getSearchResultForChannel: SearchUtility = async (
     },
     {
       $project: {
-        _id: 0,
         fullName: 1,
         username: 1,
         avatar: 1,
@@ -102,6 +108,29 @@ const getSearchResultForChannel: SearchUtility = async (
         about: 1,
         creatorMode: 1,
         nsfwProfile: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "channel",
+        as: "followers",
+        pipeline: [
+          {
+            $project: {
+              _id: 0,
+              follower: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        followers: {
+          $size: "$followers",
+        },
       },
     },
   ]);
@@ -238,8 +267,8 @@ const getSearchResultForPlaylist: SearchUtility = async (
 };
 
 export const getSearchResults: Controller = async (req, res) => {
-  const page = Number(req.query.page as string) || 1;
-  const limit = Number(req.query.limit as string) || 10;
+  const page = (req.query.page as string) || "1";
+  const limit = (req.query.limit as string) || "10";
 
   // Search Query
   const query = req.query.query as string;
@@ -271,8 +300,8 @@ export const getSearchResults: Controller = async (req, res) => {
 
   // Paginate Options
   const options = {
-    page,
-    limit,
+    page: Number(page),
+    limit: Number(limit),
   };
 
   if (type === "video") {
