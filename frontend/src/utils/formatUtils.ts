@@ -6,7 +6,7 @@ export const getFormatNumber = (number: number) => {
   }
 
   if (number >= 1000 && number < 999999) {
-    const formatted = (number / 1000).toFixed(1);
+    const formatted = `${(number / 1000).toFixed(1)}`;
     if (formatted.endsWith(".0")) {
       return `${formatted.slice(0, -2)}k`;
     }
@@ -14,19 +14,19 @@ export const getFormatNumber = (number: number) => {
   }
 
   if (number >= 1000000 && number < 999999999) {
-    const formatted = `${(number / 1000000).toFixed(1)}M`;
+    const formatted = `${(number / 1000000).toFixed(1)}`;
     if (formatted.endsWith(".0")) {
-      return `${formatted.slice(0, -2)}k`;
+      return `${formatted.slice(0, -2)}M`;
     }
-    return `${formatted}k`;
+    return `${formatted}M`;
   }
 
   if (number >= 1000000000 && number < 999999999999) {
-    const formatted = `${(number / 1000000000).toFixed(1)}B`;
+    const formatted = `${(number / 1000000000).toFixed(1)}`;
     if (formatted.endsWith(".0")) {
-      return `${formatted.slice(0, -2)}k`;
+      return `${formatted.slice(0, -2)}B`;
     }
-    return `${formatted}k`;
+    return `${formatted}B`;
   }
 };
 
