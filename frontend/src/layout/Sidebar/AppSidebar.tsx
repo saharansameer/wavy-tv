@@ -133,7 +133,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="md:mb-14">
         <SidebarMenu>
-           {/* User Auth Dropdown */}
+          {/* User Auth Dropdown */}
           <SidebarMenuItem>
             <DropdownMenu>
               {authenticated ? (
@@ -190,16 +190,18 @@ export function AppSidebar() {
 
           {/* built by Sameer Saharan */}
           <SidebarMenuItem>
-            <div className="flex items-center p-0">
-              <p className="text-sm text-primary">built by</p>
-              <Button variant="link" className="font-semibold py-0 px-1">
+            <div className="flex items-center p-0 pl-1">
+              <p className="text-xs sm:text-sm text-primary">built by</p>
+              <Button
+                variant="link"
+                className="font-semibold py-0 px-1 text-xs sm:text-sm"
+              >
                 <Link to={"https://github.com/saharansameer"}>
                   Sameer Saharan
                 </Link>
               </Button>
             </div>
           </SidebarMenuItem>
-
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
