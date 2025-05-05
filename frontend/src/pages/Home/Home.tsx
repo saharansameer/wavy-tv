@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -7,17 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ScrollToTop } from "@/components";
 import { Video, FileText, Upload, PenSquare } from "lucide-react";
-import useAuthStore from "@/app/store/authStore";
 
 export function Home() {
-  const { setAuthOverlayOpen } = useAuthStore();
-
-  React.useEffect(() => {
-    setAuthOverlayOpen(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const categories = [
     {
       title: "Video Feed",
@@ -55,6 +47,7 @@ export function Home() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <ScrollToTop />
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight mb-3">
           Step into wavyTV

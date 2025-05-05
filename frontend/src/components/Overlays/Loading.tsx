@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui";
@@ -31,10 +32,11 @@ export function UploadProgressOverlay({
 }
 
 export function LoadingOverlay() {
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <Loader2 className="h-16 w-16 animate-spin text-primary" />
-    </div>
+    </div>,
+    document.body
   );
 }
 

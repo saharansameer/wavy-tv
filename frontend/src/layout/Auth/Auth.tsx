@@ -10,22 +10,19 @@ interface AuthProps {
 }
 
 export const Auth: React.FC<AuthProps> = ({ children, skeleton }) => {
-  const { authenticated, setAuthOverlayOpen, isAuthOverlayOpen } =
-    useAuthStore();
+  const { authenticated, setAuthOverlayOpen } = useAuthStore();
   const [waiting, setWaiting] = React.useState(true);
 
   React.useEffect(() => {
     (async () => {
       await verifyAndGenerateNewToken();
+      if (!authenticated) {
+        setAuthOverlayOpen(true);
+      }
       setWaiting(false);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  React.useEffect(() => {
-    if (!authenticated && !isAuthOverlayOpen) {
-      setAuthOverlayOpen(true);
-    }
-  }, [authenticated, isAuthOverlayOpen, setAuthOverlayOpen]);
 
   if (!authenticated) {
     return <Navigate to={"/"} />;

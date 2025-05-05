@@ -10,11 +10,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui";
-import { LoadingOverlay, ScrollToTop, NoContent } from "@/components";
+import { LoadingOverlay, ScrollToTop } from "@/components";
 
 interface PaginatedListProps {
   queryKey: string[];
   queryFn: InfiniteQueryFunction;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderItem: (item: any) => React.ReactNode;
   mainDivCn?: string | null;
   docDivCn?: string | null;
@@ -68,7 +69,7 @@ export function PaginatedList({
   }
 
   if (data?.pages?.[0]?.totalDocs === 0) {
-    return <NoContent />;
+    return <></>;
   }
 
   return (
@@ -81,14 +82,15 @@ export function PaginatedList({
       {/* Items */}
       <div
         className={
-          docDivCn || "flex flex-wrap justify-center gap-x-20 gap-y-10"
+          docDivCn || "flex flex-wrap justify-center gap-x-20 gap-y-15"
         }
       >
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {data?.pages?.[currPage - 1]?.docs.map((item: any) => renderItem(item))}
       </div>
 
       {/* Pagination */}
-      <div className={pageDivCn || "pt-10"}>
+      <div className={pageDivCn || "pt-40"}>
         <Pagination>
           <PaginationContent>
             <PaginationItem>
