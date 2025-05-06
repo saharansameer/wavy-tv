@@ -2,7 +2,7 @@ import { axios } from "@/app/config/axios";
 import useAuthStore from "@/app/store/authStore";
 
 export const verifyAndGenerateNewToken = async () => {
-  const { authenticated, tokenExpiry, setTokenExpiry } =
+  const { authenticated, tokenExpiry, setTokenExpiry, setAuthenticated } =
     useAuthStore.getState();
 
   if (!authenticated) return false;
@@ -16,6 +16,7 @@ export const verifyAndGenerateNewToken = async () => {
       return true;
     } catch {
       await axios.get("/api/v1/auth/token/delete", { withCredentials: true });
+      setAuthenticated(false);
       window.location.reload();
       return false;
     }

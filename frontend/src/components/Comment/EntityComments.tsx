@@ -44,7 +44,11 @@ export function EntityComments({
         renderItem={(comment) => (
           <Comment key={comment._id} comment={comment} />
         )}
-        mainDivCn={entity === "video" ? "flex flex-col justify-between w-full h-full px-2" : null}
+        mainDivCn={
+          entity === "video"
+            ? "flex flex-col justify-between w-full h-full px-2"
+            : null
+        }
         docDivCn={
           entity === "video"
             ? "flex flex-col gap-y-7 w-xs sm:w-sm lg:w-lg"

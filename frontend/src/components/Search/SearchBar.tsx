@@ -76,7 +76,7 @@ export function SearchBar() {
         ${isSearchOpen ? "w-[calc(100%-25px)] opacity-100" : "w-0 translate-x-full opacity-0"}
         `}
       >
-        <div className="backdrop-blur-sm bg-background px-4 py-3 w-full">
+        <div className="bg-background px-4 pb-3 pt-1 w-full">
           <div className="relative flex items-center gap-2">
             <SearchInput
               type="search"

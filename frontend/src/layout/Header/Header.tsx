@@ -2,7 +2,7 @@ import { Theme, SearchBar } from "@/components";
 
 export function Header() {
   return (
-    <div className="w-full flex flex-row items-center justify-evenly h-12">
+    <div className="w-full flex flex-row items-center justify-evenly h-12 sticky top-0">
       <Theme />
       <img
         src="/wavytv-logo.png"

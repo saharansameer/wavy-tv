@@ -1,3 +1,5 @@
+import React from "react";
+import { axios } from "@/app/config/axios";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -44,6 +46,12 @@ export function Home() {
       hoverGradient: "hover:from-emerald-500/30 hover:to-teal-500/30",
     },
   ];
+
+  React.useEffect(() => {
+    (async () => {
+      await axios.get("/", { withCredentials: false });
+    })();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">

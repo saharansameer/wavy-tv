@@ -6,7 +6,7 @@ import { Toaster } from "sonner";
 function App() {
   return (
     <div className="bg-background">
-      <div className="w-full py-2 px-2 bg-background dark:bg-background sticky top-0 z-20">
+      <div className="w-full py-2 px-2 bg-background fixed top-0 z-20">
         <Header />
       </div>
 
@@ -14,12 +14,12 @@ function App() {
         <div>
           <SidebarProvider>
             <SidebarTrigger
-              className={"fixed inset-y-4 inset-x-2 cursor-pointer z-[20]"}
+              className={"fixed inset-y-4 inset-x-2 cursor-pointer z-20"}
             />
             <AppSidebar />
           </SidebarProvider>
         </div>
-        <div className="w-full px-2 py-2">
+        <div className="w-full px-2 py-2 pt-16">
           <Outlet />
           <AuthOverlay />
           <Toaster position="top-center" richColors />

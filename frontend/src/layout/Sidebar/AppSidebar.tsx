@@ -173,7 +173,10 @@ export function AppSidebar() {
                 className="w-44 md:w-60 cursor-pointer"
               >
                 <Link to={"/settings"}>
-                  <DropdownMenuItem className="cursor-pointer">
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => (isMobile ? toggleSidebar() : null)}
+                  >
                     Settings
                   </DropdownMenuItem>
                 </Link>
@@ -206,13 +209,4 @@ export function AppSidebar() {
       </SidebarFooter>
     </Sidebar>
   );
-}
-
-{
-  /* <Link
-to={"https://github.com/saharansameer"}
-className="text-secondary font-semibold cursor-pointer hover:underline"
->
-@sameersaharan
-</Link> */
 }
