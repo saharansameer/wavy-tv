@@ -6,7 +6,7 @@ export const cookiesOptions = isProduction
       httpOnly: true,
       secure: true,
       sameSite: "none" as const,
-      domain: ".sameer.im",
+      domain: ".sameersaharan.com",
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     }

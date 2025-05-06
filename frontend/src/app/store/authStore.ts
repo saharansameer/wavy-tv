@@ -35,7 +35,7 @@ const authStore: StateCreator<AuthType> = (set, get) => ({
   setAuthenticated: (authenticated: boolean) => set({ authenticated }),
   tokenExpiry: 0,
   setTokenExpiry: (tokenExpiry: number) => set({ tokenExpiry }),
-  isAuthOverlayOpen: true,
+  isAuthOverlayOpen: false,
   setAuthOverlayOpen: (isAuthOverlayOpen: boolean) =>
     set({ isAuthOverlayOpen }),
   authUser: {
