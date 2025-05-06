@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { SIZE_LIMIT } from "./utils/constants.js";
 import { FRONTEND_URL } from "./config/env.js";
 import { undefinedRoutesHandler } from "./middlewares/error.middleware.js";
+import activate from "./config/server.js";
 
 const app = express();
 
@@ -16,6 +17,9 @@ app.use(
 
 app.use(express.json({ limit: SIZE_LIMIT }));
 app.use(cookieParser());
+
+// Activate Server Instance
+app.get("/", activate);
 
 // Routes import
 import authRoutes from "./routes/auth.routes.js";
