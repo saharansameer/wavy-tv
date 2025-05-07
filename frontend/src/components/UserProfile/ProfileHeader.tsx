@@ -76,7 +76,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
           </div>
 
           <div className="flex gap-3">
-            {user.isOwnProfile ? (
+            {authenticated && user.isOwnProfile ? (
               <ProfileEditOverlay user={user} />
             ) : user.isFollower ? (
               <Button

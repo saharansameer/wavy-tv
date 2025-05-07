@@ -28,6 +28,7 @@ interface AuthType {
   authUser: AuthUser;
   setAuthUser: (value: AuthUser) => void;
   setTheme: (value: ThemeType) => void;
+  setAuthUserDefaultValues: () => void;
 }
 
 const authStore: StateCreator<AuthType> = (set, get) => ({
@@ -53,6 +54,16 @@ const authStore: StateCreator<AuthType> = (set, get) => ({
   setAuthUser: (authUser: AuthUser) => set({ authUser }),
   setTheme: (theme: ThemeType) =>
     set({ authUser: { ...get().authUser, theme } }),
+  setAuthUserDefaultValues: () =>
+    set({
+      authUser: {
+        ...get().authUser,
+        fullName: "",
+        username: "",
+        avatar: "",
+        email: "",
+      },
+    }),
 });
 
 const useAuthStore = create(
