@@ -207,8 +207,8 @@ export const logoutUser: Controller = async (req, res) => {
   // Final Response
   return res
     .status(HTTP_STATUS.OK)
-    .clearCookie("accessToken")
-    .clearCookie("refreshToken")
+    .clearCookie("accessToken", cookiesOptions)
+    .clearCookie("refreshToken", cookiesOptions)
     .json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
@@ -272,8 +272,8 @@ export const renewTokens: Controller = async (req, res) => {
 export const deleteTokensFromCookies: Controller = async (_req, res) => {
   return res
     .status(HTTP_STATUS.OK)
-    .clearCookie("accessToken")
-    .clearCookie("refreshToken")
+    .clearCookie("accessToken", cookiesOptions)
+    .clearCookie("refreshToken", cookiesOptions)
     .json(
       new ApiResponse({
         status: HTTP_STATUS.OK,
