@@ -21,7 +21,7 @@ export function UserCard({ user }: UserCardProps) {
       <div className="flex items-center gap-3">
         <div className="rounded-full overflow-hidden h-12 w-12 flex-shrink-0">
           <UserAvatar
-            src={user?.avatar?.url as string}
+            src={user?.avatar?.url}
             altText={user.fullName}
             title={user.fullName}
             className="w-full h-full object-cover"

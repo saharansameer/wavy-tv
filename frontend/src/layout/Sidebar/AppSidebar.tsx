@@ -143,7 +143,7 @@ export function AppSidebar() {
                     className="cursor-pointer"
                   >
                     <UserAvatar
-                      src={authUser.avatar as string}
+                      src={authUser?.avatar}
                       altText={authUser.username}
                     />{" "}
                     <p className="w-40 text-base font-semibold truncate">

@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface UserAvatarProps {
-  src: string;
+  src: string | undefined;
   altText: string;
   title?: string;
   className?: string;
@@ -17,7 +17,12 @@ export function UserAvatar({
 }: UserAvatarProps) {
   return (
     <Avatar className={className || ""}>
-      <AvatarImage src={src} alt={`${altText}`} title={`@${title}`} />
+      <AvatarImage
+        src={src}
+        alt={`${altText}`}
+        title={`@${title}`}
+        className="bg-[#141414]"
+      />
       <AvatarFallback
         className={scale ? "scale-200 font-semibold" : "font-semibold"}
       >

@@ -59,7 +59,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
         <div className="absolute -top-12 left-2 md:left-6">
           <div className="rounded-full border-4 border-white overflow-hidden h-24 w-24">
             <UserAvatar
-              src={user?.avatar?.url as string}
+              src={user?.avatar?.url}
               altText={user.fullName}
               title={user.fullName}
               className={"w-full h-full object-cover"}

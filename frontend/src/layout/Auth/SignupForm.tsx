@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -8,8 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button, Input, Label, TabsContent } from "@/components/ui";
-import { ErrorMessage, LoaderSpin } from "@/components";
-import { Eye, EyeOff } from "lucide-react";
+import { ErrorMessage, LoaderSpin, PasswordInput } from "@/components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupFormSchema, SignupFormSchemaType } from "@/app/schema";
@@ -18,7 +16,6 @@ import useAuthStore from "@/app/store/authStore";
 import { showToast } from "@/utils/toast";
 
 export function SignupForm() {
-  const [showPassword, setShowPassword] = React.useState(false);
   const { setAuthOverlayOpen } = useAuthStore();
   const {
     register,
@@ -144,21 +141,7 @@ export function SignupForm() {
             </div>
             <div className="space-y-1">
               <Label htmlFor="signup-password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="signup-password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  {...register("password")}
-                />
-                <Button
-                  className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
-                  variant={"ghost"}
-                  onClick={() => setShowPassword((prev) => !prev)}
-                >
-                  {showPassword ? <EyeOff /> : <Eye />}
-                </Button>
-              </div>
+              <PasswordInput {...register("password")} />
               {errors.password && (
                 <ErrorMessage
                   text={`${errors.password.message}`}

@@ -63,7 +63,7 @@ export function Video() {
         {/* Avatar, Username, Timestamp, Views */}
         <div className="flex flex-row items-center select-none">
           <UserAvatar
-            src={data.owner.avatar.url}
+            src={data.owner?.avatar?.url}
             altText={data.owner.username}
             className={"size-8"}
           />

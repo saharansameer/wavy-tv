@@ -13,7 +13,7 @@ export function AuthUser({ className }: AuthUserProps) {
       {authenticated && (
         <div className={className || "flex flex-row items-center select-none"}>
           <UserAvatar
-            src={authUser.avatar}
+            src={authUser?.avatar}
             altText={authUser.username}
             className={"size-8"}
           />

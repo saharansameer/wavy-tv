@@ -7,6 +7,7 @@ import { useNavigate, Link } from "react-router-dom";
 import useAuthStore from "@/app/store/authStore";
 
 interface PostCardProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   post: any;
   solo?: boolean;
 }
@@ -48,7 +49,7 @@ export function PostCard({ post, solo = false }: PostCardProps) {
       <div className="flex flex-row items-center justify-between select-none">
         <div className="flex flex-row items-center">
           <UserAvatar
-            src={post.owner.avatar.url}
+            src={post.owner?.avatar?.url}
             altText={post.owner.username}
             className={"size-8"}
           />
