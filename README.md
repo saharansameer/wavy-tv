@@ -17,12 +17,9 @@ WavyTV is a full-stack video streaming platform built using the MERN stack (Mong
 - Aggregation pipelines for data queries
 - Express middleware for error handling and validation
 - Modular backend structure
-- 
 - React component architecture
 - Frontend integration with backend APIs
-- Zustand for state management
 - Responsive layout for desktops, mobiles and tablets
-- Tailwind CSS and shadcn/ui for styling
 
 ---
 
@@ -42,8 +39,9 @@ WavyTV is a full-stack video streaming platform built using the MERN stack (Mong
 - Tailwind CSS (v4)
 - shadcn/ui
 - Zustand (state management)
-- React Query (data fetching)
-- React Hook Form (form handling)
+- React-Query (data fetching)
+- React-Hook-Form (form handling)
+- Zod (form validation)
 
 ### Other Tools
 
