@@ -2,7 +2,6 @@ import React from "react";
 import { SearchInput, SearchButton } from "@/components";
 import { CircleX, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { setQueryInvalid } from "@/utils/reactQueryUtils";
 
 export function SearchBar() {
   const navigate = useNavigate();
@@ -24,9 +23,9 @@ export function SearchBar() {
   }, [isSearchOpen]);
 
   const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (inputText.trim() == "") return;
     if (e.key === "Enter") {
       e.preventDefault();
-      setQueryInvalid({ queryKey: ["search"] });
       navigate(`/search?q=${encodeURIComponent(inputText)}`);
       setInputText("");
     }
@@ -57,7 +56,7 @@ export function SearchBar() {
       <SearchButton
         className={"hidden md:block md:rounded-e-3xl"}
         onClick={() => {
-          setQueryInvalid({ queryKey: ["search"] });
+          if (inputText.trim() == "") return;
           navigate(`/search?q=${encodeURIComponent(inputText)}`);
           setInputText("");
         }}

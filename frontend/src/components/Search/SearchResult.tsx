@@ -5,7 +5,7 @@ import { axios } from "@/app/config/axios";
 
 export function SearchResult() {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get("q");
+  const query = searchParams.get("q") as string;
 
   // Query Function
   const getSearchResult: InfiniteQueryFunction = async (
@@ -21,7 +21,7 @@ export function SearchResult() {
   return (
     <div>
       <PaginatedList
-        queryKey={["search"]}
+        queryKey={["search", query]}
         queryFn={getSearchResult}
         renderItem={(video) => <VideoCard key={video.publicId} video={video} />}
       />

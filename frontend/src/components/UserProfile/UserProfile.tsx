@@ -39,7 +39,7 @@ export function UserProfile() {
   if (error || isError || !data) return <NotFound />;
 
   return (
-    <div className="max-w-7xl mx-auto bg-background shadow-sm rounded-lg overflow-hidden">
+    <div className="max-w-7xl mx-auto bg-background shadow-sm rounded-lg">
       <ProfileHeader user={data} />
       <ProfileMetrics followers={data.followers} following={data.following} />
       <ContentNavigation activeTab={activeTab} onTabChange={setActiveTab} />
