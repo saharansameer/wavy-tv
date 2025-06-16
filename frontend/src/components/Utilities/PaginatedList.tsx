@@ -10,7 +10,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui";
-import { LoadingOverlay, ScrollToTop } from "@/components";
+import { LoadingOverlay, ScrollToTop, NoContent } from "@/components";
 
 interface PaginatedListProps {
   queryKey: string[];
@@ -69,13 +69,14 @@ export function PaginatedList({
   }
 
   if (data?.pages?.[0]?.totalDocs === 0) {
-    return <></>;
+    return <NoContent />;
   }
 
   return (
     <div
       className={
-        mainDivCn || "flex flex-col justify-between w-full h-full sm:h-screen px-5 py-5"
+        mainDivCn ||
+        "flex flex-col justify-between w-full h-full sm:h-screen px-5 py-5"
       }
     >
       <ScrollToTop />

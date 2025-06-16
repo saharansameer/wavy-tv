@@ -13,8 +13,8 @@ interface EmptyContentProps {
 }
 
 export function NoContent({
-  title = "No content yet",
-  description = "This section doesn't have any content at the moment",
+  title = "Empty for Now",
+  description = "The content you're looking for doesn't exist.",
   actionText,
   actionRoute,
   icon = <Inbox className="h-12 w-12" />,

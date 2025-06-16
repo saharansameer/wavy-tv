@@ -1,5 +1,11 @@
 import React from "react";
-import { VoteButtons, UserAvatar, TextLinkify, Dropdown } from "@/components";
+import {
+  VoteButtons,
+  UserAvatar,
+  TextLinkify,
+  Dropdown,
+  ShareButton,
+} from "@/components";
 import { Button } from "@/components/ui";
 import { Dot, MessageSquareText } from "lucide-react";
 import { getFormatTimestamp } from "@/utils/formatUtils";
@@ -111,6 +117,7 @@ export function PostCard({ post, solo = false }: PostCardProps) {
               <MessageSquareText />
             </Button>
           )}
+          {solo && <ShareButton />}
         </div>
       </div>
     </div>

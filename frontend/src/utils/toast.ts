@@ -92,6 +92,12 @@ const toasts = {
     title: "Logged Out",
     description: "You have been successfully logged out.",
   },
+
+  // Share Action
+  "share-action": {
+    title: "Link Copied",
+    description: "You can now share it anywhere.",
+  },
 };
 
 export type ToastType = keyof typeof toasts;

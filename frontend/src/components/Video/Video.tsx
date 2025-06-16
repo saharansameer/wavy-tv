@@ -11,6 +11,7 @@ import {
   Separator,
   ExpandableField,
   UnavailableVideo,
+  ShareButton,
 } from "@/components";
 import { Button } from "@/components/ui";
 import { Dot, Pencil, Trash2 } from "lucide-react";
@@ -89,7 +90,7 @@ export function Video() {
 
       <div className="flex justify-between items-center py-2">
         {/* Buttons - Upvote and Downvote */}
-        <div>
+        <div className="flex gap-x-3">
           <VoteButtons
             entity={"video"}
             entityPublicId={publicId as string}
@@ -97,6 +98,7 @@ export function Video() {
             upvotes={data.upvotes}
             downvotes={data.downvotes}
           />
+          <ShareButton />
         </div>
 
         {/* Options - Edit and Delete */}

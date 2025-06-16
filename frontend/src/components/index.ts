@@ -34,6 +34,7 @@ export * from "./Utilities/TextEditor";
 export * from "./Utilities/TextLinkify";
 export * from "./Utilities/Dropdown";
 export * from "./Utilities/ExpandableField";
+export * from "./Utilities/ShareButton";
 
 export * from "./Post/PostCard";
 export * from "./Post/PostForm";
