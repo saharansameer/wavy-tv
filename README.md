@@ -1,29 +1,27 @@
 # WavyTV
 
-WavyTV is a full-stack video streaming platform built using the MERN stack (MongoDB, Express, React, Node.js) with TypeScript. It provides a seamless experience for users to stream, upload, and interact with video content.
-
-**Try it here:** [`wavytv.vercel.app`](https://wavytv.vercel.app)
+WavyTV is a web-based video streaming platform built with the MERN stack using TypeScript. It combines video publishing with social interaction — users can upload content, create community posts, vote on videos or posts, and share links — all within a single, interactive platform. Media is stored and delivered efficiently using Cloudinary.
 
 ---
 
 ## Features
 
-- User authentication with JWT (Login, Signup, Logout)
-- Video upload, streaming & Cloudinary-based storage
-- Upvotes/Downvotes on videos, posts, and comments
-- Commenting system with replies (nested)
-- Search functionality for videos
+- User authentication with JWT (login, signup, logout)
+- Video upload, streaming, and Cloudinary-based storage
+- Upvote/downvote system for videos, posts, and comments
+- Nested comments and replies
+- Video search functionality
 - Watch history tracking
-- Follow/Unfollow users, view user profiles
-- Settings for changing email, password, and preferences
-- React frontend with responsive layout
-- Modular, scalable backend architecture with Express
-- Efficient data queries using MongoDB aggregation pipelines
-- Paginated API responses for videos, comments, posts and feeds
+- Follow/unfollow users and view public profiles
+- Settings page (change email, password, preferences)
+- Responsive UI built with Tailwind and shadcn/ui
+- Paginated API for videos, posts, comments, and feeds
+- Modular backend architecture with Express
+- Optimized queries using MongoDB aggregation
 
 ---
 
-## Technologies Used
+## Tech Stack
 
 ### Backend
 
@@ -31,7 +29,7 @@ WavyTV is a full-stack video streaming platform built using the MERN stack (Mong
 - Express
 - MongoDB
 - RESTful APIs
-- JWT (for auth)
+- JWT (Auth)
 
 ### Frontend
 
@@ -42,13 +40,26 @@ WavyTV is a full-stack video streaming platform built using the MERN stack (Mong
 - TanStack Query (React-Query)
 - React Hook Form + Zod (validation)
 
-
 ### Infrastructure / Tools
+
 - Cloudinary (media storage)
 - TypeScript
 
 ---
 
-## Connect 
-For any feedback or suggestions, feel free to reach out to me on [`X/twitter`](https://x.com/sameersaharanx)
+## Architecture Notes
 
+- **MERN Stack**: Built with MongoDB, Express, React (Vite), and Node.js, using TypeScript throughout the stack.
+- **Authentication**: JWT-based auth system with secure access tokens and protected routes.
+- **Media Storage**: Videos are uploaded to and served from Cloudinary for optimized delivery and transformation.
+- **Data Modeling**: MongoDB schemas support users, videos, posts, comments, votes, history, and relationships (followers/following).
+- **Voting System**: Upvotes/downvotes are normalized and stored per user-item pair (videos, posts, comments).
+- **Pagination & Querying**: API responses are paginated using cursor-based logic; MongoDB aggregation pipelines power the feed, search, and recommendations.
+- **Frontend State**: Zustand handles local/global state, while TanStack Query manages API caching and syncing.
+- **Form Handling**: React Hook Form with Zod enables client-side validation and clean UI integration.
+- **UI**: Built with Tailwind CSS and shadcn/ui components, designed to be responsive across devices.
+
+---
+## Deployment
+Fully deployed and live at [`wavytv.vercel.app`](https://wavytv.vercel.app)  
+Built by [Sameer Saharan](https://sameersaharan.com)
