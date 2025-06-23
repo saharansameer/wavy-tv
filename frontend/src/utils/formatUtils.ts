@@ -1,4 +1,10 @@
-import { formatDistanceToNowStrict } from "date-fns";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+
+export const getFormatTimestamp = (timestamp: Date) => {
+  return dayjs(timestamp).fromNow();
+};
 
 export const getFormatNumber = (number: number) => {
   if (number < 1000) {
@@ -28,10 +34,6 @@ export const getFormatNumber = (number: number) => {
     }
     return `${formatted}B`;
   }
-};
-
-export const getFormatTimestamp = (timestamp: Date) => {
-  return formatDistanceToNowStrict(new Date(timestamp), { addSuffix: true });
 };
 
 export const getFormatDuration = (sec: number) => {
