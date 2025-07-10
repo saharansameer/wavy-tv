@@ -10,16 +10,8 @@
     "dev": "nodemon -r dotenv/config --exec tsx src/index.ts",
     "lint": "eslint . --ext .js,.ts,.jsx,.tsx",
     "lint:fix": "eslint . --ext .js,.ts,.jsx,.tsx --fix",
-    "start": "node dist/index.js",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "start": "node dist/index.js"
   },
-  "keywords": [
-    "backend",
-    "javascript",
-    "mern stack",
-    "wavytv backend"
-  ],
   "author": "Sameer Saharan",
   "license": "UNLICENSED",
   "devDependencies": {

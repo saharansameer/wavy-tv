@@ -6,24 +6,29 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 
 ## Features
 
-- User authentication with JWT (login, signup, logout)
-- Video upload, streaming, and Cloudinary-based storage
-- Upvote/downvote system for videos, posts, and comments
-- Nested comments and replies
-- Video search functionality
-- Watch history tracking
-- Follow/unfollow users and view public profiles
-- Settings page (change email, password, preferences)
-- Responsive UI built with Tailwind and shadcn/ui
-- Paginated API for videos, posts, comments, and feeds
-- Modular backend architecture with Express
-- Optimized queries using MongoDB aggregation
+#### Video & Content
+
+- Upload, stream, and manage videos
+- Create and view community posts
+- Search for videos
+- View your watch history
+
+#### Social Interaction
+
+- Add Comments and replies
+- Upvote or downvote videos, posts, and comments
+- Follow and unfollow other users
+- View public user profiles
+
+#### Account Settings
+
+- Edit email, password, and personal preferences
 
 ---
 
 ## Tech Stack
 
-### Backend
+#### Backend
 
 - Node.js
 - Express
@@ -31,7 +36,7 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 - RESTful APIs
 - JWT (Auth)
 
-### Frontend
+#### Frontend
 
 - React (Vite)
 - Tailwind CSS
@@ -40,7 +45,7 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 - TanStack Query (React-Query)
 - React Hook Form + Zod (validation)
 
-### Infrastructure / Tools
+#### Infrastructure / Tools
 
 - Cloudinary (media storage)
 - TypeScript
@@ -60,6 +65,8 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 - **UI**: Built with Tailwind CSS and shadcn/ui components, designed to be responsive across devices.
 
 ---
+
 ## Deployment
+
 Fully deployed and live at [`wavytv.vercel.app`](https://wavytv.vercel.app)  
 Built by [Sameer Saharan](https://sameersaharan.com)

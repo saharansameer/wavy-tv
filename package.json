@@ -3,19 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "A web-based video streaming platform built with the MERN stack using TypeScript.",
-  "keywords": [
-    "full stack project",
-    "javascript",
-    "MERN",
-    "mern stack",
-    "wavytv",
-    "typescript",
-    "video streaming"
-  ],
   "author": "Sameer Saharan",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/saharansameer/wavyTV/issues"
+    "url": "https://github.com/saharansameer/wavy-tv/issues"
   },
-  "homepage": "https://github.com/saharansameer/wavyTV"
+  "homepage": "https://github.com/saharansameer/wavy-tv"
 }
