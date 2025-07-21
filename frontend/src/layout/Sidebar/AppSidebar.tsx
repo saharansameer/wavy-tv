@@ -199,9 +199,7 @@ export function AppSidebar() {
                 variant="link"
                 className="font-semibold py-0 px-1 text-xs sm:text-sm"
               >
-                <Link to={"https://github.com/saharansameer"}>
-                  Sameer Saharan
-                </Link>
+                <Link to={"https://sameersaharan.com"}>Sameer Saharan</Link>
               </Button>
             </div>
           </SidebarMenuItem>

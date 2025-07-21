@@ -102,6 +102,7 @@ export function PaginatedList({
                     setCurrPage((prev) => prev - 1);
                   }
                 }}
+                to={""}
               />
             </PaginationItem>
 
@@ -113,6 +114,7 @@ export function PaginatedList({
                   <PaginationLink
                     className="cursor-pointer select-none"
                     onClick={() => setCurrPage(1)}
+                    to={""}
                   >
                     1
                   </PaginationLink>
@@ -121,7 +123,7 @@ export function PaginatedList({
             )}
 
             <PaginationItem>
-              <PaginationLink className="cursor-pointer select-none">
+              <PaginationLink className="cursor-pointer select-none" to={""}>
                 <Button variant={"secondary"}>{currPage}</Button>
               </PaginationLink>
             </PaginationItem>
@@ -142,6 +144,7 @@ export function PaginatedList({
                     setCurrPage((prev) => prev + 1);
                   }
                 }}
+                to={""}
               />
             </PaginationItem>
           </PaginationContent>

@@ -68,5 +68,5 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 
 ## Deployment
 
-Fully deployed and live at [`wavytv.vercel.app`](https://wavytv.vercel.app)  
+Fully deployed and live at [`wavytv.sameersaharan.com`](https://wavytv.sameersaharan.com)  
 Built by [Sameer Saharan](https://sameersaharan.com)
