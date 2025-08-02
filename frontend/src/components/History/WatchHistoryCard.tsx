@@ -8,6 +8,9 @@ interface WatchHistoryCardProps {
 }
 
 export function WatchHistoryCard({ video }: WatchHistoryCardProps) {
+  if (!video) {
+    return <></>
+  }
   return (
     <div className="w-full flex flex-row gap-x-2">
       <div className="relative min-w-60">

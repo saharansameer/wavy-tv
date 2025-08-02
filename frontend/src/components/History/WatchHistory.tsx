@@ -58,8 +58,8 @@ export function WatchHistory() {
         queryFn={getWatchHistory}
         renderItem={(history) => (
           <WatchHistoryCard
-            key={history.video.publicId}
-            video={history.video}
+            key={history?.video?.publicId}
+            video={history?.video}
           />
         )}
       />
