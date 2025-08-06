@@ -58,7 +58,7 @@ export function Home() {
       <ScrollToTop />
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight mb-3">
-          Step into wavyTV
+          Explore WavyTV
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
           simple. social. seamless.

@@ -99,11 +99,11 @@ export function LoginForm() {
           <div className="py-4"></div>
           <CardFooter>
             <Button
-              className="cursor-pointer"
+              className="cursor-pointer font-semibold w-full"
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? <LoaderSpin /> : "Submit"}
+              {isSubmitting ? <LoaderSpin /> : "Log in"}
             </Button>
           </CardFooter>
         </form>

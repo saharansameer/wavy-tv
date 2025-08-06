@@ -30,7 +30,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui";
 import { UserAvatar } from "@/components";
 import { Link } from "react-router-dom";
 import useAuthStore from "@/app/store/authStore";
@@ -193,14 +192,15 @@ export function AppSidebar() {
 
           {/* built by Sameer Saharan */}
           <SidebarMenuItem>
-            <div className="flex items-center p-0 pl-1">
-              <p className="text-xs sm:text-sm text-primary">built by</p>
-              <Button
-                variant="link"
-                className="font-semibold py-0 px-1 text-xs sm:text-sm"
+            <div className="flex items-center py-2 pl-1 text-muted-foreground">
+              <p className="text-xs sm:text-sm">built by</p>
+
+              <Link
+                to={"https://sameersaharan.com"}
+                className="py-0 px-1 text-xs sm:text-sm text-foreground/80 hover:underline"
               >
-                <Link to={"https://sameersaharan.com"}>Sameer Saharan</Link>
-              </Button>
+                Sameer Saharan
+              </Link>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>

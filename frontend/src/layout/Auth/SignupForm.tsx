@@ -108,7 +108,7 @@ export function SignupForm() {
               <Input
                 id="signup-fullname"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Enter your full name"
                 {...register("fullName")}
               />
               {errors.fullName && (
@@ -120,7 +120,7 @@ export function SignupForm() {
               <Input
                 id="signup-username"
                 type="text"
-                placeholder="johndoe"
+                placeholder="Enter your username"
                 {...register("username")}
               />
               {errors.username && (
@@ -132,7 +132,7 @@ export function SignupForm() {
               <Input
                 id="signup-email"
                 type="email"
-                placeholder="johndoe@wavy.tv"
+                placeholder="Enter your email"
                 {...register("email")}
               />
               {errors.email && (
@@ -152,8 +152,8 @@ export function SignupForm() {
           </CardContent>
           <div className="py-4"></div>
           <CardFooter className="space-y-1">
-            <Button type="submit" className="cursor-pointer">
-              {isSubmitting ? <LoaderSpin /> : "Submit"}
+            <Button type="submit" className="cursor-pointer font-semibold w-full">
+              {isSubmitting ? <LoaderSpin /> : "Sign up"}
             </Button>
           </CardFooter>
         </form>
