@@ -81,7 +81,7 @@ export function LoginForm() {
               <Input
                 type="email"
                 id="login-email"
-                placeholder="Email"
+                placeholder="name@example.com"
                 {...register("email")}
               />
               {errors.email && (
