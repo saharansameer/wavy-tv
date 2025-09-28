@@ -1,6 +1,6 @@
 # WavyTV
 
-WavyTV is a web-based video streaming platform built with the MERN stack using TypeScript. It combines video publishing with social interaction — users can upload content, create community posts, vote on videos or posts, and share links — all within a single, interactive platform. Media is stored and delivered efficiently using Cloudinary.
+WavyTV is a web-based video streaming platform that supports uploading, browsing, and interacting with video content and community posts. Users can create content, vote on videos or posts, and share links, all within a single interactive platform.
 
 ---
 
@@ -11,7 +11,7 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 - Upload, stream, and manage videos
 - Create and view community posts
 - Search for videos
-- View your watch history
+- View and manage watch history
 
 #### Social Interaction
 
@@ -22,7 +22,7 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 
 #### Account Settings
 
-- Edit email, password, and personal preferences
+- Update email, password, and personal preferences
 
 ---
 
@@ -33,21 +33,22 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 - Node.js
 - Express
 - MongoDB
-- RESTful APIs
-- JWT (Auth)
+- REST APIs
+- JWT 
 
 #### Frontend
 
-- React (Vite)
+- React
 - Tailwind CSS
 - shadcn/ui
-- Zustand (state management)
-- TanStack Query (React-Query)
-- React Hook Form + Zod (validation)
+- Zustand 
+- TanStack Query
+- React Hook Form
+- Zod
 
 #### Infrastructure / Tools
 
-- Cloudinary (media storage)
+- Cloudinary
 - TypeScript
 
 ---
@@ -69,4 +70,4 @@ WavyTV is a web-based video streaming platform built with the MERN stack using T
 ## Deployment
 
 Fully deployed and live at [`wavytv.sameersaharan.com`](https://wavytv.sameersaharan.com)  
-Built by [Sameer Saharan](https://sameersaharan.com)
+built by [Sameer Saharan](https://sameersaharan.com)

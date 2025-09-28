@@ -25,8 +25,7 @@ export function SignupForm() {
     formState: { errors, isSubmitting },
   } = useForm<SignupFormSchemaType>({
     resolver: zodResolver(signupFormSchema),
-    mode: "onChange",
-    reValidateMode: "onSubmit",
+    mode: "onSubmit",
   });
 
   const onSubmitHandler: SubmitHandler<SignupFormSchemaType> = async (data) => {
@@ -152,7 +151,10 @@ export function SignupForm() {
           </CardContent>
           <div className="py-4"></div>
           <CardFooter className="space-y-1">
-            <Button type="submit" className="cursor-pointer font-semibold w-full">
+            <Button
+              type="submit"
+              className="cursor-pointer font-semibold w-full"
+            >
               {isSubmitting ? <LoaderSpin /> : "Sign up"}
             </Button>
           </CardFooter>

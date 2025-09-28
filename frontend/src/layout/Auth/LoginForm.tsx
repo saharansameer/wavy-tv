@@ -28,8 +28,7 @@ export function LoginForm() {
     setError,
   } = useForm<LoginFormSchemaType>({
     resolver: zodResolver(loginFormSchema),
-    mode: "onChange",
-    reValidateMode: "onChange",
+    mode: "onSubmit",
   });
 
   const onSubmitHandler: SubmitHandler<LoginFormSchemaType> = async (data) => {

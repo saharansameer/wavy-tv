@@ -12,6 +12,7 @@ export function PasswordInput({ ...props }) {
         {...props}
       />
       <Button
+        type="button"
         className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2"
         variant={"link"}
         onClick={() => setShowPassword((prev) => !prev)}
