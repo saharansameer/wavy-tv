@@ -50,7 +50,7 @@ export function VideoCard({ video }: VideoCardProps) {
             {video.title}
           </div>
 
-          <Link to={`/u/${video.owner.username}`}>
+          <Link to={`/u/${video.owner.username}`} className="w-fit">
             <div className="mt-2 font-semibold text-sm text-secondary hover:underline">
               {video.owner.fullName}
             </div>
