@@ -1,4 +1,10 @@
-import { Schema, model, Document, AggregatePaginateModel } from "mongoose";
+import {
+  Schema,
+  model,
+  Document,
+  AggregatePaginateModel,
+  Types,
+} from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 export enum PublishStatus {
@@ -72,7 +78,7 @@ interface VideoDocument extends Document {
   description: string;
   duration: number;
   views: number;
-  owner: string;
+  owner: Types.ObjectId;
   videoFile: VideoFileData;
   thumbnail: ThumbnailData;
   publishStatus: PublishStatus;

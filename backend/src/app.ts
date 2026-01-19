@@ -13,6 +13,7 @@ app.use(
     credentials: true,
   })
 );
+app.options("*", cors());
 
 app.use(express.json({ limit: SIZE_LIMIT }));
 app.use(cookieParser());

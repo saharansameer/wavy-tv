@@ -1,9 +1,14 @@
-import mongoose, { AggregatePaginateModel, Document, Schema } from "mongoose";
+import mongoose, {
+  AggregatePaginateModel,
+  Document,
+  Schema,
+  Types,
+} from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 interface FollowDocument extends Document {
-  channel: Schema.Types.ObjectId;
-  follower: Schema.Types.ObjectId;
+  channel: Types.ObjectId;
+  follower: Types.ObjectId;
 }
 
 const followSchema = new Schema(

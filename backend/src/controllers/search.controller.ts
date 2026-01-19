@@ -4,7 +4,6 @@ import { HTTP_STATUS, RESPONSE_MESSAGE } from "../utils/constants.js";
 import { Video } from "../models/video.model.js";
 import { User } from "../models/user.model.js";
 import { Playlist } from "../models/playlist.model.js";
-import { getCorrectSearchQuery } from "../services/fuse.js";
 import { getLoggedInUserInfo } from "../utils/authUtils.js";
 import { SearchUtility } from "../types/search.js";
 
@@ -281,9 +280,6 @@ export const getSearchResults: Controller = async (req, res) => {
     });
   }
 
-  // Auto-correct misspelled words in the search query
-  const correctedSearch = getCorrectSearchQuery(query || "");
-
   // Verify logged-in User and Extract user info
   const userInfo = getLoggedInUserInfo(req?.cookies?.refreshToken);
 
@@ -305,11 +301,11 @@ export const getSearchResults: Controller = async (req, res) => {
   };
 
   if (type === "video") {
-    return getSearchResultForVideo(correctedSearch, userInfo, options, res);
+    return getSearchResultForVideo(query, userInfo, options, res);
   } else if (type === "channel") {
-    return getSearchResultForChannel(correctedSearch, userInfo, options, res);
+    return getSearchResultForChannel(query, userInfo, options, res);
   } else if (type === "playlist") {
-    return getSearchResultForPlaylist(correctedSearch, userInfo, options, res);
+    return getSearchResultForPlaylist(query, userInfo, options, res);
   } else {
     throw new ApiError({
       status: HTTP_STATUS.BAD_REQUEST,

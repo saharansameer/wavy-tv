@@ -1,0 +1,9 @@
+{
+  "routes": [{ "src": "/api/v1/(.*)", "dest": "/api/index.ts" }],
+  "git": {
+    "deploymentEnabled": {
+      "main": false,
+      "preview": false
+    }
+  }
+}
