@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 
 enum VoteStatus {
   UPVOTE = "UPVOTE",
@@ -6,11 +6,11 @@ enum VoteStatus {
 }
 
 interface VoteObject extends Document {
-  votedBy: Schema.Types.ObjectId;
+  votedBy: Types.ObjectId;
   vote: VoteStatus;
-  video?: Schema.Types.ObjectId;
-  post?: Schema.Types.ObjectId;
-  comment?: Schema.Types.ObjectId;
+  video?: Types.ObjectId;
+  post?: Types.ObjectId;
+  comment?: Types.ObjectId;
 }
 
 const voteSchema = new Schema(

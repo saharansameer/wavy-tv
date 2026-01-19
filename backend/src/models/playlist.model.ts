@@ -1,4 +1,9 @@
-import mongoose, { AggregatePaginateModel, Document, Schema } from "mongoose";
+import mongoose, {
+  AggregatePaginateModel,
+  Document,
+  Schema,
+  Types,
+} from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 enum PublishStatus {
@@ -11,9 +16,9 @@ interface PlaylistDocument extends Document {
   publicId: string;
   title: string;
   description?: string;
-  owner: Schema.Types.ObjectId;
+  owner: Types.ObjectId;
   publishStatus: PublishStatus;
-  videos: Schema.Types.ObjectId;
+  videos: Types.ObjectId;
   nsfw: boolean;
   isSystemPlaylist: boolean;
 }

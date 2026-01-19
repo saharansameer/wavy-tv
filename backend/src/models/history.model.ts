@@ -1,9 +1,14 @@
-import mongoose, { Schema, Document, AggregatePaginateModel } from "mongoose";
+import mongoose, {
+  Schema,
+  Document,
+  AggregatePaginateModel,
+  Types,
+} from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 interface HistoryDocument extends Document {
-  video: Schema.Types.ObjectId;
-  user: Schema.Types.ObjectId;
+  video: Types.ObjectId;
+  user: Types.ObjectId;
 }
 
 const historySchema = new Schema(

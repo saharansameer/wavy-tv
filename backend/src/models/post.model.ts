@@ -1,10 +1,15 @@
-import mongoose, { AggregatePaginateModel, Document, Schema } from "mongoose";
+import mongoose, {
+  AggregatePaginateModel,
+  Document,
+  Schema,
+  Types,
+} from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 interface PostDocument extends Document {
   publicId: string;
   content: string;
-  owner: Schema.Types.ObjectId;
+  owner: Types.ObjectId;
 }
 
 const postSchema = new Schema(

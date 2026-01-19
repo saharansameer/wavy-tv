@@ -243,19 +243,19 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-userSchema.pre<UserDocument>("save", async function (next) {
+userSchema.pre<UserDocument>("save", async function (next: Any) {
   if (!this.isModified("password")) return next();
 
   this.password! = await bcrypt.hash(this.password, 10);
   return next();
 });
 
-userSchema.pre<UserDocument>("save", function (next) {
+userSchema.pre<UserDocument>("save", function (next: Any) {
   this.tags = [this.fullName, this.username];
   return next();
 });
 
-userSchema.pre<UserDocument>("save", function (next) {
+userSchema.pre<UserDocument>("save", function (next: Any) {
   const now = new Date();
 
   this.lastModified.username = now;

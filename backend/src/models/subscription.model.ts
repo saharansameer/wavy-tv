@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 
 enum SubscriptionStatus {
   ACTIVE = "ACTIVE",
@@ -10,8 +10,8 @@ enum CurrencyType {
 }
 
 interface SubscriptionObject extends Document {
-  channel: Schema.Types.ObjectId;
-  subscriber: Schema.Types.ObjectId;
+  channel: Types.ObjectId;
+  subscriber: Types.ObjectId;
   status: SubscriptionStatus;
   startDate: Date;
   endDate: Date;

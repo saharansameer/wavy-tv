@@ -1,12 +1,17 @@
-import mongoose, { AggregatePaginateModel, Document, Schema } from "mongoose";
+import mongoose, {
+  AggregatePaginateModel,
+  Document,
+  Schema,
+  Types,
+} from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 interface CommentDocument extends Document {
   content: string;
-  owner: Schema.Types.ObjectId;
-  video?: Schema.Types.ObjectId;
-  post?: Schema.Types.ObjectId;
-  parentComment?: Schema.Types.ObjectId;
+  owner: Types.ObjectId;
+  video?: Types.ObjectId;
+  post?: Types.ObjectId;
+  parentComment?: Types.ObjectId;
 }
 
 const commentSchema = new Schema(
